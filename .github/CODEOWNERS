@@ -1,0 +1,26 @@
+# ==============================================================================
+# GIRISH Repository Code Owners
+# Requires mandatory owner review for critical and protected security boundaries
+# ==============================================================================
+
+# Default owner for entire repository
+* @owner
+
+# Critical Security & Authentication Boundaries
+/backend/src/main/java/com/girish/security/ @owner
+/backend/src/main/java/com/girish/vault/ @owner
+/backend/src/main/java/com/girish/config/ @owner
+/frontend/src/core/auth/ @owner
+/frontend/src/modules/vault/crypto/ @owner
+
+# Database Migrations & Schemas
+/backend/src/main/resources/db/migration/ @owner
+
+# Infrastructure, CI/CD, Secrets & Environment Templates
+/.github/ @owner
+/infrastructure/ @owner
+/.env.example @owner
+
+# Architecture & Security Documentation
+/docs/security/ @owner
+/docs/operations/ @owner
