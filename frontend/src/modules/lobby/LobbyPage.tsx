@@ -1,16 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Box, Code, Cpu, Dumbbell, Lock, Sparkles } from 'lucide-react';
+import { ArrowRight, Box, Code, Cpu, Dumbbell, Lock, Sparkles, Terminal } from 'lucide-react';
+import { LobbyAvatarScene, OutfitId, PoseId } from '../../scene3d/avatar/LobbyAvatarScene';
 
 export const LobbyPage: React.FC = () => {
+  const [outfit, setOutfit] = useState<OutfitId>('cyber-merc');
+  const [pose, setPose] = useState<PoseId>('ready');
+  const [viewMode, setViewMode] = useState<'3d' | '2d'>('3d');
+
   return (
     <div style={lobbyContainerStyles}>
-      {/* Hero Section */}
+      {/* Hero Header */}
       <section style={heroSectionStyles} aria-labelledby="hero-title">
         <div style={badgeContainerStyles}>
           <span style={heroBadgeStyles}>
             <Sparkles size={14} color="var(--accent-cyan)" />
-            <span>OPERATIONAL // PHASE 1 INITIALIZED</span>
+            <span>OPERATIONAL // PHASE 1 &amp; 3D LOBBY ENGINE ACTIVE</span>
           </span>
         </div>
 
@@ -18,7 +23,7 @@ export const LobbyPage: React.FC = () => {
           Welcome to <span style={highlightTitleStyles}>GIRISH</span>
         </h1>
         <p style={heroSubtitleStyles}>
-          Personal Identity Platform, Public Portfolio & Private Quantified-Self Dashboard.
+          Personal Identity Platform, Public Portfolio &amp; Quantified-Self Battle-Lobby.
         </p>
 
         <div style={heroCtaRowStyles}>
@@ -27,37 +32,59 @@ export const LobbyPage: React.FC = () => {
             <ArrowRight size={16} />
           </Link>
           <Link to="/about" style={secondaryButtonStyles}>
-            <span>Read Bio & Background</span>
+            <span>Read Bio &amp; Background</span>
           </Link>
         </div>
       </section>
 
-      {/* 3D Scene Viewport Placeholder (Accessible 2D Fallback per Part A Rule 9) */}
-      <section style={viewportCardStyles} aria-label="3D Identity Lobby">
-        <div style={viewportHeaderStyles}>
-          <div style={viewportHeaderLeftStyles}>
-            <Box size={18} color="var(--accent-cyan)" />
-            <span style={viewportTitleStyles}>AVATAR LOBBY // TIER C 2D FALLBACK ACTIVE</span>
+      {/* 3D Battle Royale Lobby Avatar Stage */}
+      <section style={stageSectionStyles} aria-label="Interactive 3D Avatar Game Lobby">
+        <div style={stageHeaderBarStyles}>
+          <div style={stageHeaderLeftStyles}>
+            <Terminal size={18} color="var(--accent-cyan)" />
+            <span style={stageHeaderTextStyles}>BATTLE ROYALE AVATAR LOBBY // INTERACTIVE 3D STAGE</span>
           </div>
-          <span style={viewportStatusStyles}>WebGL Lazy-Loaded in Phase 3</span>
+          <div style={viewToggleGroupStyles}>
+            <button
+              type="button"
+              onClick={() => setViewMode('3d')}
+              style={toggleButtonStyles(viewMode === '3d')}
+            >
+              3D Interactive Stage
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode('2d')}
+              style={toggleButtonStyles(viewMode === '2d')}
+            >
+              2D Accessible Fallback
+            </button>
+          </div>
         </div>
 
-        <div style={viewportContentStyles}>
-          <div style={avatarCardStyles}>
+        {viewMode === '3d' ? (
+          <LobbyAvatarScene
+            outfit={outfit}
+            pose={pose}
+            onOutfitChange={setOutfit}
+            onPoseChange={setPose}
+          />
+        ) : (
+          <div style={fallbackCardStyles}>
             <div style={avatarGraphicStyles}>
               <Cpu size={48} color="var(--accent-cyan)" />
             </div>
-            <div style={avatarDetailsStyles}>
+            <div style={fallbackDetailsStyles}>
               <h2 style={avatarNameStyles}>OPERATOR // GIRISH</h2>
-              <p style={avatarRoleStyles}>Full-Stack Engineer & Lifelong Learner</p>
+              <p style={avatarRoleStyles}>Full-Stack Software Engineer &amp; Fitness Enthusiast</p>
               <div style={avatarPillsStyles}>
-                <span style={pillStyles}>Dark Aesthetic</span>
-                <span style={pillStyles}>PostgreSQL RLS</span>
+                <span style={pillStyles}>Accessible Tier C Active</span>
                 <span style={pillStyles}>Spring Boot Monolith</span>
+                <span style={pillStyles}>PostgreSQL RLS</span>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </section>
 
       {/* Four Platform Pillars */}
@@ -109,7 +136,9 @@ export const LobbyPage: React.FC = () => {
           <p style={cardTextStyles}>
             Single continuous avatar adapting outfits and scenes across modules. Strictly optional with zero WebGL lock-in and full reduced-motion support.
           </p>
-          <span style={pendingBadgeStyles}>Scheduled for Phase 3</span>
+          <span style={activeBadgeStyles}>
+            <Sparkles size={12} /> Live in Lobby Above
+          </span>
         </article>
       </section>
     </div>
@@ -127,7 +156,7 @@ const heroSectionStyles: React.CSSProperties = {
   flexDirection: 'column',
   alignItems: 'center',
   textAlign: 'center',
-  padding: '2.5rem 1rem',
+  padding: '1.5rem 1rem 0.5rem',
   gap: '1.25rem',
 };
 
@@ -205,58 +234,64 @@ const secondaryButtonStyles: React.CSSProperties = {
   textDecoration: 'none',
 };
 
-const viewportCardStyles: React.CSSProperties = {
-  backgroundColor: 'var(--bg-card)',
-  border: '1px solid var(--border-subtle)',
-  borderRadius: 'var(--radius-lg)',
-  overflow: 'hidden',
-  boxShadow: 'var(--shadow-card)',
+const stageSectionStyles: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '0.75rem',
 };
 
-const viewportHeaderStyles: React.CSSProperties = {
+const stageHeaderBarStyles: React.CSSProperties = {
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-  padding: '0.75rem 1.25rem',
-  backgroundColor: 'rgba(0, 0, 0, 0.3)',
-  borderBottom: '1px solid var(--border-subtle)',
+  flexWrap: 'wrap',
+  gap: '1rem',
+  padding: '0.5rem 0.75rem',
+  backgroundColor: 'rgba(18, 22, 34, 0.6)',
+  borderRadius: 'var(--radius-md)',
+  border: '1px solid var(--border-subtle)',
 };
 
-const viewportHeaderLeftStyles: React.CSSProperties = {
+const stageHeaderLeftStyles: React.CSSProperties = {
   display: 'flex',
   alignItems: 'center',
   gap: '0.5rem',
 };
 
-const viewportTitleStyles: React.CSSProperties = {
+const stageHeaderTextStyles: React.CSSProperties = {
   fontSize: '0.8rem',
   fontWeight: 700,
   letterSpacing: '0.06em',
   color: 'var(--text-secondary)',
 };
 
-const viewportStatusStyles: React.CSSProperties = {
-  fontSize: '0.75rem',
-  color: 'var(--text-muted)',
-};
-
-const viewportContentStyles: React.CSSProperties = {
-  padding: '2.5rem 1.5rem',
+const viewToggleGroupStyles: React.CSSProperties = {
   display: 'flex',
-  justifyContent: 'center',
-  background: 'radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.05) 0%, transparent 70%)',
+  gap: '0.35rem',
 };
 
-const avatarCardStyles: React.CSSProperties = {
+const toggleButtonStyles = (active: boolean): React.CSSProperties => ({
+  fontSize: '0.75rem',
+  fontWeight: 700,
+  padding: '0.3rem 0.65rem',
+  borderRadius: 'var(--radius-sm)',
+  backgroundColor: active ? 'rgba(0, 240, 255, 0.15)' : 'transparent',
+  color: active ? 'var(--accent-cyan)' : 'var(--text-muted)',
+  border: active ? '1px solid rgba(0, 240, 255, 0.4)' : '1px solid transparent',
+  cursor: 'pointer',
+});
+
+const fallbackCardStyles: React.CSSProperties = {
   display: 'flex',
   alignItems: 'center',
   gap: '1.5rem',
   flexWrap: 'wrap',
   justifyContent: 'center',
-  padding: '1.5rem 2rem',
+  padding: '3rem 2rem',
   backgroundColor: 'var(--bg-surface)',
-  borderRadius: 'var(--radius-md)',
+  borderRadius: 'var(--radius-lg)',
   border: '1px solid rgba(0, 240, 255, 0.2)',
+  minHeight: '400px',
 };
 
 const avatarGraphicStyles: React.CSSProperties = {
@@ -271,7 +306,7 @@ const avatarGraphicStyles: React.CSSProperties = {
   boxShadow: '0 0 15px rgba(0, 240, 255, 0.3)',
 };
 
-const avatarDetailsStyles: React.CSSProperties = {
+const fallbackDetailsStyles: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
   gap: '0.35rem',
@@ -366,15 +401,16 @@ const lockedBadgeStyles: React.CSSProperties = {
   alignSelf: 'flex-start',
 };
 
-const pendingBadgeStyles: React.CSSProperties = {
+const activeBadgeStyles: React.CSSProperties = {
   display: 'inline-flex',
   alignItems: 'center',
+  gap: '0.35rem',
   fontSize: '0.75rem',
   fontWeight: 600,
-  color: 'var(--accent-amber)',
+  color: 'var(--accent-cyan)',
   padding: '0.25rem 0.5rem',
-  backgroundColor: 'rgba(245, 158, 11, 0.1)',
-  border: '1px solid rgba(245, 158, 11, 0.2)',
+  backgroundColor: 'rgba(0, 240, 255, 0.1)',
+  border: '1px solid rgba(0, 240, 255, 0.3)',
   borderRadius: 'var(--radius-sm)',
   alignSelf: 'flex-start',
 };
