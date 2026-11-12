@@ -1,0 +1,92 @@
+version: '3.8'
+
+# ==============================================================================
+# GIRISH Local Development Infrastructure Stack
+# Phase 1, Task 1.5
+# Services:
+#   - PostgreSQL 16 (Relational database with schema isolation)
+#   - MinIO (S3-compatible object storage for public, private & vault data)
+#   - MinIO Init (One-off bucket bootstrap with least-privilege policies)
+#   - MailHog (Local SMTP server & web inbox for security alert testing)
+# ==============================================================================
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: girish-postgres-local
+    restart: unless-stopped
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    environment:
+      POSTGRES_DB: ${DB_NAME:-girish}
+      POSTGRES_USER: ${DB_USER:-girish}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-girish_dev_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-girish} -d ${DB_NAME:-girish}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - girish_network
+
+  minio:
+    image: minio/minio:latest
+    container_name: girish-minio-local
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY:-girish_minio_admin}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY:-girish_minio_dev_password}
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9000/minio/health/live || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - girish_network
+
+  minio-init:
+    image: minio/mc:latest
+    container_name: girish-minio-init
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set localminio http://minio:9000 ${S3_ACCESS_KEY:-girish_minio_admin} ${S3_SECRET_KEY:-girish_minio_dev_password};
+      /usr/bin/mc mb localminio/${S3_BUCKET_PUBLIC:-girish-public} --ignore-existing;
+      /usr/bin/mc mb localminio/${S3_BUCKET_PRIVATE:-girish-private} --ignore-existing;
+      /usr/bin/mc mb localminio/${S3_BUCKET_VAULT:-girish-vault} --ignore-existing;
+      /usr/bin/mc anonymous set download localminio/${S3_BUCKET_PUBLIC:-girish-public};
+      echo 'MinIO buckets initialized successfully.';
+      exit 0;
+      "
+    networks:
+      - girish_network
+
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    container_name: girish-mailhog-local
+    restart: unless-stopped
+    ports:
+      - "${SMTP_PORT:-1025}:1025"
+      - "8025:8025"
+    networks:
+      - girish_network
+
+volumes:
+  postgres_data:
+    driver: local
+  minio_data:
+    driver: local
+
+networks:
+  girish_network:
+    driver: bridge
