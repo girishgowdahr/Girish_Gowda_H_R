@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Box, Code, Cpu, Dumbbell, Lock, Sparkles, Terminal } from 'lucide-react';
+import { ArrowRight, Box, Code, Dumbbell, Lock, Sparkles, Terminal } from 'lucide-react';
 import { LobbyAvatarScene, OutfitId, PoseId } from '../../scene3d/avatar/LobbyAvatarScene';
 
 export const LobbyPage: React.FC = () => {
-  const [outfit, setOutfit] = useState<OutfitId>('cyber-merc');
+  const [outfit, setOutfit] = useState<OutfitId>('dev-hoodie');
   const [pose, setPose] = useState<PoseId>('ready');
   const [viewMode, setViewMode] = useState<'3d' | '2d'>('3d');
 
@@ -71,16 +71,20 @@ export const LobbyPage: React.FC = () => {
           />
         ) : (
           <div style={fallbackCardStyles}>
-            <div style={avatarGraphicStyles}>
-              <Cpu size={48} color="var(--accent-cyan)" />
+            <div style={fallbackAvatarWrapperStyles}>
+              <img
+                src={`${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/assets/avatar/coding-avatar.jpg`}
+                alt="Girish Gowda H R - Human Tactical Hero Avatar"
+                style={fallbackAvatarImgStyles}
+              />
             </div>
             <div style={fallbackDetailsStyles}>
-              <h2 style={avatarNameStyles}>OPERATOR // GIRISH</h2>
-              <p style={avatarRoleStyles}>Software Engineer | Java, SQL &amp; Full-Stack Development</p>
+              <h2 style={avatarNameStyles}>GIRISH GOWDA H R</h2>
+              <p style={avatarRoleStyles}>Human Tactical Hero // Software Engineer</p>
               <div style={avatarPillsStyles}>
-                <span style={pillStyles}>Accessible Tier C Active</span>
-                <span style={pillStyles}>Spring Boot Monolith</span>
-                <span style={pillStyles}>PostgreSQL RLS</span>
+                <span style={pillStyles}>Free Fire Platform Aesthetic</span>
+                <span style={pillStyles}>Character Bible Identity</span>
+                <span style={pillStyles}>High-Resolution 2D Mode</span>
               </div>
             </div>
           </div>
@@ -294,16 +298,20 @@ const fallbackCardStyles: React.CSSProperties = {
   minHeight: '400px',
 };
 
-const avatarGraphicStyles: React.CSSProperties = {
-  width: '80px',
-  height: '80px',
-  borderRadius: '50%',
-  backgroundColor: 'rgba(0, 240, 255, 0.1)',
+const fallbackAvatarWrapperStyles: React.CSSProperties = {
+  maxHeight: '360px',
+  height: '100%',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  border: '2px solid var(--accent-cyan)',
-  boxShadow: '0 0 15px rgba(0, 240, 255, 0.3)',
+};
+
+const fallbackAvatarImgStyles: React.CSSProperties = {
+  maxHeight: '340px',
+  width: 'auto',
+  borderRadius: 'var(--radius-md)',
+  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 240, 255, 0.25)',
+  border: '1px solid rgba(0, 240, 255, 0.3)',
 };
 
 const fallbackDetailsStyles: React.CSSProperties = {

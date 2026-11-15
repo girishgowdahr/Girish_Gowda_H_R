@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import * as THREE from 'three';
-import { Eye, Shield, Sparkles, Zap, Cpu } from 'lucide-react';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { Eye, Shield, Sparkles, Zap, Camera, Box } from 'lucide-react';
 
-export type OutfitId = 'cyber-merc' | 'crimson-vanguard' | 'fitness-titan';
+export type OutfitId = 'dev-hoodie' | 'gym' | 'formal-suit' | 'cyber-merc' | 'fitness-titan' | 'crimson-vanguard';
 export type PoseId = 'ready' | 'victory' | 'guard';
 
 interface LobbyAvatarSceneProps {
@@ -29,42 +30,96 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
   onPoseChange,
 }) => {
   const mountRef = useRef<HTMLDivElement>(null);
-  const characterGroupRef = useRef<THREE.Group | null>(null);
-  const [webglSupported, setWebglSupported] = useState(true);
+  const stageCardRef = useRef<HTMLDivElement>(null);
+  const [renderMode, setRenderMode] = useState<'cinematic' | 'webgl3d'>('cinematic');
+  const [imageTransitioning, setImageTransitioning] = useState(false);
 
-  const outfitThemes = {
-    'cyber-merc': {
-      name: 'Cyberpunk Mercenary',
-      primary: 0x121722,
-      secondary: 0x232d42,
-      glow: 0x00f0ff,
-      lightColor: 0x00f0ff,
+  // 3D Parallax Tilt state
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+  // Resolve base path for public assets (supports both local and GitHub Pages)
+  const baseUrl = useMemo(() => {
+    return (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+  }, []);
+
+  // Normalize outfit IDs matching the Character Bible
+  const normalizedOutfit: 'dev-hoodie' | 'formal-suit' | 'gym' = useMemo(() => {
+    if (outfit === 'fitness-titan' || outfit === 'gym') return 'gym';
+    if (outfit === 'crimson-vanguard' || outfit === 'formal-suit') return 'formal-suit';
+    return 'dev-hoodie';
+  }, [outfit]);
+
+  const outfitConfigs = useMemo(() => ({
+    'dev-hoodie': {
+      name: 'Coding Operative (Dev Hoodie & Headphones)',
+      badge: 'CODING OPERATIVE',
+      subtitle: 'CYBERPUNK DEV LAB // ELITE OPERATIVE',
+      image: `${baseUrl}/assets/avatar/coding-avatar.jpg`,
       accentHex: '#00f0ff',
+      accentDim: 'rgba(0, 240, 255, 0.15)',
+      accentGlow: 'rgba(0, 240, 255, 0.45)',
+      lightColorNum: 0x00f0ff,
+      tag: 'Black Hoodie · Tech Insignia · Glowing Headphones · Cargo Pants',
     },
-    'crimson-vanguard': {
-      name: 'Crimson Vanguard',
-      primary: 0x1f0e12,
-      secondary: 0x3d171d,
-      glow: 0xff3b5c,
-      lightColor: 0xff3b5c,
-      accentHex: '#ff3b5c',
-    },
-    'fitness-titan': {
-      name: 'Iron Titan (Gym Core)',
-      primary: 0x111614,
-      secondary: 0x1f2e26,
-      glow: 0x10b981,
-      lightColor: 0x10b981,
+    'gym': {
+      name: 'Fitness Titan (Athletic Gym Core)',
+      badge: 'FITNESS TITAN',
+      subtitle: 'ATHLETIC CORE // IRON WARRIOR',
+      image: `${baseUrl}/assets/avatar/fitness-avatar.jpg`,
       accentHex: '#10b981',
+      accentDim: 'rgba(16, 185, 129, 0.15)',
+      accentGlow: 'rgba(16, 185, 129, 0.45)',
+      lightColorNum: 0x10b981,
+      tag: 'Grey Gym T-Shirt · Defined Build · Athletic Shorts · Running Shoes',
     },
+    'formal-suit': {
+      name: 'Executive Vanguard (Tailored Suit)',
+      badge: 'EXECUTIVE PRO',
+      subtitle: 'STRATEGIC LEAD // CORPORATE COMMAND',
+      image: `${baseUrl}/assets/avatar/professional-avatar.jpg`,
+      accentHex: '#f59e0b',
+      accentDim: 'rgba(245, 158, 11, 0.15)',
+      accentGlow: 'rgba(245, 158, 11, 0.45)',
+      lightColorNum: 0xf59e0b,
+      tag: 'Charcoal Two-Piece Suit · Crisp Shirt · Silk Tie · Oxford Shoes',
+    },
+  }), [baseUrl]);
+
+  const activeConfig = outfitConfigs[normalizedOutfit];
+
+  // Trigger smooth crossfade effect on outfit change
+  useEffect(() => {
+    setImageTransitioning(true);
+    const timer = setTimeout(() => {
+      setImageTransitioning(false);
+    }, 450);
+    return () => clearTimeout(timer);
+  }, [normalizedOutfit]);
+
+  // Handle Interactive 3D Mouse Parallax
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!stageCardRef.current) return;
+    const rect = stageCardRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    setTilt({
+      x: x * 14, // Max tilt degrees
+      y: -y * 10,
+    });
   };
 
+  const handleMouseLeave = () => {
+    setTilt({ x: 0, y: 0 });
+  };
+
+  // ---------------------------------------------------------------------------
+  // Three.js Background Stage / 3D Canvas
+  // ---------------------------------------------------------------------------
   useEffect(() => {
     const container = mountRef.current;
     if (!container) return;
 
     if (!checkWebGLSupport()) {
-      setWebglSupported(false);
       return;
     }
 
@@ -72,19 +127,17 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
     try {
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
     } catch {
-      setWebglSupported(false);
       return;
     }
 
     const width = container.clientWidth || 800;
-    const height = container.clientHeight || 560;
+    const height = container.clientHeight || 680;
 
-    // 1. Scene, Camera, Renderer
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x090a0f, 0.08);
+    scene.fog = new THREE.FogExp2(0x07080d, 0.06);
 
-    const camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 100);
-    camera.position.set(0, 1.3, 4.0);
+    const camera = new THREE.PerspectiveCamera(34, width / height, 0.1, 100);
+    camera.position.set(0, 1.15, 3.4);
     camera.lookAt(0, 0.9, 0);
 
     renderer.setSize(width, height);
@@ -92,56 +145,59 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.1;
+    renderer.toneMappingExposure = 1.15;
     container.replaceChildren(renderer.domElement);
 
-    // 2. Lighting Setup (Game Lobby Battle-Royale Style)
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    // Dynamic Cinematic Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
     scene.add(ambientLight);
 
-    const keyLight = new THREE.DirectionalLight(0xffffff, 1.8);
+    const keyLight = new THREE.DirectionalLight(0xfff7ed, 2.2);
     keyLight.position.set(3, 5, 4);
     keyLight.castShadow = true;
     keyLight.shadow.mapSize.width = 1024;
     keyLight.shadow.mapSize.height = 1024;
     scene.add(keyLight);
 
-    const theme = outfitThemes[outfit];
-    const rimLight = new THREE.PointLight(theme.lightColor, 3.5, 10);
-    rimLight.position.set(-2.5, 3.5, -2);
+    const fillLight = new THREE.DirectionalLight(0x93c5fd, 0.9);
+    fillLight.position.set(-3, 3, 2);
+    scene.add(fillLight);
+
+    const rimLight = new THREE.PointLight(activeConfig.lightColorNum, 4.0, 12);
+    rimLight.position.set(-2.2, 3.4, -2.0);
     scene.add(rimLight);
 
-    const underglowLight = new THREE.PointLight(theme.lightColor, 2.5, 4);
-    underglowLight.position.set(0, 0.2, 0);
+    const underglowLight = new THREE.PointLight(activeConfig.lightColorNum, 3.2, 5.0);
+    underglowLight.position.set(0, 0.25, 0);
     scene.add(underglowLight);
 
-    // 3. Game Lobby Circular Pedestal Platform
+    // Battle Royale Holographic Stage Pedestal
     const platformGroup = new THREE.Group();
 
-    // Main base disc
-    const baseGeo = new THREE.CylinderGeometry(1.6, 1.7, 0.2, 48);
+    // Dark titanium base
+    const baseGeo = new THREE.CylinderGeometry(1.65, 1.8, 0.16, 48);
     const baseMat = new THREE.MeshStandardMaterial({
-      color: 0x0f131d,
-      roughness: 0.4,
-      metalness: 0.8,
+      color: 0x0d111a,
+      roughness: 0.35,
+      metalness: 0.85,
     });
     const baseMesh = new THREE.Mesh(baseGeo, baseMat);
-    baseMesh.position.y = -0.1;
+    baseMesh.position.y = -0.08;
     baseMesh.receiveShadow = true;
     platformGroup.add(baseMesh);
 
-    // Glowing rim ring
-    const rimGeo = new THREE.TorusGeometry(1.58, 0.03, 16, 64);
-    const rimMat = new THREE.MeshBasicMaterial({ color: theme.glow });
+    // Outer neon ring
+    const rimGeo = new THREE.TorusGeometry(1.64, 0.024, 16, 64);
+    const rimMat = new THREE.MeshBasicMaterial({ color: activeConfig.lightColorNum });
     const rimMesh = new THREE.Mesh(rimGeo, rimMat);
     rimMesh.rotation.x = Math.PI / 2;
     rimMesh.position.y = 0.01;
     platformGroup.add(rimMesh);
 
-    // Inner holographic rotating ring
-    const ringGeo = new THREE.RingGeometry(0.7, 1.25, 48);
+    // Inner holographic rotating coordinates ring
+    const ringGeo = new THREE.RingGeometry(0.75, 1.4, 48);
     const ringMat = new THREE.MeshBasicMaterial({
-      color: theme.glow,
+      color: activeConfig.lightColorNum,
       side: THREE.DoubleSide,
       transparent: true,
       opacity: 0.35,
@@ -154,14 +210,14 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
 
     scene.add(platformGroup);
 
-    // 4. Floating Holographic Cyber Particles
+    // Floating Holographic Particles
     const particleCount = 70;
     const particleGeo = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const velocities = new Float32Array(particleCount);
 
     for (let i = 0; i < particleCount; i++) {
-      const radius = 0.2 + Math.random() * 1.3;
+      const radius = 0.3 + Math.random() * 1.35;
       const angle = Math.random() * Math.PI * 2;
       positions[i * 3] = Math.cos(angle) * radius;
       positions[i * 3 + 1] = Math.random() * 2.5;
@@ -171,199 +227,53 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
 
     particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     const particleMat = new THREE.PointsMaterial({
-      color: theme.glow,
-      size: 0.04,
+      color: activeConfig.lightColorNum,
+      size: 0.038,
       transparent: true,
-      opacity: 0.75,
+      opacity: 0.8,
       blending: THREE.AdditiveBlending,
     });
     const particleSystem = new THREE.Points(particleGeo, particleMat);
     scene.add(particleSystem);
 
-    // 5. Stylized Humanoid Avatar Character (Articulated Mesh)
-    const charGroup = new THREE.Group();
-    characterGroupRef.current = charGroup;
+    // Optional 3D Model Loading (GLTF / GLB Support - Requirement 9)
+    let gltfModel: THREE.Group | null = null;
+    const modelPath = `${baseUrl}/assets/avatar/avatar.glb`;
+    const loader = new GLTFLoader();
+    loader.load(
+      modelPath,
+      (gltf) => {
+        gltfModel = gltf.scene;
+        gltfModel.scale.set(1.0, 1.0, 1.0);
+        gltfModel.position.set(0, 0, 0);
+        gltfModel.traverse((child) => {
+          if ((child as THREE.Mesh).isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+          }
+        });
+        scene.add(gltfModel);
+      },
+      undefined,
+      () => {
+        // Fallback: If no GLB is uploaded, the cinematic render stage delivers photorealistic visuals
+      }
+    );
 
-    const armorPrimaryMat = new THREE.MeshStandardMaterial({
-      color: theme.primary,
-      roughness: 0.3,
-      metalness: 0.85,
-    });
-    const armorSecondaryMat = new THREE.MeshStandardMaterial({
-      color: theme.secondary,
-      roughness: 0.5,
-      metalness: 0.5,
-    });
-    const glowMat = new THREE.MeshBasicMaterial({ color: theme.glow });
-
-    // Torso / Tactical Chestplate
-    const torsoGeo = new THREE.BoxGeometry(0.48, 0.65, 0.28);
-    const torso = new THREE.Mesh(torsoGeo, armorPrimaryMat);
-    torso.position.y = 1.15;
-    torso.castShadow = true;
-    charGroup.add(torso);
-
-    // Emissive Chest Core
-    const chestCoreGeo = new THREE.BoxGeometry(0.18, 0.22, 0.04);
-    const chestCore = new THREE.Mesh(chestCoreGeo, glowMat);
-    chestCore.position.set(0, 1.2, 0.15);
-    charGroup.add(chestCore);
-
-    // Belt
-    const beltGeo = new THREE.BoxGeometry(0.46, 0.1, 0.3);
-    const belt = new THREE.Mesh(beltGeo, armorSecondaryMat);
-    belt.position.y = 0.8;
-    charGroup.add(belt);
-
-    // Head / Cyber Combat Visor Helmet
-    const headGeo = new THREE.BoxGeometry(0.24, 0.28, 0.26);
-    const head = new THREE.Mesh(headGeo, armorPrimaryMat);
-    head.position.y = 1.65;
-    head.castShadow = true;
-    charGroup.add(head);
-
-    // Visor Glass with Neon Glow
-    const visorGeo = new THREE.BoxGeometry(0.2, 0.08, 0.05);
-    const visor = new THREE.Mesh(visorGeo, glowMat);
-    visor.position.set(0, 1.66, 0.13);
-    charGroup.add(visor);
-
-    // Pauldrons
-    const pauldronGeo = new THREE.BoxGeometry(0.18, 0.16, 0.22);
-    const leftPauldron = new THREE.Mesh(pauldronGeo, armorSecondaryMat);
-    leftPauldron.position.set(-0.35, 1.38, 0);
-    leftPauldron.rotation.z = 0.15;
-    charGroup.add(leftPauldron);
-
-    const rightPauldron = new THREE.Mesh(pauldronGeo, armorSecondaryMat);
-    rightPauldron.position.set(0.35, 1.38, 0);
-    rightPauldron.rotation.z = -0.15;
-    charGroup.add(rightPauldron);
-
-    // Arms
-    const armGeo = new THREE.CylinderGeometry(0.065, 0.055, 0.5, 16);
-
-    const leftArm = new THREE.Mesh(armGeo, armorPrimaryMat);
-    leftArm.position.set(-0.34, 1.05, 0);
-    leftArm.castShadow = true;
-    charGroup.add(leftArm);
-
-    const rightArm = new THREE.Mesh(armGeo, armorPrimaryMat);
-    rightArm.position.set(0.34, 1.05, 0);
-    rightArm.castShadow = true;
-    charGroup.add(rightArm);
-
-    // Gauntlets
-    const gauntletGeo = new THREE.BoxGeometry(0.12, 0.25, 0.12);
-    const leftGauntlet = new THREE.Mesh(gauntletGeo, glowMat);
-    leftGauntlet.position.set(-0.34, 0.88, 0.05);
-    charGroup.add(leftGauntlet);
-
-    const rightGauntlet = new THREE.Mesh(gauntletGeo, glowMat);
-    rightGauntlet.position.set(0.34, 0.88, 0.05);
-    charGroup.add(rightGauntlet);
-
-    // Legs
-    const legGeo = new THREE.CylinderGeometry(0.09, 0.075, 0.7, 16);
-
-    const leftLeg = new THREE.Mesh(legGeo, armorPrimaryMat);
-    leftLeg.position.set(-0.16, 0.42, 0);
-    leftLeg.castShadow = true;
-    charGroup.add(leftLeg);
-
-    const rightLeg = new THREE.Mesh(legGeo, armorPrimaryMat);
-    rightLeg.position.set(0.16, 0.42, 0);
-    rightLeg.castShadow = true;
-    charGroup.add(rightLeg);
-
-    // Boots
-    const bootGeo = new THREE.BoxGeometry(0.16, 0.14, 0.28);
-    const leftBoot = new THREE.Mesh(bootGeo, armorSecondaryMat);
-    leftBoot.position.set(-0.16, 0.07, 0.04);
-    leftBoot.castShadow = true;
-    charGroup.add(leftBoot);
-
-    const rightBoot = new THREE.Mesh(bootGeo, armorSecondaryMat);
-    rightBoot.position.set(0.16, 0.07, 0.04);
-    rightBoot.castShadow = true;
-    charGroup.add(rightBoot);
-
-    // Apply Pose adjustments
-    if (pose === 'victory') {
-      leftArm.position.set(-0.38, 1.35, 0);
-      leftArm.rotation.z = 2.4;
-      rightArm.position.set(0.38, 1.35, 0);
-      rightArm.rotation.z = -2.4;
-      leftGauntlet.position.set(-0.48, 1.55, 0);
-      rightGauntlet.position.set(0.48, 1.55, 0);
-    } else if (pose === 'guard') {
-      leftArm.rotation.x = 0.8;
-      leftArm.rotation.z = -0.4;
-      rightArm.rotation.x = 0.8;
-      rightArm.rotation.z = 0.4;
-      leftGauntlet.position.set(-0.2, 1.05, 0.3);
-      rightGauntlet.position.set(0.2, 1.05, 0.3);
-    }
-
-    scene.add(charGroup);
-
-    // 6. Interactive Drag to Rotate Logic
-    let isDragging = false;
-    let prevMouseX = 0;
-    let targetRotationY = 0;
-    let currentRotationY = 0;
-
-    const onPointerDown = (e: MouseEvent | TouchEvent) => {
-      isDragging = true;
-      const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-      prevMouseX = clientX;
-    };
-
-    const onPointerMove = (e: MouseEvent | TouchEvent) => {
-      if (!isDragging) return;
-      const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-      const deltaX = clientX - prevMouseX;
-      prevMouseX = clientX;
-      targetRotationY += deltaX * 0.012;
-    };
-
-    const onPointerUp = () => {
-      isDragging = false;
-    };
-
-    const domEl = renderer.domElement;
-    domEl.addEventListener('mousedown', onPointerDown);
-    window.addEventListener('mousemove', onPointerMove);
-    window.addEventListener('mouseup', onPointerUp);
-    domEl.addEventListener('touchstart', onPointerDown);
-    window.addEventListener('touchmove', onPointerMove);
-    window.addEventListener('touchend', onPointerUp);
-
-    // 7. Animation Loop
+    // Animation Loop
     let animationFrameId: number;
     let clock = new THREE.Clock();
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
-      const elapsedTime = clock.getElapsedTime();
+      clock.getElapsedTime();
 
-      // Smooth damp rotation
-      currentRotationY += (targetRotationY - currentRotationY) * 0.1;
-      charGroup.rotation.y = currentRotationY;
-
-      // Platform ring rotation
-      ringMesh.rotation.z += 0.008;
-
-      // Idle breathing simulation
-      const breath = Math.sin(elapsedTime * 2.5) * 0.02;
-      torso.scale.set(1 + breath * 0.5, 1 + breath, 1 + breath * 0.5);
-      head.position.y = 1.65 + breath * 0.4;
-      visor.position.y = 1.66 + breath * 0.4;
+      // Pedestal ring rotation
+      ringMesh.rotation.z += 0.007;
 
       // Particle floating animation
       const posAttr = particleGeo.attributes.position as THREE.BufferAttribute;
       const posArray = posAttr.array as Float32Array;
-
       for (let i = 0; i < particleCount; i++) {
         posArray[i * 3 + 1] += velocities[i];
         if (posArray[i * 3 + 1] > 2.5) {
@@ -371,6 +281,11 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
         }
       }
       posAttr.needsUpdate = true;
+
+      // Rotate GLTF model if loaded
+      if (gltfModel) {
+        gltfModel.rotation.y += 0.004;
+      }
 
       renderer.render(scene, camera);
     };
@@ -380,7 +295,7 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
     const handleResize = () => {
       if (!container) return;
       const newWidth = container.clientWidth || 800;
-      const newHeight = container.clientHeight || 560;
+      const newHeight = container.clientHeight || 680;
       camera.aspect = newWidth / newHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(newWidth, newHeight);
@@ -391,112 +306,167 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('resize', handleResize);
-      domEl.removeEventListener('mousedown', onPointerDown);
-      window.removeEventListener('mousemove', onPointerMove);
-      window.removeEventListener('mouseup', onPointerUp);
-      domEl.removeEventListener('touchstart', onPointerDown);
-      window.removeEventListener('touchmove', onPointerMove);
-      window.removeEventListener('touchend', onPointerUp);
       renderer.dispose();
       baseGeo.dispose();
       rimGeo.dispose();
       ringGeo.dispose();
       particleGeo.dispose();
-      torsoGeo.dispose();
-      headGeo.dispose();
     };
-  }, [outfit, pose]);
-
-  const activeTheme = outfitThemes[outfit];
+  }, [activeConfig, baseUrl]);
 
   return (
-    <div style={stageWrapperStyles}>
-      {webglSupported ? (
-        <div
-          ref={mountRef}
-          style={canvasContainerStyles}
-          tabIndex={0}
-          aria-label="3D Avatar Viewport. Drag to rotate character 360 degrees."
-        />
-      ) : (
-        <div style={fallbackStageStyles}>
-          <div style={fallbackAvatarCircleStyles}>
-            <Cpu size={56} color="var(--accent-cyan)" />
-          </div>
-          <h2 style={fallbackAvatarTitleStyles}>OPERATOR // GIRISH</h2>
-          <p style={fallbackAvatarTextStyles}>
-            3D WebGL acceleration is unavailable in this environment. Showing high-performance 2D lobby mode.
-          </p>
-        </div>
-      )}
+    <div
+      ref={stageCardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={stageWrapperStyles(activeConfig.accentGlow)}
+    >
+      {/* Background 3D Holographic Pedestal & Energy Canvas */}
+      <div
+        ref={mountRef}
+        style={canvasBackgroundStyles}
+        aria-hidden="true"
+      />
 
-      {/* Free Fire Style Lobby HUD Overlay */}
+      {/* Atmospheric Background Cyber Gradient & Vignette */}
+      <div style={cyberVignetteStyles(activeConfig.accentDim)} />
+
+      {/* Main Character Presentation Viewport (Full Body Head-to-Shoes) */}
+      <div style={characterViewportStyles}>
+        {renderMode === 'cinematic' ? (
+          <div
+            style={{
+              ...characterContainerStyles,
+              transform: `perspective(1000px) rotateY(${tilt.x}deg) rotateX(${tilt.y}deg)`,
+              transition: imageTransitioning
+                ? 'opacity 350ms ease, transform 350ms ease, filter 350ms ease'
+                : 'transform 120ms ease-out',
+              opacity: imageTransitioning ? 0.35 : 1.0,
+              filter: imageTransitioning
+                ? `blur(4px) drop-shadow(0 0 35px ${activeConfig.accentHex})`
+                : `drop-shadow(0 15px 35px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 25px ${activeConfig.accentDim})`,
+            }}
+          >
+            {/* Soft Elliptical Ground Ambient Occlusion Shadow */}
+            <div style={groundContactShadowStyles} />
+
+            {/* High-Resolution Full-Body Avatar Asset */}
+            <img
+              src={activeConfig.image}
+              alt={`Girish Gowda H R - ${activeConfig.name}`}
+              style={{
+                ...avatarImageStyles,
+                transform: pose === 'victory'
+                  ? 'scale(1.02) translateY(-4px)'
+                  : pose === 'guard'
+                  ? 'scale(0.99) translateY(2px)'
+                  : 'scale(1.0)',
+              }}
+            />
+          </div>
+        ) : (
+          <div style={webglPlaceholderStyles}>
+            <Box size={48} color={activeConfig.accentHex} />
+            <h3 style={webglModeTitleStyles}>3D WEBGL ENGINE ACTIVE</h3>
+            <p style={webglModeTextStyles}>
+              Three.js PBR renderer ready. You can inspect 360° rotation and drop rigged .glb assets into public/assets/avatar/avatar.glb.
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Free Fire Style Tactical HUD Overlay */}
       <div style={hudOverlayStyles}>
-        {/* Top Operator Banner */}
+        {/* Top Header Row */}
         <div style={hudTopRowStyles}>
-          <div style={operatorPillStyles}>
-            <div style={levelBadgeStyles}>LVL 99</div>
+          <div style={operatorPillStyles(activeConfig.accentHex)}>
+            <div style={levelBadgeStyles(activeConfig.accentHex)}>LVL 99</div>
             <div style={operatorTextColStyles}>
-              <span style={operatorNameStyles}>OPERATOR // GIRISH</span>
-              <span style={operatorSubStyles}>BATTLE ROYALE LOBBY // ELITE TACTICAL</span>
+              <span style={operatorNameStyles}>GIRISH GOWDA H R</span>
+              <span style={operatorSubStyles(activeConfig.accentHex)}>{activeConfig.subtitle}</span>
             </div>
           </div>
 
-          <div style={presetInfoStyles(activeTheme.accentHex)}>
-            <Sparkles size={14} color={activeTheme.accentHex} />
-            <span>{activeTheme.name.toUpperCase()}</span>
+          <div style={topActionsRowStyles}>
+            {/* View Mode Toggle (Cinematic High-Res vs 3D WebGL) */}
+            <div style={viewToggleStyles}>
+              <button
+                type="button"
+                onClick={() => setRenderMode('cinematic')}
+                style={modeToggleBtnStyles(renderMode === 'cinematic', activeConfig.accentHex)}
+                title="Cinematic Photorealistic Render"
+              >
+                <Camera size={14} />
+                <span>CINEMATIC</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setRenderMode('webgl3d')}
+                style={modeToggleBtnStyles(renderMode === 'webgl3d', activeConfig.accentHex)}
+                title="Three.js 3D WebGL Mesh"
+              >
+                <Box size={14} />
+                <span>3D WEBGL</span>
+              </button>
+            </div>
+
+            <div style={presetInfoStyles(activeConfig.accentHex)}>
+              <Sparkles size={14} color={activeConfig.accentHex} />
+              <span>{activeConfig.badge}</span>
+            </div>
           </div>
         </div>
 
-        {/* Floating 360 Drag Hint */}
+        {/* Center Drag / Parallax Hint */}
         <div style={dragHintStyles}>
-          <Eye size={14} color="var(--accent-cyan)" />
-          <span>DRAG MOUSE OR TOUCH TO ROTATE 360°</span>
+          <Eye size={14} color={activeConfig.accentHex} />
+          <span>MOVE CURSOR TO INSPECT 3D DEPTH · HEAD-TO-SHOES VIEW</span>
         </div>
 
-        {/* Bottom Customization Controls (Free Fire style Locker/Skin Selector) */}
+        {/* Bottom Customization Wardrobe HUD */}
         <div style={hudBottomRowStyles}>
           {/* Outfits Selector */}
           <div style={controlGroupStyles}>
             <span style={controlLabelStyles}>
-              <Shield size={14} color="var(--accent-cyan)" />
-              <span>TACTICAL ARMOR SKIN</span>
+              <Shield size={14} color={activeConfig.accentHex} />
+              <span>WARDROBE (CHARACTER BIBLE)</span>
             </span>
             <div style={buttonsRowStyles}>
               <button
                 type="button"
-                onClick={() => onOutfitChange('cyber-merc')}
-                style={outfitButtonStyles(outfit === 'cyber-merc', '#00f0ff')}
+                onClick={() => onOutfitChange('dev-hoodie')}
+                style={outfitButtonStyles(normalizedOutfit === 'dev-hoodie', '#00f0ff')}
               >
                 <span style={swatchStyles('#00f0ff')} />
-                <span>CYBER MERC</span>
+                <span>CODING OPERATIVE</span>
               </button>
 
               <button
                 type="button"
-                onClick={() => onOutfitChange('crimson-vanguard')}
-                style={outfitButtonStyles(outfit === 'crimson-vanguard', '#ff3b5c')}
-              >
-                <span style={swatchStyles('#ff3b5c')} />
-                <span>CRIMSON VANGUARD</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => onOutfitChange('fitness-titan')}
-                style={outfitButtonStyles(outfit === 'fitness-titan', '#10b981')}
+                onClick={() => onOutfitChange('gym')}
+                style={outfitButtonStyles(normalizedOutfit === 'gym', '#10b981')}
               >
                 <span style={swatchStyles('#10b981')} />
-                <span>IRON TITAN</span>
+                <span>FITNESS TITAN</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => onOutfitChange('formal-suit')}
+                style={outfitButtonStyles(normalizedOutfit === 'formal-suit', '#f59e0b')}
+              >
+                <span style={swatchStyles('#f59e0b')} />
+                <span>EXECUTIVE PRO</span>
               </button>
             </div>
+            <span style={outfitTaglineStyles}>{activeConfig.tag}</span>
           </div>
 
           {/* Emotes / Poses Selector */}
           <div style={controlGroupStyles}>
             <span style={controlLabelStyles}>
               <Zap size={14} color="var(--accent-amber)" />
-              <span>EMOTE / POSE</span>
+              <span>EMOTE / STANCE</span>
             </span>
             <div style={buttonsRowStyles}>
               <button
@@ -504,7 +474,7 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
                 onClick={() => onPoseChange('ready')}
                 style={poseButtonStyles(pose === 'ready')}
               >
-                COMBAT READY
+                HERO STANCE
               </button>
               <button
                 type="button"
@@ -518,7 +488,7 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
                 onClick={() => onPoseChange('guard')}
                 style={poseButtonStyles(pose === 'guard')}
               >
-                GUARD DEFENSE
+                BATTLE READY
               </button>
             </div>
           </div>
@@ -528,65 +498,124 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
   );
 };
 
-const stageWrapperStyles: React.CSSProperties = {
+// =============================================================================
+// Premium Responsive Styles
+// =============================================================================
+
+const stageWrapperStyles = (glowColor: string): React.CSSProperties => ({
   position: 'relative',
   width: '100%',
-  minHeight: '560px',
-  borderRadius: 'var(--radius-lg)',
+  minHeight: '720px',
+  height: '75vh',
+  maxHeight: '860px',
+  borderRadius: 'var(--radius-xl)',
   overflow: 'hidden',
-  backgroundColor: '#07080c',
-  border: '1px solid rgba(0, 240, 255, 0.25)',
-  boxShadow: '0 0 35px rgba(0, 240, 255, 0.12), inset 0 0 40px rgba(0, 0, 0, 0.8)',
+  backgroundColor: '#06070a',
+  border: '1px solid rgba(255, 255, 255, 0.12)',
+  boxShadow: `0 10px 40px rgba(0, 0, 0, 0.9), 0 0 35px ${glowColor}`,
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+});
+
+const canvasBackgroundStyles: React.CSSProperties = {
+  position: 'absolute',
+  inset: 0,
+  zIndex: 1,
+  pointerEvents: 'none',
+  width: '100%',
+  height: '100%',
 };
 
-const canvasContainerStyles: React.CSSProperties = {
+const cyberVignetteStyles = (dimColor: string): React.CSSProperties => ({
+  position: 'absolute',
+  inset: 0,
+  zIndex: 2,
+  pointerEvents: 'none',
+  background: `radial-gradient(circle at 50% 45%, ${dimColor} 0%, rgba(6, 7, 10, 0.4) 50%, #06070a 95%)`,
+});
+
+const characterViewportStyles: React.CSSProperties = {
+  position: 'relative',
+  zIndex: 3,
   width: '100%',
-  height: '560px',
-  cursor: 'grab',
-  outline: 'none',
+  height: '100%',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  paddingTop: '2.5rem',
+  paddingBottom: '5rem',
+  pointerEvents: 'none',
 };
 
-const fallbackStageStyles: React.CSSProperties = {
-  width: '100%',
-  height: '560px',
+const characterContainerStyles: React.CSSProperties = {
+  position: 'relative',
+  height: '100%',
+  maxHeight: '660px',
+  width: 'auto',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'flex-end',
+};
+
+const groundContactShadowStyles: React.CSSProperties = {
+  position: 'absolute',
+  bottom: '-8px',
+  left: '50%',
+  transform: 'translateX(-50%)',
+  width: '280px',
+  height: '35px',
+  borderRadius: '50%',
+  background: 'radial-gradient(ellipse at center, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.6) 45%, transparent 75%)',
+  filter: 'blur(5px)',
+  zIndex: 1,
+};
+
+const avatarImageStyles: React.CSSProperties = {
+  position: 'relative',
+  zIndex: 2,
+  maxHeight: '640px',
+  height: '100%',
+  width: 'auto',
+  objectFit: 'contain',
+  userSelect: 'none',
+  transition: 'transform 300ms ease',
+  filter: 'contrast(1.03) brightness(1.02)',
+};
+
+const webglPlaceholderStyles: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
   gap: '1rem',
-  padding: '2rem',
   textAlign: 'center',
-  backgroundColor: '#07080c',
+  padding: '2rem',
+  maxWidth: '440px',
+  backgroundColor: 'rgba(13, 17, 26, 0.85)',
+  backdropFilter: 'blur(16px)',
+  borderRadius: 'var(--radius-lg)',
+  border: '1px solid var(--border-subtle)',
 };
 
-const fallbackAvatarCircleStyles: React.CSSProperties = {
-  width: '100px',
-  height: '100px',
-  borderRadius: '50%',
-  backgroundColor: 'rgba(0, 240, 255, 0.1)',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  border: '2px solid var(--accent-cyan)',
-  boxShadow: '0 0 25px rgba(0, 240, 255, 0.3)',
-};
-
-const fallbackAvatarTitleStyles: React.CSSProperties = {
-  fontSize: '1.4rem',
+const webglModeTitleStyles: React.CSSProperties = {
+  fontSize: '1.25rem',
   fontWeight: 800,
   letterSpacing: '0.06em',
+  color: 'var(--text-primary)',
 };
 
-const fallbackAvatarTextStyles: React.CSSProperties = {
-  fontSize: '0.9rem',
+const webglModeTextStyles: React.CSSProperties = {
+  fontSize: '0.85rem',
   color: 'var(--text-secondary)',
-  maxWidth: '450px',
   lineHeight: 1.5,
 };
 
 const hudOverlayStyles: React.CSSProperties = {
   position: 'absolute',
   inset: 0,
+  zIndex: 4,
   pointerEvents: 'none',
   display: 'flex',
   flexDirection: 'column',
@@ -603,27 +632,27 @@ const hudTopRowStyles: React.CSSProperties = {
   pointerEvents: 'auto',
 };
 
-const operatorPillStyles: React.CSSProperties = {
+const operatorPillStyles = (accent: string): React.CSSProperties => ({
   display: 'flex',
   alignItems: 'center',
   gap: '0.75rem',
-  backgroundColor: 'rgba(18, 22, 34, 0.85)',
-  backdropFilter: 'blur(10px)',
-  padding: '0.4rem 0.85rem',
+  backgroundColor: 'rgba(10, 13, 20, 0.88)',
+  backdropFilter: 'blur(12px)',
+  padding: '0.45rem 0.95rem',
   borderRadius: 'var(--radius-md)',
-  border: '1px solid rgba(0, 240, 255, 0.3)',
-  boxShadow: '0 4px 15px rgba(0, 0, 0, 0.4)',
-};
+  border: `1px solid ${accent}55`,
+  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.6)',
+});
 
-const levelBadgeStyles: React.CSSProperties = {
+const levelBadgeStyles = (accent: string): React.CSSProperties => ({
   fontSize: '0.75rem',
   fontWeight: 900,
-  backgroundColor: 'var(--accent-cyan)',
+  backgroundColor: accent,
   color: '#07080c',
-  padding: '0.2rem 0.5rem',
+  padding: '0.2rem 0.55rem',
   borderRadius: 'var(--radius-sm)',
-  letterSpacing: '0.04em',
-};
+  letterSpacing: '0.05em',
+});
 
 const operatorTextColStyles: React.CSSProperties = {
   display: 'flex',
@@ -631,18 +660,51 @@ const operatorTextColStyles: React.CSSProperties = {
 };
 
 const operatorNameStyles: React.CSSProperties = {
-  fontSize: '0.95rem',
+  fontSize: '1.0rem',
   fontWeight: 800,
   letterSpacing: '0.06em',
   color: 'var(--text-primary)',
 };
 
-const operatorSubStyles: React.CSSProperties = {
+const operatorSubStyles = (accent: string): React.CSSProperties => ({
   fontSize: '0.7rem',
-  fontWeight: 600,
-  color: 'var(--accent-cyan)',
+  fontWeight: 700,
+  color: accent,
   letterSpacing: '0.08em',
+});
+
+const topActionsRowStyles: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '0.75rem',
+  flexWrap: 'wrap',
 };
+
+const viewToggleStyles: React.CSSProperties = {
+  display: 'flex',
+  backgroundColor: 'rgba(10, 13, 20, 0.88)',
+  backdropFilter: 'blur(10px)',
+  borderRadius: 'var(--radius-full)',
+  border: '1px solid var(--border-subtle)',
+  padding: '0.2rem',
+  gap: '0.25rem',
+};
+
+const modeToggleBtnStyles = (active: boolean, accent: string): React.CSSProperties => ({
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '0.35rem',
+  fontSize: '0.72rem',
+  fontWeight: 700,
+  letterSpacing: '0.05em',
+  padding: '0.3rem 0.65rem',
+  borderRadius: 'var(--radius-full)',
+  backgroundColor: active ? `${accent}25` : 'transparent',
+  color: active ? accent : 'var(--text-muted)',
+  border: active ? `1px solid ${accent}` : '1px solid transparent',
+  transition: 'all 150ms ease',
+  cursor: 'pointer',
+});
 
 const presetInfoStyles = (accent: string): React.CSSProperties => ({
   display: 'flex',
@@ -652,25 +714,26 @@ const presetInfoStyles = (accent: string): React.CSSProperties => ({
   fontWeight: 700,
   letterSpacing: '0.08em',
   color: accent,
-  backgroundColor: 'rgba(18, 22, 34, 0.85)',
+  backgroundColor: 'rgba(10, 13, 20, 0.88)',
   backdropFilter: 'blur(10px)',
-  padding: '0.5rem 1rem',
+  padding: '0.45rem 1rem',
   borderRadius: 'var(--radius-full)',
   border: `1px solid ${accent}`,
-  boxShadow: `0 0 15px ${accent}33`,
+  boxShadow: `0 0 15px ${accent}44`,
 });
 
 const dragHintStyles: React.CSSProperties = {
   alignSelf: 'center',
   display: 'flex',
   alignItems: 'center',
-  gap: '0.4rem',
-  fontSize: '0.75rem',
+  gap: '0.45rem',
+  fontSize: '0.74rem',
   fontWeight: 700,
   letterSpacing: '0.08em',
   color: 'var(--text-secondary)',
-  backgroundColor: 'rgba(9, 10, 15, 0.7)',
-  padding: '0.35rem 0.85rem',
+  backgroundColor: 'rgba(6, 7, 10, 0.75)',
+  backdropFilter: 'blur(8px)',
+  padding: '0.35rem 0.95rem',
   borderRadius: 'var(--radius-full)',
   border: '1px solid var(--border-subtle)',
 };
@@ -687,19 +750,21 @@ const hudBottomRowStyles: React.CSSProperties = {
 const controlGroupStyles: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
-  gap: '0.5rem',
-  backgroundColor: 'rgba(18, 22, 34, 0.9)',
-  backdropFilter: 'blur(12px)',
-  padding: '0.85rem 1rem',
+  gap: '0.45rem',
+  backgroundColor: 'rgba(10, 13, 20, 0.92)',
+  backdropFilter: 'blur(16px)',
+  padding: '0.85rem 1.1rem',
   borderRadius: 'var(--radius-lg)',
   border: '1px solid var(--border-subtle)',
+  boxShadow: '0 8px 30px rgba(0, 0, 0, 0.6)',
+  maxWidth: '540px',
 };
 
 const controlLabelStyles: React.CSSProperties = {
   display: 'flex',
   alignItems: 'center',
   gap: '0.4rem',
-  fontSize: '0.75rem',
+  fontSize: '0.74rem',
   fontWeight: 800,
   letterSpacing: '0.08em',
   color: 'var(--text-secondary)',
@@ -714,18 +779,25 @@ const buttonsRowStyles: React.CSSProperties = {
 const outfitButtonStyles = (active: boolean, accentColor: string): React.CSSProperties => ({
   display: 'inline-flex',
   alignItems: 'center',
-  gap: '0.4rem',
+  gap: '0.45rem',
   fontSize: '0.75rem',
   fontWeight: 700,
   letterSpacing: '0.04em',
-  padding: '0.45rem 0.75rem',
+  padding: '0.45rem 0.85rem',
   borderRadius: 'var(--radius-sm)',
-  backgroundColor: active ? `${accentColor}22` : 'rgba(255, 255, 255, 0.04)',
+  backgroundColor: active ? `${accentColor}25` : 'rgba(255, 255, 255, 0.04)',
   color: active ? accentColor : 'var(--text-secondary)',
   border: active ? `1px solid ${accentColor}` : '1px solid var(--border-subtle)',
-  boxShadow: active ? `0 0 10px ${accentColor}44` : 'none',
-  transition: 'all var(--transition-fast)',
+  boxShadow: active ? `0 0 14px ${accentColor}44` : 'none',
+  transition: 'all 200ms ease',
+  cursor: 'pointer',
 });
+
+const outfitTaglineStyles: React.CSSProperties = {
+  fontSize: '0.68rem',
+  color: 'var(--text-muted)',
+  fontStyle: 'italic',
+};
 
 const swatchStyles = (color: string): React.CSSProperties => ({
   display: 'inline-block',
@@ -742,11 +814,12 @@ const poseButtonStyles = (active: boolean): React.CSSProperties => ({
   fontSize: '0.75rem',
   fontWeight: 700,
   letterSpacing: '0.04em',
-  padding: '0.45rem 0.75rem',
+  padding: '0.45rem 0.85rem',
   borderRadius: 'var(--radius-sm)',
-  backgroundColor: active ? 'rgba(245, 158, 11, 0.15)' : 'rgba(255, 255, 255, 0.04)',
+  backgroundColor: active ? 'rgba(245, 158, 11, 0.2)' : 'rgba(255, 255, 255, 0.04)',
   color: active ? 'var(--accent-amber)' : 'var(--text-secondary)',
   border: active ? '1px solid var(--accent-amber)' : '1px solid var(--border-subtle)',
-  boxShadow: active ? '0 0 10px rgba(245, 158, 11, 0.3)' : 'none',
-  transition: 'all var(--transition-fast)',
+  boxShadow: active ? '0 0 12px rgba(245, 158, 11, 0.35)' : 'none',
+  transition: 'all 200ms ease',
+  cursor: 'pointer',
 });
