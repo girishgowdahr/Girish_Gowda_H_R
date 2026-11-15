@@ -1,0 +1,29 @@
+{
+  "id": "lobby",
+  "name": "Command Center Lobby",
+  "description": "Interactive 3D character staging environment inspired by tactical battle royale lobbies with 360 rotation and theme switching.",
+  "version": "1.0.0",
+  "schemaVersion": "1.0.0",
+  "icon": "Crosshair",
+  "navGroup": "primary",
+  "sortOrder": 10,
+  "status": "ENABLED",
+  "visibility": "PUBLIC",
+  "defaultAvatarThemeId": "theme-cyber-neon",
+  "routes": [
+    {
+      "path": "/",
+      "label": "Lobby",
+      "icon": "Crosshair",
+      "isExact": true,
+      "requiresAuth": false
+    }
+  ],
+  "permissions": [
+    "PUBLIC_READ"
+  ],
+  "featureFlags": {
+    "interactive3dEnabled": true,
+    "emoteSelectorEnabled": true
+  }
+}

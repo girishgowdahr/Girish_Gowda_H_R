@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Shield, Terminal } from 'lucide-react';
+import { Shield, Terminal, Download } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   return (
@@ -50,9 +50,19 @@ export const Navbar: React.FC = () => {
         </nav>
 
         <div style={rightActionsStyles}>
+          <a
+            href="/api/v1/public/portfolio/resume"
+            download="Girish_Gowda_H_R_Resume.md"
+            style={resumeButtonStyles}
+            aria-label="Download Girish Gowda H R resume document"
+          >
+            <Download size={14} />
+            <span>Resume</span>
+          </a>
+
           <span style={systemBadgeStyles}>
             <Shield size={14} color="var(--accent-cyan)" />
-            <span>VAULT ENCLAVE</span>
+            <span>ENCLAVE</span>
           </span>
         </div>
       </div>
@@ -136,6 +146,21 @@ const navLinkStyles = (isActive: boolean): React.CSSProperties => ({
   textDecoration: 'none',
   transition: 'all var(--transition-fast)',
 });
+
+const resumeButtonStyles: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '0.4rem',
+  fontSize: '0.8rem',
+  fontWeight: 700,
+  padding: '0.35rem 0.75rem',
+  borderRadius: 'var(--radius-sm)',
+  backgroundColor: 'rgba(0, 255, 204, 0.12)',
+  border: '1px solid rgba(0, 255, 204, 0.35)',
+  color: 'var(--accent-cyan)',
+  textDecoration: 'none',
+  transition: 'all var(--transition-fast)',
+};
 
 const rightActionsStyles: React.CSSProperties = {
   display: 'flex',

@@ -6,6 +6,7 @@ import { SkillsPage } from '../modules/skills/SkillsPage';
 import { ProjectsPage } from '../modules/projects/ProjectsPage';
 import { EducationPage } from '../modules/education/EducationPage';
 import { ExperiencePage } from '../modules/experience/ExperiencePage';
+import { PrivacyNoticePage } from '../modules/privacy/PrivacyNoticePage';
 import { NotFoundPage } from '../modules/NotFoundPage';
 
 export const router = createBrowserRouter([
@@ -19,6 +20,7 @@ export const router = createBrowserRouter([
       { path: 'projects', element: <ProjectsPage /> },
       { path: 'education', element: <EducationPage /> },
       { path: 'experience', element: <ExperiencePage /> },
+      { path: 'privacy', element: <PrivacyNoticePage /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },

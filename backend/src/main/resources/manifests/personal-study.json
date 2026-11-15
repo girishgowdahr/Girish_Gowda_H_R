@@ -1,0 +1,30 @@
+{
+  "id": "personal-study",
+  "name": "Learning & Study Matrix",
+  "description": "Continuous education tracking, reading lists, technical certifications, and skill mastery milestones.",
+  "version": "1.0.0",
+  "schemaVersion": "1.0.0",
+  "icon": "BookOpen",
+  "navGroup": "personal",
+  "sortOrder": 40,
+  "status": "ENABLED",
+  "visibility": "PRIVATE",
+  "defaultAvatarThemeId": "theme-cyber-neon",
+  "routes": [
+    {
+      "path": "/app/study",
+      "label": "Study",
+      "icon": "BookOpen",
+      "isExact": false,
+      "requiresAuth": true,
+      "permission": "OWNER_READ"
+    }
+  ],
+  "permissions": [
+    "OWNER_READ",
+    "OWNER_WRITE"
+  ],
+  "featureFlags": {
+    "spacedRepetitionEnabled": false
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://girish.dev/schemas/module-manifest.schema.json",
+  "title": "GirishModuleManifest",
+  "description": "Compile-time metadata specification for GIRISH platform modules.",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "version",
+    "schemaVersion",
+    "navGroup",
+    "routes",
+    "permissions"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "Unique slug identifier for the module in kebab-case."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "Display name of the module."
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 512,
+      "description": "Brief description of the module purpose."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
+      "description": "Semantic versioning string for the module code."
+    },
+    "schemaVersion": {
+      "type": "string",
+      "description": "Version of the manifest schema specification itself."
+    },
+    "icon": {
+      "type": "string",
+      "maxLength": 64,
+      "description": "Lucide icon identifier used by frontend navigators."
+    },
+    "navGroup": {
+      "type": "string",
+      "enum": ["primary", "personal", "security", "admin"],
+      "description": "Navigation category grouping for the module."
+    },
+    "sortOrder": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Default ordering index in navigation bars."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["ENABLED", "DISABLED", "ARCHIVED"],
+      "description": "Default runtime activation status for newly reconciled modules."
+    },
+    "visibility": {
+      "type": "string",
+      "enum": ["PUBLIC", "PRIVATE", "OWNER_ONLY"],
+      "description": "Default visibility access tier for the module."
+    },
+    "defaultAvatarThemeId": {
+      "type": "string",
+      "description": "Default 3D avatar lobby theme identifier associated with this section."
+    },
+    "routes": {
+      "type": "array",
+      "description": "Frontend route definitions declared by this module.",
+      "items": {
+        "type": "object",
+        "required": ["path", "label"],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Absolute frontend route path (e.g. /about or /app/fitness)."
+          },
+          "label": {
+            "type": "string",
+            "description": "Human-readable label for navigation menus."
+          },
+          "icon": {
+            "type": "string",
+            "description": "Optional specific icon override for this sub-route."
+          },
+          "isExact": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether the route matches exact URL paths."
+          },
+          "requiresAuth": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether accessing this route requires an authenticated owner session."
+          },
+          "permission": {
+            "type": "string",
+            "description": "Required authorization permission for this sub-route."
+          }
+        }
+      }
+    },
+    "permissions": {
+      "type": "array",
+      "description": "Permissions required or declared by this module.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "featureFlags": {
+      "type": "object",
+      "description": "Optional feature flag toggles specific to this module."
+    }
+  },
+  "additionalProperties": false
+}

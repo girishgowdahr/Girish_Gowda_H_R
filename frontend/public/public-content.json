@@ -1,0 +1,131 @@
+{
+  "profile": {
+    "fullName": "Girish Gowda H R",
+    "headline": "Full-Stack Software Engineer & Distributed Systems Developer",
+    "bio": "Passionate engineer specializing in modern enterprise architectures, cloud platforms, robust Spring Boot services, interactive React/Three.js interfaces, and secure zero-knowledge systems.",
+    "location": "Bengaluru, India",
+    "email": "girishgowda0428@gmail.com",
+    "githubUrl": "https://github.com/girishgowdahr",
+    "linkedinUrl": "https://linkedin.com/in/girishgowdahr",
+    "resumeUrl": "/api/v1/public/portfolio/resume",
+    "avatarImageUrl": "/avatar-profile.png"
+  },
+  "skillCategories": [
+    {
+      "name": "Languages & Core Runtimes",
+      "sortOrder": 10,
+      "items": [
+        { "name": "Java 21 LTS", "proficiency": "Advanced", "yearsOfExperience": 3.0, "icon": "Code2", "isFeatured": true },
+        { "name": "TypeScript", "proficiency": "Advanced", "yearsOfExperience": 3.0, "icon": "FileCode2", "isFeatured": true },
+        { "name": "Python", "proficiency": "Proficient", "yearsOfExperience": 2.0, "icon": "Terminal", "isFeatured": false },
+        { "name": "SQL", "proficiency": "Advanced", "yearsOfExperience": 3.0, "icon": "Database", "isFeatured": true }
+      ]
+    },
+    {
+      "name": "Backend & Cloud Architecture",
+      "sortOrder": 20,
+      "items": [
+        { "name": "Spring Boot 3", "proficiency": "Advanced", "yearsOfExperience": 3.0, "icon": "Server", "isFeatured": true },
+        { "name": "Spring Security & OAuth2", "proficiency": "Advanced", "yearsOfExperience": 2.5, "icon": "ShieldCheck", "isFeatured": true },
+        { "name": "RESTful Microservices & OpenAPI", "proficiency": "Advanced", "yearsOfExperience": 3.0, "icon": "Network", "isFeatured": false }
+      ]
+    },
+    {
+      "name": "Frontend, WebGL & 3D Interactive",
+      "sortOrder": 30,
+      "items": [
+        { "name": "React 19 & Next.js", "proficiency": "Advanced", "yearsOfExperience": 3.0, "icon": "Atom", "isFeatured": true },
+        { "name": "Three.js & WebGL Shaders", "proficiency": "Proficient", "yearsOfExperience": 2.0, "icon": "Boxes", "isFeatured": true },
+        { "name": "Tailwind CSS & CSS Tokens", "proficiency": "Advanced", "yearsOfExperience": 3.0, "icon": "Palette", "isFeatured": false }
+      ]
+    },
+    {
+      "name": "Databases, Security & DevOps",
+      "sortOrder": 40,
+      "items": [
+        { "name": "PostgreSQL & Flyway", "proficiency": "Advanced", "yearsOfExperience": 3.0, "icon": "Database", "isFeatured": true },
+        { "name": "Docker & Containerization", "proficiency": "Proficient", "yearsOfExperience": 2.5, "icon": "Container", "isFeatured": true },
+        { "name": "GitHub Actions CI/CD", "proficiency": "Advanced", "yearsOfExperience": 2.5, "icon": "Workflow", "isFeatured": false }
+      ]
+    }
+  ],
+  "featuredProjects": [
+    {
+      "slug": "girish-identity-platform",
+      "title": "GIRISH Identity & Quantified-Self Platform",
+      "tagline": "Personal Identity Platform, Public Portfolio, and 3D Articulated Avatar Lobby.",
+      "description": "A high-performance monolithic platform engineered with Spring Boot 3, Java 21, React 19, Three.js 3D character engine, PostgreSQL, and zero-knowledge encrypted vault.",
+      "category": "Full-Stack",
+      "technologies": ["Java 21", "Spring Boot 3", "React 19", "Three.js", "PostgreSQL", "Docker", "Tailwind CSS"],
+      "githubUrl": "https://github.com/girishgowdahr/Girish_Gowda_H_R",
+      "liveUrl": "http://localhost:5173",
+      "featured": true,
+      "sortOrder": 10
+    },
+    {
+      "slug": "free-fire-avatar-engine",
+      "title": "Tactical 3D Free Fire Character Lobby",
+      "tagline": "Interactive 360-degree humanoid tactical character lobby with holographic stages and emote switcher.",
+      "description": "Browser-based WebGL/Three.js procedural avatar with real-time lighting, particle emitters, customizable neon armor skins, and accessible reduced-motion fallbacks.",
+      "category": "3D & Interactive",
+      "technologies": ["Three.js", "WebGL", "TypeScript", "React 19", "GLSL Shaders"],
+      "githubUrl": "https://github.com/girishgowdahr/Girish_Gowda_H_R",
+      "liveUrl": "http://localhost:5173",
+      "featured": true,
+      "sortOrder": 20
+    },
+    {
+      "slug": "zero-knowledge-secure-vault",
+      "title": "Zero-Knowledge Client Encrypted Vault",
+      "tagline": "End-to-end client-side encryption subsystem with XChaCha20-Poly1305 and Argon2id key derivation.",
+      "description": "Cryptographic storage module ensuring zero server-side exposure of plaintext secrets, credentials, or personal documents.",
+      "category": "Cloud & Security",
+      "technologies": ["Cryptography", "Libsodium", "Argon2id", "Spring Boot", "TypeScript"],
+      "githubUrl": "https://github.com/girishgowdahr/Girish_Gowda_H_R",
+      "featured": true,
+      "sortOrder": 30
+    }
+  ],
+  "experience": [
+    {
+      "roleTitle": "Software Engineer",
+      "companyName": "Enterprise Cloud Systems [SYNTHETIC PLACEHOLDER - Owner to confirm organization]",
+      "employmentType": "Full-time",
+      "location": "Bengaluru, India",
+      "startDate": "2023-01-01",
+      "endDate": null,
+      "isCurrent": true,
+      "description": "Architecting and developing mission-critical distributed backend services, high-throughput microservices, and interactive web client portals.",
+      "highlights": [
+        "Designed and deployed resilient Spring Boot microservices serving high-concurrency workloads",
+        "Engineered responsive modern web client interfaces with React, TypeScript, and state synchronization",
+        "Established comprehensive CI/CD pipelines, automated testing, and security scanning with GitHub Actions"
+      ],
+      "technologies": ["Java", "Spring Boot", "PostgreSQL", "Docker", "TypeScript", "React"],
+      "sortOrder": 10
+    }
+  ],
+  "education": [
+    {
+      "institution": "Visvesvaraya Technological University [SYNTHETIC PLACEHOLDER - Owner to confirm institution]",
+      "degree": "Bachelor of Engineering (B.E.)",
+      "fieldOfStudy": "Computer Science and Engineering",
+      "startYear": 2019,
+      "endYear": 2023,
+      "gradeOrGpa": "First Class with Distinction",
+      "description": "Specialized in Software Engineering, Data Structures & Algorithms, Distributed Systems, Database Management Systems, and Cloud Architectures.",
+      "sortOrder": 10
+    }
+  ],
+  "certificates": [
+    {
+      "name": "Oracle Certified Professional: Java SE Developer",
+      "issuingOrganization": "Oracle [SYNTHETIC PLACEHOLDER - Owner to confirm certificate]",
+      "issueDate": "2023-08-15",
+      "expirationDate": null,
+      "credentialId": "OCP-JAVA-21-SYNTHETIC",
+      "credentialUrl": "https://catalog-education.oracle.com",
+      "sortOrder": 10
+    }
+  ]
+}

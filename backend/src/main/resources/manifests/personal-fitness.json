@@ -1,0 +1,30 @@
+{
+  "id": "personal-fitness",
+  "name": "Tactical Fitness Tracker",
+  "description": "Quantified-self workout log, strength progression tracking, body composition metrics, and private fitness analytics.",
+  "version": "1.0.0",
+  "schemaVersion": "1.0.0",
+  "icon": "Activity",
+  "navGroup": "personal",
+  "sortOrder": 30,
+  "status": "ENABLED",
+  "visibility": "PRIVATE",
+  "defaultAvatarThemeId": "theme-tactical-ghost",
+  "routes": [
+    {
+      "path": "/app/fitness",
+      "label": "Fitness",
+      "icon": "Activity",
+      "isExact": false,
+      "requiresAuth": true,
+      "permission": "OWNER_READ"
+    }
+  ],
+  "permissions": [
+    "OWNER_READ",
+    "OWNER_WRITE"
+  ],
+  "featureFlags": {
+    "publicTrainerProfileEnabled": false
+  }
+}

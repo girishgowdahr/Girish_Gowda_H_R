@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /app/
+Disallow: /vault/
+
+Sitemap: https://girishgowdahr.github.io/Girish_Gowda_H_R/sitemap.xml

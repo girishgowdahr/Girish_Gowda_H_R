@@ -1,0 +1,32 @@
+{
+  "id": "vault",
+  "name": "Secure Zero-Knowledge Vault",
+  "description": "Client-side encrypted vault for sensitive personal records, credential backups, and identity documents using XChaCha20-Poly1305.",
+  "version": "1.0.0",
+  "schemaVersion": "1.0.0",
+  "icon": "ShieldCheck",
+  "navGroup": "security",
+  "sortOrder": 60,
+  "status": "ENABLED",
+  "visibility": "OWNER_ONLY",
+  "defaultAvatarThemeId": "theme-tactical-ghost",
+  "routes": [
+    {
+      "path": "/app/vault",
+      "label": "Vault",
+      "icon": "ShieldCheck",
+      "isExact": false,
+      "requiresAuth": true,
+      "permission": "VAULT_UNLOCK"
+    }
+  ],
+  "permissions": [
+    "OWNER_READ",
+    "OWNER_WRITE",
+    "VAULT_UNLOCK"
+  ],
+  "featureFlags": {
+    "autoLockMinutes": 15,
+    "clipboardClearSeconds": 30
+  }
+}

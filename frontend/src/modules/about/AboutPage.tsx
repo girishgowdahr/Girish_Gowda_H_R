@@ -1,7 +1,52 @@
-import React from 'react';
-import { User, Terminal, Mail, MapPin } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { User, Terminal, Mail, MapPin, Download, Award, ExternalLink, ShieldCheck } from 'lucide-react';
+import { GithubIcon, LinkedinIcon } from '../../design-system/components/SocialIcons';
+import { getPortfolioSummary } from '../../core/api/portfolioApi';
+import { PublicProfile, PublicCertificate } from '../../core/api/types';
 
 export const AboutPage: React.FC = () => {
+  const [profile, setProfile] = useState<PublicProfile | null>(null);
+  const [certificates, setCertificates] = useState<PublicCertificate[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    getPortfolioSummary()
+      .then((data) => {
+        if (mounted) {
+          setProfile(data.profile);
+          setCertificates(data.certificates);
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        if (mounted) setLoading(false);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  if (loading) {
+    return (
+      <div style={containerStyles}>
+        <div style={loadingStyles}>
+          <div className="spinner" />
+          <p>Loading operator profile...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const name = profile?.fullName || 'Girish Gowda H R';
+  const headline = profile?.headline || 'Full-Stack Software Engineer & Distributed Systems Developer';
+  const bio = profile?.bio || 'Passionate engineer specializing in modern enterprise architectures, cloud platforms, robust Spring Boot services, interactive React/Three.js interfaces, and secure zero-knowledge systems.';
+  const email = profile?.email || 'girishgowda0428@gmail.com';
+  const location = profile?.location || 'Bengaluru, India';
+  const github = profile?.githubUrl || 'https://github.com/girishgowdahr';
+  const linkedin = profile?.linkedinUrl || 'https://linkedin.com/in/girishgowdahr';
+
   return (
     <div style={containerStyles}>
       <header style={headerStyles}>
@@ -10,9 +55,7 @@ export const AboutPage: React.FC = () => {
           <span>OPERATOR BIOGRAPHY</span>
         </div>
         <h1 style={titleStyles}>About Me</h1>
-        <p style={subtitleStyles}>
-          Engineering principles, technical background, and personal drive.
-        </p>
+        <p style={subtitleStyles}>{headline}</p>
       </header>
 
       <div style={gridStyles}>
@@ -21,45 +64,120 @@ export const AboutPage: React.FC = () => {
             <Terminal size={18} color="var(--accent-cyan)" />
             <span>Profile Overview</span>
           </h2>
-          <div style={noticeBoxStyles}>
-            <strong>Notice:</strong> Data below reflects provisional content awaiting owner confirmation in <code>docs/product/content-inventory.md</code>.
+
+          <p style={paragraphStyles}>{bio}</p>
+
+          <p style={paragraphStyles}>
+            My engineering philosophy focuses on strict modular architecture, verifiable security boundaries, high-concurrency microservices, and immersive 3D web applications. I design software that is observable, fault-tolerant, and accessible across devices.
+          </p>
+
+          <div style={actionRowStyles}>
+            <a
+              href="/api/v1/public/portfolio/resume"
+              download="Girish_Gowda_H_R_Resume.md"
+              style={primaryButtonStyles}
+              aria-label="Download Girish Gowda H R resume document"
+            >
+              <Download size={16} />
+              <span>Download Resume</span>
+            </a>
+
+            <a
+              href={`mailto:${email}`}
+              style={secondaryButtonStyles}
+              aria-label={`Send email to ${email}`}
+            >
+              <Mail size={16} />
+              <span>Contact Directly</span>
+            </a>
           </div>
-          <p style={paragraphStyles}>
-            Hello! I am <strong>Girish</strong>, a software engineer passionate about architecting reliable, privacy-first software, modular monoliths, and quantifiable performance systems.
-          </p>
-          <p style={paragraphStyles}>
-            My engineering focus centers on clean separation of concerns, strict authorization models (Spring Security & PostgreSQL RLS), and accessible user interfaces that balance aesthetic appeal with high performance.
-          </p>
         </section>
 
         <aside style={cardStyles} aria-labelledby="info-heading">
           <h2 id="info-heading" style={sectionTitleStyles}>
-            <span>Core Attributes</span>
+            <ShieldCheck size={18} color="var(--accent-cyan)" />
+            <span>Identity & Channels</span>
           </h2>
           <ul style={infoListStyles}>
             <li style={infoItemStyles}>
+              <span style={infoLabelStyles}>Full Name</span>
+              <span style={infoValueStyles}>{name}</span>
+            </li>
+            <li style={infoItemStyles}>
               <span style={infoLabelStyles}>Location</span>
-              <span style={infoValueStyles}><MapPin size={14} /> Karnataka, India (Asia/Kolkata)</span>
-            </li>
-            <li style={infoItemStyles}>
-              <span style={infoLabelStyles}>Role</span>
-              <span style={infoValueStyles}>Full-Stack Software Engineer</span>
-            </li>
-            <li style={infoItemStyles}>
-              <span style={infoLabelStyles}>Architecture</span>
-              <span style={infoValueStyles}>Modular Monolith & React SPA</span>
-            </li>
-            <li style={infoItemStyles}>
-              <span style={infoLabelStyles}>Contact Link</span>
               <span style={infoValueStyles}>
-                <a href="mailto:placeholder-owner@example.com" style={contactLinkStyles}>
-                  <Mail size={14} /> Send Email
+                <MapPin size={14} color="var(--accent-cyan)" />
+                {location}
+              </span>
+            </li>
+            <li style={infoItemStyles}>
+              <span style={infoLabelStyles}>Primary Email</span>
+              <span style={infoValueStyles}>
+                <a href={`mailto:${email}`} style={contactLinkStyles}>
+                  <Mail size={14} />
+                  {email}
+                </a>
+              </span>
+            </li>
+            <li style={infoItemStyles}>
+              <span style={infoLabelStyles}>GitHub</span>
+              <span style={infoValueStyles}>
+                <a href={github} target="_blank" rel="noopener noreferrer" style={contactLinkStyles}>
+                  <GithubIcon size={14} />
+                  girishgowdahr
+                  <ExternalLink size={12} />
+                </a>
+              </span>
+            </li>
+            <li style={infoItemStyles}>
+              <span style={infoLabelStyles}>LinkedIn</span>
+              <span style={infoValueStyles}>
+                <a href={linkedin} target="_blank" rel="noopener noreferrer" style={contactLinkStyles}>
+                  <LinkedinIcon size={14} />
+                  girishgowdahr
+                  <ExternalLink size={12} />
                 </a>
               </span>
             </li>
           </ul>
         </aside>
       </div>
+
+      {certificates.length > 0 && (
+        <section style={cardStyles} aria-labelledby="certs-heading">
+          <h2 id="certs-heading" style={sectionTitleStyles}>
+            <Award size={18} color="var(--accent-cyan)" />
+            <span>Verified Certifications</span>
+          </h2>
+          <div style={certGridStyles}>
+            {certificates.map((cert, index) => (
+              <div key={index} style={certCardStyles}>
+                <div style={certHeaderStyles}>
+                  <h3 style={certTitleStyles}>{cert.name}</h3>
+                  <span style={certDateBadgeStyles}>Issued {cert.issueDate}</span>
+                </div>
+                <p style={certOrgStyles}>{cert.issuingOrganization}</p>
+                {cert.credentialId && (
+                  <p style={certIdStyles}>
+                    Credential ID: <code>{cert.credentialId}</code>
+                  </p>
+                )}
+                {cert.credentialUrl && (
+                  <a
+                    href={cert.credentialUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={certLinkStyles}
+                  >
+                    <span>Verify Credential</span>
+                    <ExternalLink size={12} />
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 };
@@ -122,19 +240,45 @@ const sectionTitleStyles: React.CSSProperties = {
   paddingBottom: '0.75rem',
 };
 
-const noticeBoxStyles: React.CSSProperties = {
-  fontSize: '0.8rem',
-  color: 'var(--text-muted)',
-  backgroundColor: 'rgba(255, 255, 255, 0.02)',
-  padding: '0.5rem 0.75rem',
-  borderRadius: 'var(--radius-sm)',
-  borderLeft: '3px solid var(--accent-cyan)',
-};
-
 const paragraphStyles: React.CSSProperties = {
   fontSize: '0.95rem',
   color: 'var(--text-secondary)',
   lineHeight: 1.7,
+};
+
+const actionRowStyles: React.CSSProperties = {
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: '1rem',
+  marginTop: '0.5rem',
+};
+
+const primaryButtonStyles: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '0.5rem',
+  backgroundColor: 'var(--accent-cyan)',
+  color: '#0a0f1d',
+  padding: '0.75rem 1.25rem',
+  borderRadius: 'var(--radius-md)',
+  fontWeight: 700,
+  fontSize: '0.9rem',
+  textDecoration: 'none',
+  transition: 'transform 0.15s ease',
+};
+
+const secondaryButtonStyles: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '0.5rem',
+  backgroundColor: 'rgba(255, 255, 255, 0.05)',
+  border: '1px solid var(--border-subtle)',
+  color: 'var(--text-primary)',
+  padding: '0.75rem 1.25rem',
+  borderRadius: 'var(--radius-md)',
+  fontWeight: 600,
+  fontSize: '0.9rem',
+  textDecoration: 'none',
 };
 
 const infoListStyles: React.CSSProperties = {
@@ -172,4 +316,72 @@ const contactLinkStyles: React.CSSProperties = {
   gap: '0.35rem',
   color: 'var(--accent-cyan)',
   textDecoration: 'none',
+};
+
+const certGridStyles: React.CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+  gap: '1rem',
+};
+
+const certCardStyles: React.CSSProperties = {
+  backgroundColor: 'rgba(255, 255, 255, 0.02)',
+  border: '1px solid var(--border-subtle)',
+  borderRadius: 'var(--radius-md)',
+  padding: '1.25rem',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '0.5rem',
+};
+
+const certHeaderStyles: React.CSSProperties = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'flex-start',
+  gap: '0.5rem',
+};
+
+const certTitleStyles: React.CSSProperties = {
+  fontSize: '1rem',
+  fontWeight: 700,
+  color: 'var(--text-primary)',
+};
+
+const certDateBadgeStyles: React.CSSProperties = {
+  fontSize: '0.75rem',
+  color: 'var(--accent-cyan)',
+  backgroundColor: 'rgba(0, 255, 204, 0.1)',
+  padding: '0.2rem 0.5rem',
+  borderRadius: 'var(--radius-sm)',
+  whiteSpace: 'nowrap',
+};
+
+const certOrgStyles: React.CSSProperties = {
+  fontSize: '0.85rem',
+  color: 'var(--text-secondary)',
+};
+
+const certIdStyles: React.CSSProperties = {
+  fontSize: '0.8rem',
+  color: 'var(--text-muted)',
+};
+
+const certLinkStyles: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '0.3rem',
+  fontSize: '0.85rem',
+  color: 'var(--accent-cyan)',
+  textDecoration: 'none',
+  marginTop: '0.25rem',
+};
+
+const loadingStyles: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '4rem 1rem',
+  color: 'var(--text-muted)',
+  gap: '1rem',
 };

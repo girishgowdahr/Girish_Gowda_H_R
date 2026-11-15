@@ -15,9 +15,11 @@ spring:
     enabled: true
     schemas:
       - core
+      - portfolio
     default-schema: core
     locations:
       - classpath:db/migration/core
+      - classpath:db/migration/portfolio
     baseline-on-migrate: true
 
 logging:

@@ -1,0 +1,30 @@
+{
+  "id": "personal-journal",
+  "name": "Logbook & Journal",
+  "description": "Private reflection journal, engineering decision logbooks, habit tracking, and encrypted thoughts.",
+  "version": "1.0.0",
+  "schemaVersion": "1.0.0",
+  "icon": "FileText",
+  "navGroup": "personal",
+  "sortOrder": 50,
+  "status": "ENABLED",
+  "visibility": "PRIVATE",
+  "defaultAvatarThemeId": "theme-void-walker",
+  "routes": [
+    {
+      "path": "/app/journal",
+      "label": "Journal",
+      "icon": "FileText",
+      "isExact": false,
+      "requiresAuth": true,
+      "permission": "OWNER_READ"
+    }
+  ],
+  "permissions": [
+    "OWNER_READ",
+    "OWNER_WRITE"
+  ],
+  "featureFlags": {
+    "moodTrackingEnabled": true
+  }
+}

@@ -1,5 +1,7 @@
 import React from 'react';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Mail, Shield } from 'lucide-react';
+import { GithubIcon, LinkedinIcon } from './SocialIcons';
+import { NavLink } from 'react-router-dom';
 
 export const Footer: React.FC = () => {
   return (
@@ -7,35 +9,53 @@ export const Footer: React.FC = () => {
       <div style={containerStyles}>
         <div style={brandColStyles}>
           <p style={copyrightStyles}>
-            &copy; {new Date().getFullYear()} GIRISH. All rights reserved.
+            &copy; {new Date().getFullYear()} Girish Gowda H R. All rights reserved.
           </p>
           <p style={disclaimerStyles}>
-            Built with React 19, TypeScript, and Spring Boot modular monolith architecture.
+            Engineered with React 19, TypeScript, Three.js 3D Lobby, Spring Boot 3 modular monolith, and Zero-Knowledge Vault.
           </p>
         </div>
 
         <div style={linksColStyles}>
           <a
-            href="https://github.com"
+            href="https://github.com/girishgowdahr"
             target="_blank"
             rel="noopener noreferrer"
             style={linkStyles}
-            aria-label="GitHub Profile (external link)"
+            aria-label="Girish Gowda H R GitHub Profile (opens in new tab)"
           >
+            <GithubIcon size={15} />
             <span>GitHub</span>
-            <ExternalLink size={14} />
+            <ExternalLink size={12} />
           </a>
           <a
-            href="https://linkedin.com"
+            href="https://linkedin.com/in/girishgowdahr"
             target="_blank"
             rel="noopener noreferrer"
             style={linkStyles}
-            aria-label="LinkedIn Profile (external link)"
+            aria-label="Girish Gowda H R LinkedIn Profile (opens in new tab)"
           >
+            <LinkedinIcon size={15} />
             <span>LinkedIn</span>
-            <ExternalLink size={14} />
+            <ExternalLink size={12} />
           </a>
-          <span style={badgeStyles}>WCAG 2.2 AA Verified</span>
+          <a
+            href="mailto:girishgowda0428@gmail.com"
+            style={linkStyles}
+            aria-label="Send email to Girish Gowda H R"
+          >
+            <Mail size={15} />
+            <span>Email</span>
+          </a>
+          <NavLink
+            to="/privacy"
+            style={linkStyles}
+            aria-label="Privacy Notice"
+          >
+            <Shield size={14} />
+            <span>Privacy Notice</span>
+          </NavLink>
+          <span style={badgeStyles}>WCAG 2.2 AA</span>
         </div>
       </div>
     </footer>
@@ -78,6 +98,7 @@ const disclaimerStyles: React.CSSProperties = {
 
 const linksColStyles: React.CSSProperties = {
   display: 'flex',
+  flexWrap: 'wrap',
   alignItems: 'center',
   gap: '1.25rem',
 };
@@ -89,6 +110,7 @@ const linkStyles: React.CSSProperties = {
   fontSize: '0.85rem',
   color: 'var(--text-secondary)',
   textDecoration: 'none',
+  transition: 'color 0.15s ease',
 };
 
 const badgeStyles: React.CSSProperties = {

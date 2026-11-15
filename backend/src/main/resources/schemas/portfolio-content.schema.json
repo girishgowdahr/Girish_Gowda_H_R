@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://girish.dev/schemas/portfolio-content.schema.json",
+  "title": "PortfolioContentImport",
+  "description": "Validation schema for owner-supplied portfolio profile and career data bundle.",
+  "type": "object",
+  "required": ["profile", "skillCategories", "featuredProjects"],
+  "properties": {
+    "profile": {
+      "type": "object",
+      "required": ["fullName", "headline", "bio", "email"],
+      "properties": {
+        "fullName": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "headline": { "type": "string", "minLength": 1, "maxLength": 255 },
+        "bio": { "type": "string", "minLength": 1 },
+        "location": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "format": "email" },
+        "githubUrl": { "type": "string", "format": "uri" },
+        "linkedinUrl": { "type": "string" },
+        "resumeUrl": { "type": "string" },
+        "avatarImageUrl": { "type": "string" }
+      }
+    },
+    "skillCategories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "sortOrder", "items"],
+        "properties": {
+          "name": { "type": "string", "maxLength": 64 },
+          "sortOrder": { "type": "integer", "minimum": 0 },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name", "isFeatured"],
+              "properties": {
+                "name": { "type": "string", "maxLength": 64 },
+                "proficiency": { "type": "string" },
+                "yearsOfExperience": { "type": "number", "minimum": 0 },
+                "icon": { "type": "string" },
+                "isFeatured": { "type": "boolean" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "featuredProjects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["slug", "title", "tagline", "description", "category", "technologies"],
+        "properties": {
+          "slug": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "title": { "type": "string", "maxLength": 255 },
+          "tagline": { "type": "string", "maxLength": 255 },
+          "description": { "type": "string" },
+          "category": { "type": "string", "maxLength": 64 },
+          "technologies": { "type": "array", "items": { "type": "string" } },
+          "githubUrl": { "type": "string" },
+          "liveUrl": { "type": "string" },
+          "featured": { "type": "boolean" },
+          "sortOrder": { "type": "integer" }
+        }
+      }
+    },
+    "experience": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["roleTitle", "companyName", "startDate", "description"],
+        "properties": {
+          "roleTitle": { "type": "string", "maxLength": 128 },
+          "companyName": { "type": "string", "maxLength": 128 },
+          "employmentType": { "type": "string" },
+          "location": { "type": "string" },
+          "startDate": { "type": "string" },
+          "endDate": { "type": ["string", "null"] },
+          "isCurrent": { "type": "boolean" },
+          "description": { "type": "string" },
+          "highlights": { "type": "array", "items": { "type": "string" } },
+          "technologies": { "type": "array", "items": { "type": "string" } },
+          "sortOrder": { "type": "integer" }
+        }
+      }
+    },
+    "education": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["institution", "degree", "fieldOfStudy", "startYear"],
+        "properties": {
+          "institution": { "type": "string", "maxLength": 180 },
+          "degree": { "type": "string", "maxLength": 128 },
+          "fieldOfStudy": { "type": "string", "maxLength": 128 },
+          "startYear": { "type": "integer" },
+          "endYear": { "type": ["integer", "null"] },
+          "gradeOrGpa": { "type": "string" },
+          "description": { "type": "string" },
+          "sortOrder": { "type": "integer" }
+        }
+      }
+    },
+    "certificates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "issuingOrganization", "issueDate"],
+        "properties": {
+          "name": { "type": "string", "maxLength": 180 },
+          "issuingOrganization": { "type": "string", "maxLength": 180 },
+          "issueDate": { "type": "string" },
+          "expirationDate": { "type": ["string", "null"] },
+          "credentialId": { "type": "string" },
+          "credentialUrl": { "type": "string" },
+          "sortOrder": { "type": "integer" }
+        }
+      }
+    }
+  }
+}

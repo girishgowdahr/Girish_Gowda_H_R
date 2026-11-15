@@ -1,0 +1,58 @@
+{
+  "id": "portfolio",
+  "name": "Engineering Portfolio",
+  "description": "Public professional portfolio showcasing engineering skills, architectural projects, education, career experience, and verified credentials.",
+  "version": "1.0.0",
+  "schemaVersion": "1.0.0",
+  "icon": "Briefcase",
+  "navGroup": "primary",
+  "sortOrder": 20,
+  "status": "ENABLED",
+  "visibility": "PUBLIC",
+  "defaultAvatarThemeId": "theme-cyber-neon",
+  "routes": [
+    {
+      "path": "/about",
+      "label": "About",
+      "icon": "User",
+      "isExact": true,
+      "requiresAuth": false
+    },
+    {
+      "path": "/skills",
+      "label": "Skills",
+      "icon": "Code",
+      "isExact": true,
+      "requiresAuth": false
+    },
+    {
+      "path": "/projects",
+      "label": "Projects",
+      "icon": "FolderGit2",
+      "isExact": true,
+      "requiresAuth": false
+    },
+    {
+      "path": "/education",
+      "label": "Education",
+      "icon": "GraduationCap",
+      "isExact": true,
+      "requiresAuth": false
+    },
+    {
+      "path": "/experience",
+      "label": "Experience",
+      "icon": "Briefcase",
+      "isExact": true,
+      "requiresAuth": false
+    }
+  ],
+  "permissions": [
+    "PUBLIC_READ",
+    "OWNER_WRITE"
+  ],
+  "featureFlags": {
+    "resumeDownloadEnabled": true,
+    "interactiveFilterEnabled": true
+  }
+}
