@@ -9,19 +9,24 @@ import { ExperiencePage } from '../modules/experience/ExperiencePage';
 import { PrivacyNoticePage } from '../modules/privacy/PrivacyNoticePage';
 import { NotFoundPage } from '../modules/NotFoundPage';
 
-export const router = createBrowserRouter([
+export const router = createBrowserRouter(
+  [
+    {
+      path: '/',
+      element: <AppLayout />,
+      children: [
+        { index: true, element: <LobbyPage /> },
+        { path: 'about', element: <AboutPage /> },
+        { path: 'skills', element: <SkillsPage /> },
+        { path: 'projects', element: <ProjectsPage /> },
+        { path: 'education', element: <EducationPage /> },
+        { path: 'experience', element: <ExperiencePage /> },
+        { path: 'privacy', element: <PrivacyNoticePage /> },
+        { path: '*', element: <NotFoundPage /> },
+      ],
+    },
+  ],
   {
-    path: '/',
-    element: <AppLayout />,
-    children: [
-      { index: true, element: <LobbyPage /> },
-      { path: 'about', element: <AboutPage /> },
-      { path: 'skills', element: <SkillsPage /> },
-      { path: 'projects', element: <ProjectsPage /> },
-      { path: 'education', element: <EducationPage /> },
-      { path: 'experience', element: <ExperiencePage /> },
-      { path: 'privacy', element: <PrivacyNoticePage /> },
-      { path: '*', element: <NotFoundPage /> },
-    ],
-  },
-]);
+    basename: import.meta.env.BASE_URL,
+  }
+);
