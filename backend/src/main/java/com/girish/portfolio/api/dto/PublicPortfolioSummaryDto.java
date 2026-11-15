@@ -8,6 +8,7 @@ public record PublicPortfolioSummaryDto(
         List<PublicProjectDto> featuredProjects,
         List<PublicExperienceDto> experience,
         List<PublicEducationDto> education,
-        List<PublicCertificateDto> certificates
+        List<PublicCertificateDto> certificates,
+        List<PublicPublicationDto> publications
 ) {
 }

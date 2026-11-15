@@ -48,77 +48,90 @@ export const ExperiencePage: React.FC = () => {
         </p>
       </header>
 
-      <div style={timelineContainerStyles}>
-        {experiences.map((exp, index) => (
-          <article
-            key={index}
-            style={timelineItemStyles}
-            aria-labelledby={`exp-${index}-title`}
-          >
-            <div style={timelineMarkerWrapperStyles}>
-              <div style={timelineDotStyles} />
-              {index < experiences.length - 1 && <div style={timelineLineStyles} />}
-            </div>
-
-            <div style={timelineCardStyles}>
-              <div style={cardHeaderStyles}>
-                <div>
-                  <h2 id={`exp-${index}-title`} style={roleTitleStyles}>
-                    {exp.roleTitle}
-                  </h2>
-                  <h3 style={companyNameStyles}>{exp.companyName}</h3>
-                </div>
-
-                <div style={badgeColumnStyles}>
-                  {exp.isCurrent ? (
-                    <span style={currentBadgeStyles}>Current Position</span>
-                  ) : (
-                    <span style={pastBadgeStyles}>Completed</span>
-                  )}
-                  <span style={dateRangeStyles}>
-                    <Calendar size={13} />
-                    {exp.startDate} — {exp.isCurrent ? 'Present' : exp.endDate}
-                  </span>
-                </div>
+      {experiences.length === 0 ? (
+        <section style={timelineCardStyles} aria-label="Current Career Status">
+          <h2 style={roleTitleStyles}>University Hire Software Engineer Candidate</h2>
+          <h3 style={companyNameStyles}>RV College of Engineering, Bengaluru</h3>
+          <p style={descriptionStyles}>
+            Currently enrolled as a full-time Master of Computer Applications (MCA) student (2025 – 2027) with a strong foundation in Java, SQL, and full-stack development.
+          </p>
+          <p style={descriptionStyles}>
+            Co-authored an IEEE-published research paper on a Digital Twin-enabled self-healing web application. Seeking a University Hire Software Engineer role to deliver innovative digital solutions within a global engineering team.
+          </p>
+        </section>
+      ) : (
+        <div style={timelineContainerStyles}>
+          {experiences.map((exp, index) => (
+            <article
+              key={index}
+              style={timelineItemStyles}
+              aria-labelledby={`exp-${index}-title`}
+            >
+              <div style={timelineMarkerWrapperStyles}>
+                <div style={timelineDotStyles} />
+                {index < experiences.length - 1 && <div style={timelineLineStyles} />}
               </div>
 
-              {exp.location && (
-                <div style={locationRowStyles}>
-                  <MapPin size={13} color="var(--accent-cyan)" />
-                  <span>{exp.location}</span>
-                  {exp.employmentType && <span>• {exp.employmentType}</span>}
-                </div>
-              )}
+              <div style={timelineCardStyles}>
+                <div style={cardHeaderStyles}>
+                  <div>
+                    <h2 id={`exp-${index}-title`} style={roleTitleStyles}>
+                      {exp.roleTitle}
+                    </h2>
+                    <h3 style={companyNameStyles}>{exp.companyName}</h3>
+                  </div>
 
-              <p style={descriptionStyles}>{exp.description}</p>
-
-              {exp.highlights && exp.highlights.length > 0 && (
-                <div style={highlightsSectionStyles}>
-                  <h4 style={highlightsHeadingStyles}>Key Technical Contributions</h4>
-                  <ul style={highlightsListStyles}>
-                    {exp.highlights.map((h, hIdx) => (
-                      <li key={hIdx} style={highlightItemStyles}>
-                        <CheckCircle2 size={14} color="var(--accent-cyan)" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                        <span>{h}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {exp.technologies && exp.technologies.length > 0 && (
-                <div style={techRowStyles}>
-                  {exp.technologies.map((tech) => (
-                    <span key={tech} style={techBadgeStyles}>
-                      {tech}
+                  <div style={badgeColumnStyles}>
+                    {exp.isCurrent ? (
+                      <span style={currentBadgeStyles}>Current Position</span>
+                    ) : (
+                      <span style={pastBadgeStyles}>Completed</span>
+                    )}
+                    <span style={dateRangeStyles}>
+                      <Calendar size={13} />
+                      {exp.startDate} — {exp.isCurrent ? 'Present' : exp.endDate}
                     </span>
-                  ))}
+                  </div>
                 </div>
-              )}
-            </div>
-          </article>
-        ))}
-      </div>
+
+                {exp.location && (
+                  <div style={locationRowStyles}>
+                    <MapPin size={13} color="var(--accent-cyan)" />
+                    <span>{exp.location}</span>
+                    {exp.employmentType && <span>• {exp.employmentType}</span>}
+                  </div>
+                )}
+
+                <p style={descriptionStyles}>{exp.description}</p>
+
+                {exp.highlights && exp.highlights.length > 0 && (
+                  <div style={highlightsSectionStyles}>
+                    <h4 style={highlightsHeadingStyles}>Key Technical Contributions</h4>
+                    <ul style={highlightsListStyles}>
+                      {exp.highlights.map((h, hIdx) => (
+                        <li key={hIdx} style={highlightItemStyles}>
+                          <CheckCircle2 size={14} color="var(--accent-cyan)" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                          <span>{h}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {exp.technologies && exp.technologies.length > 0 && (
+                  <div style={techRowStyles}>
+                    {exp.technologies.map((tech) => (
+                      <span key={tech} style={techBadgeStyles}>
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

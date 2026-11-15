@@ -37,54 +37,61 @@ class PortfolioRepositoryIntegrationTest {
     @Autowired
     private CertificateRepository certificateRepository;
 
+    @Autowired
+    private PublicationRepository publicationRepository;
+
     @Test
-    @DisplayName("Should successfully load seeded owner profile")
-    void shouldLoadSeededProfile() {
+    @DisplayName("Should successfully load confirmed owner profile")
+    void shouldLoadConfirmedProfile() {
         Optional<Profile> profileOpt = profileRepository.findFirstByIsPublishedTrue();
 
         assertThat(profileOpt).isPresent();
         Profile profile = profileOpt.get();
         assertThat(profile.getFullName()).isEqualTo("Girish Gowda H R");
-        assertThat(profile.getEmail()).isEqualTo("girishgowda0428@gmail.com");
-        assertThat(profile.getGithubUrl()).contains("girishgowdahr");
+        assertThat(profile.getHeadline()).isEqualTo("Software Engineer | Java, SQL & Full-Stack Development");
+        assertThat(profile.getLocation()).isEqualTo("Bengaluru, Karnataka");
     }
 
     @Test
-    @DisplayName("Should load seeded skill categories and items")
-    void shouldLoadSeededSkills() {
+    @DisplayName("Should load confirmed skill categories and items")
+    void shouldLoadConfirmedSkills() {
         List<SkillCategory> categories = skillCategoryRepository.findAllWithItemsOrderBySortOrderAsc();
 
-        assertThat(categories).isNotEmpty();
-        assertThat(categories).hasSizeGreaterThanOrEqualTo(4);
-
-        SkillCategory firstCategory = categories.get(0);
-        assertThat(firstCategory.getItems()).isNotEmpty();
+        assertThat(categories).hasSize(7);
+        assertThat(categories).extracting(SkillCategory::getName)
+                .contains("Programming Languages", "Web & Software Development", "Databases & Data Management");
     }
 
     @Test
-    @DisplayName("Should load seeded projects")
-    void shouldLoadSeededProjects() {
+    @DisplayName("Should load confirmed projects")
+    void shouldLoadConfirmedProjects() {
         List<Project> projects = projectRepository.findByIsPublishedTrueOrderBySortOrderAsc();
 
-        assertThat(projects).isNotEmpty();
+        assertThat(projects).hasSize(2);
         assertThat(projects).extracting(Project::getSlug)
-                .contains("girish-identity-platform", "free-fire-avatar-engine");
+                .contains("digital-twin", "population");
 
-        Optional<Project> freeFire = projectRepository.findBySlugAndIsPublishedTrue("free-fire-avatar-engine");
-        assertThat(freeFire).isPresent();
-        assertThat(freeFire.get().getTechnologies()).contains("Three.js");
+        Optional<Project> digitalTwin = projectRepository.findBySlugAndIsPublishedTrue("digital-twin");
+        assertThat(digitalTwin).isPresent();
+        assertThat(digitalTwin.get().getTechnologies()).contains("Java");
+        assertThat(digitalTwin.get().getTitle()).contains("Digital Twin");
     }
 
     @Test
-    @DisplayName("Should load seeded experience, education, and certificates")
-    void shouldLoadSeededExperienceEducationAndCertificates() {
-        List<Experience> experiences = experienceRepository.findByIsPublishedTrueOrderBySortOrderAsc();
-        assertThat(experiences).isNotEmpty();
-
+    @DisplayName("Should load confirmed education, certificates, and publications")
+    void shouldLoadConfirmedEducationCertificatesAndPublications() {
         List<Education> educations = educationRepository.findByIsPublishedTrueOrderBySortOrderAsc();
-        assertThat(educations).isNotEmpty();
+        assertThat(educations).hasSize(4);
+        assertThat(educations).extracting(Education::getInstitution)
+                .contains("RV College of Engineering", "Vidyavahini First Grade College");
 
         List<Certificate> certificates = certificateRepository.findByIsPublishedTrueOrderBySortOrderAsc();
-        assertThat(certificates).isNotEmpty();
+        assertThat(certificates).hasSize(1);
+        assertThat(certificates.get(0).getName()).isEqualTo("Certified Fitness Trainer");
+
+        List<Publication> publications = publicationRepository.findByIsPublishedTrueOrderBySortOrderAsc();
+        assertThat(publications).hasSize(1);
+        assertThat(publications.get(0).getTitle()).contains("Digital Twin");
+        assertThat(publications.get(0).getPublisher()).isEqualTo("IEEE");
     }
 }

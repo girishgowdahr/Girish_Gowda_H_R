@@ -67,7 +67,9 @@ export const EducationPage: React.FC = () => {
               <div style={metaColumnStyles}>
                 <span style={yearBadgeStyles}>
                   <Calendar size={13} />
-                  {edu.startYear} — {edu.endYear ? edu.endYear : 'Present'}
+                  {edu.startYear && edu.startYear > 0
+                    ? `${edu.startYear} — ${edu.endYear ? edu.endYear : 'Present'}`
+                    : `Completed ${edu.endYear}`}
                 </span>
                 {edu.gradeOrGpa && (
                   <span style={gradeBadgeStyles}>

@@ -4,6 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -42,6 +44,16 @@ public class Profile {
     @Column(name = "avatar_image_url", length = 255)
     private String avatarImageUrl;
 
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "JSONB")
+    private String languages;
+
+    @Column(name = "career_goal", length = 255)
+    private String careerGoal;
+
+    @Column(length = 32)
+    private String status;
+
     @Column(name = "is_published", nullable = false)
     private boolean isPublished;
 
@@ -56,7 +68,8 @@ public class Profile {
 
     public Profile(UUID id, String fullName, String headline, String bio, String location,
                    String email, String githubUrl, String linkedinUrl, String resumeUrl,
-                   String avatarImageUrl, boolean isPublished, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+                   String avatarImageUrl, String languages, String careerGoal, String status,
+                   boolean isPublished, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
         this.id = id;
         this.fullName = fullName;
         this.headline = headline;
@@ -67,6 +80,9 @@ public class Profile {
         this.linkedinUrl = linkedinUrl;
         this.resumeUrl = resumeUrl;
         this.avatarImageUrl = avatarImageUrl;
+        this.languages = languages;
+        this.careerGoal = careerGoal;
+        this.status = status;
         this.isPublished = isPublished;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -150,6 +166,30 @@ public class Profile {
 
     public void setAvatarImageUrl(String avatarImageUrl) {
         this.avatarImageUrl = avatarImageUrl;
+    }
+
+    public String getLanguages() {
+        return languages;
+    }
+
+    public void setLanguages(String languages) {
+        this.languages = languages;
+    }
+
+    public String getCareerGoal() {
+        return careerGoal;
+    }
+
+    public void setCareerGoal(String careerGoal) {
+        this.careerGoal = careerGoal;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public boolean isPublished() {

@@ -76,7 +76,7 @@ export const LobbyPage: React.FC = () => {
             </div>
             <div style={fallbackDetailsStyles}>
               <h2 style={avatarNameStyles}>OPERATOR // GIRISH</h2>
-              <p style={avatarRoleStyles}>Full-Stack Software Engineer &amp; Fitness Enthusiast</p>
+              <p style={avatarRoleStyles}>Software Engineer | Java, SQL &amp; Full-Stack Development</p>
               <div style={avatarPillsStyles}>
                 <span style={pillStyles}>Accessible Tier C Active</span>
                 <span style={pillStyles}>Spring Boot Monolith</span>

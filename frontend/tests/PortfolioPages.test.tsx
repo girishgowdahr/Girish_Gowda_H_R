@@ -9,79 +9,86 @@ import { EducationPage } from '../src/modules/education/EducationPage';
 import { PrivacyNoticePage } from '../src/modules/privacy/PrivacyNoticePage';
 import axe from 'axe-core';
 
-// Mock fetch to serve mock public portfolio summary
-const mockSummary = {
+// Test fixture based on confirmed owner resume data
+const confirmedSummary = {
   profile: {
     fullName: 'Girish Gowda H R',
-    headline: 'Full-Stack Software Engineer & Distributed Systems Developer',
-    bio: 'Passionate engineer specializing in modern enterprise architectures and Three.js lobbies.',
-    location: 'Bengaluru, India',
-    email: 'girishgowda0428@gmail.com',
-    githubUrl: 'https://github.com/girishgowdahr',
-    linkedinUrl: 'https://linkedin.com/in/girishgowdahr',
+    headline: 'Software Engineer | Java, SQL & Full-Stack Development',
+    bio: 'MCA student at RV College of Engineering with a strong foundation in Java, SQL, and web development.',
+    location: 'Bengaluru, Karnataka',
     resumeUrl: '/api/v1/public/portfolio/resume',
-    avatarImageUrl: '/avatar-profile.png',
   },
   skillCategories: [
     {
-      name: 'Languages & Core Runtimes',
-      sortOrder: 10,
+      name: 'Programming Languages',
+      sortOrder: 1,
       items: [
-        { name: 'Java 21 LTS', proficiency: 'Advanced', yearsOfExperience: 3.0, isFeatured: true },
-        { name: 'TypeScript', proficiency: 'Advanced', yearsOfExperience: 3.0, isFeatured: true },
+        { name: 'Java (OOP, Collections, Exception Handling, File Handling)', proficiency: 'Advanced', yearsOfExperience: 3.0, isFeatured: true },
+        { name: 'Python', proficiency: 'Proficient', yearsOfExperience: 2.0, isFeatured: false },
+        { name: 'SQL', proficiency: 'Advanced', yearsOfExperience: 3.0, isFeatured: true },
       ],
     },
   ],
   featuredProjects: [
     {
-      slug: 'girish-identity-platform',
-      title: 'GIRISH Identity & Quantified-Self Platform',
-      tagline: 'Personal Identity Platform and 3D Articulated Avatar Lobby.',
-      description: 'Engineered with Spring Boot 3, Java 21, React 19, and Three.js.',
-      category: 'Full-Stack',
-      technologies: ['Java 21', 'Spring Boot 3', 'React 19', 'Three.js'],
-      githubUrl: 'https://github.com/girishgowdahr/Girish_Gowda_H_R',
-      liveUrl: 'http://localhost:5173',
+      slug: 'digital-twin',
+      title: 'Digital Twin-Enabled Self-Healing Web Application',
+      tagline: 'Team Project (3 members)',
+      description: 'Designed and implemented a self-healing web application using Digital Twin technology to monitor systems and auto-recover from failures.',
+      category: 'Software Engineering',
+      technologies: ['Java', 'Servlet', 'HTML', 'CSS', 'SQL'],
       featured: true,
-      sortOrder: 10,
+      sortOrder: 1,
     },
-  ],
-  experience: [
     {
-      roleTitle: 'Software Engineer',
-      companyName: 'Enterprise Cloud Systems',
-      employmentType: 'Full-time',
-      location: 'Bengaluru, India',
-      startDate: '2023-01-01',
-      endDate: null,
-      isCurrent: true,
-      description: 'Architecting and developing mission-critical distributed backend services.',
-      highlights: ['Designed and deployed resilient Spring Boot microservices'],
-      technologies: ['Java', 'Spring Boot', 'PostgreSQL'],
-      sortOrder: 10,
+      slug: 'population',
+      title: 'Population Analysis of Karnataka Districts',
+      tagline: 'Academic Project',
+      description: 'Built a C-language application to ingest, process, and display census-style population data for Karnataka districts.',
+      category: 'Software Engineering',
+      technologies: ['C', 'File handling', 'CLI'],
+      featured: false,
+      sortOrder: 2,
     },
   ],
+  experience: [],
   education: [
     {
-      institution: 'Visvesvaraya Technological University',
-      degree: 'Bachelor of Engineering (B.E.)',
-      fieldOfStudy: 'Computer Science and Engineering',
-      startYear: 2019,
-      endYear: 2023,
-      gradeOrGpa: 'First Class with Distinction',
-      description: 'Specialized in Software Engineering and Distributed Systems.',
-      sortOrder: 10,
+      institution: 'RV College of Engineering',
+      degree: 'MCA',
+      fieldOfStudy: 'Computer Applications',
+      startYear: 2025,
+      endYear: 2027,
+      description: 'In progress. Expected completion: 2027',
+      sortOrder: 1,
+    },
+    {
+      institution: 'Vidyavahini First Grade College',
+      degree: 'BCA',
+      fieldOfStudy: 'Computer Applications',
+      startYear: 2021,
+      endYear: 2024,
+      gradeOrGpa: 'CGPA 8.91/10.0',
+      sortOrder: 2,
     },
   ],
   certificates: [
     {
-      name: 'Oracle Certified Professional: Java SE Developer',
-      issuingOrganization: 'Oracle',
-      issueDate: '2023-08-15',
-      expirationDate: null,
-      credentialId: 'OCP-JAVA-21-SYNTHETIC',
-      credentialUrl: 'https://catalog-education.oracle.com',
-      sortOrder: 10,
+      name: 'Certified Fitness Trainer',
+      issuingOrganization: 'Indian Institute of Skill Development Training',
+      description: 'Reflects discipline, goal orientation, and continuous learning.',
+      sortOrder: 1,
+    },
+  ],
+  publications: [
+    {
+      id: 'pub-ieee-dt',
+      title: 'Digital Twin-Enabled Self-Healing Web Application',
+      publisher: 'IEEE',
+      year: '2026',
+      state: 'Approved & Published',
+      role: 'Co-author (team paper)',
+      abstractSummary: 'Co-authored research on AI-driven self-healing architectures and Digital Twin frameworks for resilient, scalable web systems.',
     },
   ],
 };
@@ -93,13 +100,13 @@ describe('Phase 2 Public Portfolio UI Pages', () => {
       vi.fn().mockImplementation(() =>
         Promise.resolve({
           ok: true,
-          json: () => Promise.resolve(mockSummary),
+          json: () => Promise.resolve(confirmedSummary),
         })
       )
     );
   });
 
-  it('renders AboutPage with verified operator name and resume download action', async () => {
+  it('renders AboutPage with verified operator name, resume link, and research publication', async () => {
     render(
       <MemoryRouter>
         <AboutPage />
@@ -110,11 +117,12 @@ describe('Phase 2 Public Portfolio UI Pages', () => {
       expect(screen.getByRole('heading', { level: 1, name: /about me/i })).toBeInTheDocument();
       expect(screen.getByText('Girish Gowda H R')).toBeInTheDocument();
       expect(screen.getByRole('link', { name: /resume/i })).toBeInTheDocument();
-      expect(screen.getByText('girishgowda0428@gmail.com')).toBeInTheDocument();
+      expect(screen.getByText(/Digital Twin-Enabled Self-Healing Web Application/i)).toBeInTheDocument();
+      expect(screen.getByText(/Certified Fitness Trainer/i)).toBeInTheDocument();
     });
   });
 
-  it('renders SkillsPage with categories and competencies', async () => {
+  it('renders SkillsPage with confirmed categories and competencies', async () => {
     render(
       <MemoryRouter>
         <SkillsPage />
@@ -123,13 +131,13 @@ describe('Phase 2 Public Portfolio UI Pages', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('heading', { level: 1, name: /skills & competencies/i })).toBeInTheDocument();
-      expect(screen.getByRole('heading', { level: 2, name: 'Languages & Core Runtimes' })).toBeInTheDocument();
-      expect(screen.getByText('Java 21 LTS')).toBeInTheDocument();
-      expect(screen.getByText('TypeScript')).toBeInTheDocument();
+      expect(screen.getByRole('heading', { level: 2, name: 'Programming Languages' })).toBeInTheDocument();
+      expect(screen.getByText(/Java \(OOP, Collections/i)).toBeInTheDocument();
+      expect(screen.getByText('Python')).toBeInTheDocument();
     });
   });
 
-  it('renders ProjectsPage with project card and technologies badges', async () => {
+  it('renders ProjectsPage with confirmed projects and technology tags', async () => {
     render(
       <MemoryRouter>
         <ProjectsPage />
@@ -138,12 +146,12 @@ describe('Phase 2 Public Portfolio UI Pages', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('heading', { level: 1, name: /featured projects/i })).toBeInTheDocument();
-      expect(screen.getByText('GIRISH Identity & Quantified-Self Platform')).toBeInTheDocument();
-      expect(screen.getByText('Three.js')).toBeInTheDocument();
+      expect(screen.getByText('Digital Twin-Enabled Self-Healing Web Application')).toBeInTheDocument();
+      expect(screen.getByText('Population Analysis of Karnataka Districts')).toBeInTheDocument();
     });
   });
 
-  it('renders ExperiencePage with career timeline', async () => {
+  it('renders ExperiencePage gracefully when career history is empty', async () => {
     render(
       <MemoryRouter>
         <ExperiencePage />
@@ -152,12 +160,12 @@ describe('Phase 2 Public Portfolio UI Pages', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('heading', { level: 1, name: /professional experience/i })).toBeInTheDocument();
-      expect(screen.getByText('Enterprise Cloud Systems')).toBeInTheDocument();
-      expect(screen.getByText('Current Position')).toBeInTheDocument();
+      expect(screen.getByText(/University Hire Software Engineer Candidate/i)).toBeInTheDocument();
+      expect(screen.getByText(/RV College of Engineering, Bengaluru/i)).toBeInTheDocument();
     });
   });
 
-  it('renders EducationPage with degree and honors', async () => {
+  it('renders EducationPage with MCA and BCA academic credentials', async () => {
     render(
       <MemoryRouter>
         <EducationPage />
@@ -166,12 +174,29 @@ describe('Phase 2 Public Portfolio UI Pages', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('heading', { level: 1, name: /education & credentials/i })).toBeInTheDocument();
-      expect(screen.getByText('Bachelor of Engineering (B.E.)')).toBeInTheDocument();
-      expect(screen.getByText('Visvesvaraya Technological University')).toBeInTheDocument();
+      expect(screen.getByText('RV College of Engineering')).toBeInTheDocument();
+      expect(screen.getByText('Vidyavahini First Grade College')).toBeInTheDocument();
+      expect(screen.getByText(/CGPA 8.91\/10.0/i)).toBeInTheDocument();
     });
   });
 
-  it('renders PrivacyNoticePage with zero-knowledge commitments', async () => {
+  it('ensures zero SYNTHETIC or lorem strings appear in public pages', async () => {
+    const { container } = render(
+      <MemoryRouter>
+        <AboutPage />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { level: 1, name: /about me/i })).toBeInTheDocument();
+    });
+
+    const htmlContent = container.innerHTML.toLowerCase();
+    expect(htmlContent).not.toContain('synthetic');
+    expect(htmlContent).not.toContain('lorem');
+  });
+
+  it('renders PrivacyNoticePage with zero-knowledge commitments and passes axe A11y', async () => {
     const { container } = render(
       <MemoryRouter>
         <PrivacyNoticePage />

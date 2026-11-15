@@ -22,6 +22,7 @@ public class PublicPortfolioService {
     private final ExperienceRepository experienceRepository;
     private final EducationRepository educationRepository;
     private final CertificateRepository certificateRepository;
+    private final PublicationRepository publicationRepository;
     private final ObjectMapper objectMapper;
 
     public PublicPortfolioService(
@@ -31,6 +32,7 @@ public class PublicPortfolioService {
             ExperienceRepository experienceRepository,
             EducationRepository educationRepository,
             CertificateRepository certificateRepository,
+            PublicationRepository publicationRepository,
             ObjectMapper objectMapper
     ) {
         this.profileRepository = profileRepository;
@@ -39,6 +41,7 @@ public class PublicPortfolioService {
         this.experienceRepository = experienceRepository;
         this.educationRepository = educationRepository;
         this.certificateRepository = certificateRepository;
+        this.publicationRepository = publicationRepository;
         this.objectMapper = objectMapper;
     }
 
@@ -89,6 +92,13 @@ public class PublicPortfolioService {
                 .toList();
     }
 
+    public List<PublicPublicationDto> getPublicPublications() {
+        return publicationRepository.findByIsPublishedTrueOrderBySortOrderAsc()
+                .stream()
+                .map(this::toPublicationDto)
+                .toList();
+    }
+
     public PublicPortfolioSummaryDto getPortfolioSummary() {
         PublicProfileDto profile = getPublicProfile();
         List<PublicSkillCategoryDto> skills = getPublicSkills();
@@ -96,8 +106,9 @@ public class PublicPortfolioService {
         List<PublicExperienceDto> experience = getPublicExperience();
         List<PublicEducationDto> education = getPublicEducation();
         List<PublicCertificateDto> certificates = getPublicCertificates();
+        List<PublicPublicationDto> publications = getPublicPublications();
 
-        return new PublicPortfolioSummaryDto(profile, skills, projects, experience, education, certificates);
+        return new PublicPortfolioSummaryDto(profile, skills, projects, experience, education, certificates, publications);
     }
 
     private PublicProfileDto toProfileDto(Profile profile) {
@@ -165,7 +176,7 @@ public class PublicPortfolioService {
                 edu.getInstitution(),
                 edu.getDegree(),
                 edu.getFieldOfStudy(),
-                edu.getStartYear(),
+                edu.getStartYear() != null ? edu.getStartYear() : 0,
                 edu.getEndYear(),
                 edu.getGradeOrGpa(),
                 edu.getDescription(),
@@ -182,6 +193,21 @@ public class PublicPortfolioService {
                 cert.getCredentialId(),
                 cert.getCredentialUrl(),
                 cert.getSortOrder()
+        );
+    }
+
+    private PublicPublicationDto toPublicationDto(Publication pub) {
+        return new PublicPublicationDto(
+                pub.getId().toString(),
+                pub.getTitle(),
+                pub.getPublisher(),
+                pub.getPublicationYear(),
+                pub.getState(),
+                pub.getRole(),
+                pub.getAbstractSummary(),
+                pub.getDoi(),
+                pub.getUrl(),
+                pub.getConference()
         );
     }
 

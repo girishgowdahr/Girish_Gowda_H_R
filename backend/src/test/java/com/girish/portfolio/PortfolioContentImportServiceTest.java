@@ -1,9 +1,8 @@
 package com.girish.portfolio;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.girish.portfolio.api.dto.*;
 import com.girish.portfolio.application.PortfolioContentImportService;
-import com.girish.portfolio.application.PublicPortfolioService;
+import com.girish.portfolio.infra.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,89 +10,122 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Collections;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class PortfolioContentImportServiceTest {
 
     @Mock
-    private PublicPortfolioService publicPortfolioService;
+    private ProfileRepository profileRepository;
+    @Mock
+    private SkillCategoryRepository skillCategoryRepository;
+    @Mock
+    private SkillItemRepository skillItemRepository;
+    @Mock
+    private ProjectRepository projectRepository;
+    @Mock
+    private ExperienceRepository experienceRepository;
+    @Mock
+    private EducationRepository educationRepository;
+    @Mock
+    private CertificateRepository certificateRepository;
+    @Mock
+    private PublicationRepository publicationRepository;
 
     private PortfolioContentImportService importService;
 
     @BeforeEach
     void setUp() {
-        importService = new PortfolioContentImportService(new ObjectMapper(), publicPortfolioService);
+        importService = new PortfolioContentImportService(
+                new ObjectMapper(),
+                profileRepository,
+                skillCategoryRepository,
+                skillItemRepository,
+                projectRepository,
+                experienceRepository,
+                educationRepository,
+                certificateRepository,
+                publicationRepository
+        );
     }
 
     @Test
-    @DisplayName("Should successfully parse and validate valid portfolio JSON string")
-    void shouldParseAndValidate() throws IOException {
-        String json = """
+    @DisplayName("Should successfully parse and validate authentic owner resume content JSON")
+    void shouldParseAndValidateContent() throws IOException {
+        try (InputStream is = getClass().getResourceAsStream("/content/girish-content.json")) {
+            assertThat(is).isNotNull();
+            PortfolioContentImportService.ContentDocument doc = importService.parseAndValidate(is);
+
+            assertThat(doc).isNotNull();
+            assertThat(doc.profile.displayName).isEqualTo("Girish Gowda H R");
+            assertThat(doc.profile.headline).contains("Software Engineer");
+            assertThat(doc.education).hasSize(4);
+            assertThat(doc.skills).hasSize(7);
+            assertThat(doc.projects).hasSize(2);
+            assertThat(doc.publications).hasSize(1);
+            assertThat(doc.certificates).hasSize(1);
+            assertThat(doc.experience).isEmpty();
+        }
+    }
+
+    @Test
+    @DisplayName("Should reject JSON with unknown fields (FAIL_ON_UNKNOWN_PROPERTIES)")
+    void shouldRejectUnknownFields() {
+        String invalidJson = """
                 {
-                  "profile": {
-                    "fullName": "Girish Gowda H R",
-                    "headline": "Full-Stack Software Engineer",
-                    "bio": "Bio description",
-                    "location": "Bengaluru, India",
-                    "email": "girishgowda0428@gmail.com",
-                    "githubUrl": "https://github.com/girishgowdahr"
-                  },
-                  "skillCategories": [],
-                  "featuredProjects": [],
-                  "experience": [],
+                  "contentVersion": 1,
+                  "source": "test",
+                  "unexpectedField": "illegal_data",
+                  "rules": { "publishOnlyIfStatus": ["CONFIRMED_FROM_RESUME"], "unconfirmedNeverPublished": true },
+                  "profile": { "id": "p", "status": "CONFIRMED_FROM_RESUME", "visibility": "PUBLISHED", "displayName": "Girish", "headline": "Dev", "location": "BLR", "languages": [], "summary": "bio", "careerGoal": "role" },
+                  "contacts": [],
                   "education": [],
-                  "certificates": []
+                  "skills": [],
+                  "projects": [],
+                  "publications": [],
+                  "certificates": [],
+                  "achievements": [],
+                  "experience": [],
+                  "keyStrengths": [],
+                  "ownerQuestionsOpen": []
                 }
                 """;
 
-        PublicPortfolioSummaryDto summary = importService.parseAndValidate(json);
-
-        assertThat(summary).isNotNull();
-        assertThat(summary.profile().fullName()).isEqualTo("Girish Gowda H R");
-        assertThat(summary.profile().email()).isEqualTo("girishgowda0428@gmail.com");
+        assertThatThrownBy(() -> importService.parseAndValidate(new ByteArrayInputStream(invalidJson.getBytes(StandardCharsets.UTF_8))))
+                .isInstanceOf(Exception.class)
+                .hasMessageContaining("unexpectedField");
     }
 
     @Test
-    @DisplayName("Should throw IllegalArgumentException when profile full name is missing")
+    @DisplayName("Should throw IllegalArgumentException when profile display name is missing")
     void shouldFailWhenNameMissing() {
         String json = """
                 {
-                  "profile": {
-                    "headline": "Full-Stack Software Engineer",
-                    "email": "girishgowda0428@gmail.com"
-                  }
+                  "contentVersion": 1,
+                  "source": "test",
+                  "rules": { "publishOnlyIfStatus": ["CONFIRMED_FROM_RESUME"], "unconfirmedNeverPublished": true },
+                  "profile": { "id": "p", "status": "CONFIRMED_FROM_RESUME", "visibility": "PUBLISHED", "displayName": "", "headline": "Dev", "location": "BLR", "languages": [], "summary": "bio", "careerGoal": "role" },
+                  "contacts": [],
+                  "education": [],
+                  "skills": [],
+                  "projects": [],
+                  "publications": [],
+                  "certificates": [],
+                  "achievements": [],
+                  "experience": [],
+                  "keyStrengths": [],
+                  "ownerQuestionsOpen": []
                 }
                 """;
 
-        assertThatThrownBy(() -> importService.parseAndValidate(json))
+        assertThatThrownBy(() -> importService.parseAndValidate(new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8))))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Profile full name is required");
-    }
-
-    @Test
-    @DisplayName("Should export current portfolio state as formatted JSON")
-    void shouldExportCurrentContent() throws IOException {
-        PublicProfileDto profile = new PublicProfileDto(
-                "Girish Gowda H R", "Headline", "Bio", "Bengaluru", "girishgowda0428@gmail.com",
-                "https://github.com/girishgowdahr", null, null, null
-        );
-        PublicPortfolioSummaryDto summary = new PublicPortfolioSummaryDto(
-                profile, Collections.emptyList(), Collections.emptyList(),
-                Collections.emptyList(), Collections.emptyList(), Collections.emptyList()
-        );
-
-        when(publicPortfolioService.getPortfolioSummary()).thenReturn(summary);
-
-        String json = importService.exportCurrentContentAsJson();
-
-        assertThat(json).isNotBlank();
-        assertThat(json).contains("Girish Gowda H R");
-        assertThat(json).contains("girishgowda0428@gmail.com");
+                .hasMessageContaining("Profile display name is required");
     }
 }

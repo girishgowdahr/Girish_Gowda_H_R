@@ -1,0 +1,318 @@
+{
+  "contentVersion": 1,
+  "source": "Girish_Gowda_HR.pdf (owner-supplied resume). Nothing in this file is invented. Fields not in the resume are null and status UNCONFIRMED.",
+  "rules": {
+    "publishOnlyIfStatus": [
+      "CONFIRMED_FROM_RESUME",
+      "CONFIRMED_BY_OWNER"
+    ],
+    "unconfirmedNeverPublished": true,
+    "phoneNumber": "intentionally excluded; add later via private dashboard only"
+  },
+  "profile": {
+    "id": "profile",
+    "status": "CONFIRMED_FROM_RESUME",
+    "visibility": "PUBLISHED",
+    "displayName": "Girish Gowda H R",
+    "headline": "Software Engineer | Java, SQL & Full-Stack Development",
+    "location": "Bengaluru, Karnataka",
+    "languages": [
+      "Kannada",
+      "English"
+    ],
+    "summary": "MCA student at RV College of Engineering with a strong foundation in Java, SQL, and web development, and hands-on experience across the full software development lifecycle, from design and coding to testing and deployment. Co-authored an IEEE-published research paper on a Digital Twin-enabled self-healing web application, demonstrating applied system design and distributed computing skills. Comfortable working in agile, collaborative team environments and building reusable software components. Seeking a University Hire Software Engineer role to deliver innovative digital solutions and grow within a global engineering team.",
+    "careerGoal": "University Hire Software Engineer role",
+    "availabilityStatus": null
+  },
+  "contacts": [
+    {
+      "id": "email-college",
+      "type": "email",
+      "value": "girishgowdahr.mca25@rvce.edu.in",
+      "status": "CONFIRMED_FROM_RESUME",
+      "visibility": "DRAFT",
+      "note": "College address; may stop working after graduation. Owner must decide whether to publish or replace with a personal address."
+    },
+    {
+      "id": "linkedin",
+      "type": "linkedin",
+      "value": null,
+      "status": "UNCONFIRMED",
+      "visibility": "DRAFT"
+    },
+    {
+      "id": "github",
+      "type": "github",
+      "value": null,
+      "status": "UNCONFIRMED",
+      "visibility": "DRAFT"
+    }
+  ],
+  "education": [
+    {
+      "id": "edu-mca",
+      "level": "MCA",
+      "institution": "RV College of Engineering",
+      "city": "Bengaluru",
+      "start": "2025",
+      "end": "2027",
+      "endIsExpected": true,
+      "inProgress": true,
+      "score": null,
+      "status": "CONFIRMED_FROM_RESUME",
+      "visibility": "PUBLISHED",
+      "sortOrder": 1
+    },
+    {
+      "id": "edu-bca",
+      "level": "BCA",
+      "institution": "Vidyavahini First Grade College",
+      "city": "Tumkur",
+      "start": "2021",
+      "end": "2024",
+      "score": {
+        "type": "CGPA",
+        "value": 8.91,
+        "outOf": 10.0
+      },
+      "status": "CONFIRMED_FROM_RESUME",
+      "visibility": "PUBLISHED",
+      "sortOrder": 2
+    },
+    {
+      "id": "edu-puc",
+      "level": "PUC (Science)",
+      "institution": "St. Philomena's PU College",
+      "city": "Mysore",
+      "start": null,
+      "end": "2021",
+      "score": {
+        "type": "PERCENTAGE",
+        "value": 86.5,
+        "outOf": 100
+      },
+      "status": "CONFIRMED_FROM_RESUME",
+      "visibility": "PUBLISHED",
+      "sortOrder": 3
+    },
+    {
+      "id": "edu-sslc",
+      "level": "SSLC",
+      "institution": "St. Anne's High School",
+      "city": "Dodda Alahalli",
+      "start": null,
+      "end": "2019",
+      "score": {
+        "type": "PERCENTAGE",
+        "value": 86.24,
+        "outOf": 100
+      },
+      "status": "CONFIRMED_FROM_RESUME",
+      "visibility": "PUBLISHED",
+      "sortOrder": 4
+    }
+  ],
+  "skills": [
+    {
+      "id": "sk-lang",
+      "group": "Programming Languages",
+      "items": [
+        "Java (OOP, Collections, Exception Handling, File Handling)",
+        "Python",
+        "C",
+        "SQL"
+      ],
+      "status": "CONFIRMED_FROM_RESUME",
+      "visibility": "PUBLISHED",
+      "sortOrder": 1
+    },
+    {
+      "id": "sk-web",
+      "group": "Web & Software Development",
+      "items": [
+        "HTML5",
+        "CSS3",
+        "Bootstrap",
+        "Servlet Development (Java EE)",
+        "Reusable component design"
+      ],
+      "status": "CONFIRMED_FROM_RESUME",
+      "visibility": "PUBLISHED",
+      "sortOrder": 2
+    },
+    {
+      "id": "sk-db",
+      "group": "Databases & Data Management",
+      "items": [
+        "SQL (DDL, DML, DQL, DCL, TCL)",
+        "Sub-queries",
+        "Normalization",
+        "Data Analytics"
+      ],
+      "status": "CONFIRMED_FROM_RESUME",
+      "visibility": "PUBLISHED",
+      "sortOrder": 3
+    },
+    {
+      "id": "sk-sdlc",
+      "group": "Software Development Lifecycle",
+      "items": [
+        "Requirements analysis",
+        "Design",
+        "Development",
+        "Testing",
+        "Deployment",
+        "Support"
+      ],
+      "status": "CONFIRMED_FROM_RESUME",
+      "visibility": "PUBLISHED",
+      "sortOrder": 4
+    },
+    {
+      "id": "sk-practice",
+      "group": "Practices & Tools",
+      "items": [
+        "Agile teamwork",
+        "Version control fundamentals",
+        "Standard programming practices",
+        "Data Structures",
+        "Computer Architecture"
+      ],
+      "status": "CONFIRMED_FROM_RESUME",
+      "visibility": "PUBLISHED",
+      "sortOrder": 5
+    },
+    {
+      "id": "sk-learning",
+      "group": "Currently Building",
+      "items": [
+        "Machine Learning (scikit-learn)",
+        "Python for Data Analytics",
+        "Generative AI Fundamentals"
+      ],
+      "status": "CONFIRMED_FROM_RESUME",
+      "visibility": "PUBLISHED",
+      "sortOrder": 6
+    },
+    {
+      "id": "sk-soft",
+      "group": "Soft Skills",
+      "items": [
+        "Problem Solving",
+        "Technical Communication",
+        "Cross-functional Collaboration",
+        "Independent Work"
+      ],
+      "status": "CONFIRMED_FROM_RESUME",
+      "visibility": "PUBLISHED",
+      "sortOrder": 7
+    }
+  ],
+  "projects": [
+    {
+      "id": "proj-digital-twin",
+      "title": "Digital Twin-Enabled Self-Healing Web Application",
+      "kind": "Team Project (3 members)",
+      "start": "2023",
+      "end": "2024",
+      "bullets": [
+        "Designed and implemented a self-healing web application using Digital Twin technology to monitor systems and auto-recover from failures, applying software system design, testing, and support skills.",
+        "Applied distributed computing and real-time data synchronization between physical and virtual components, following standard software development lifecycle practices.",
+        "Co-authored an IEEE-approved and published research paper (2026) demonstrating AI-driven system design and software engineering principles."
+      ],
+      "technologies": [
+        "Java",
+        "Servlet",
+        "HTML",
+        "CSS",
+        "SQL"
+      ],
+      "links": [],
+      "repoUrl": null,
+      "demoUrl": null,
+      "status": "CONFIRMED_FROM_RESUME",
+      "visibility": "PUBLISHED",
+      "sortOrder": 1
+    },
+    {
+      "id": "proj-population",
+      "title": "Population Analysis of Karnataka Districts",
+      "kind": "Academic Project",
+      "start": "2022",
+      "end": "2022",
+      "bullets": [
+        "Built a C-language application to ingest, process, and display census-style population data for Karnataka districts.",
+        "Implemented structured file handling, input validation, and formatted CLI output, reinforcing core programming and data-handling fundamentals."
+      ],
+      "technologies": [
+        "C",
+        "File handling",
+        "CLI"
+      ],
+      "links": [],
+      "repoUrl": null,
+      "demoUrl": null,
+      "status": "CONFIRMED_FROM_RESUME",
+      "visibility": "PUBLISHED",
+      "sortOrder": 2
+    }
+  ],
+  "publications": [
+    {
+      "id": "pub-ieee-dt",
+      "title": "Digital Twin-Enabled Self-Healing Web Application",
+      "publisher": "IEEE",
+      "year": "2026",
+      "state": "Approved & Published",
+      "role": "Co-author (team paper)",
+      "abstractSummary": "Co-authored research on AI-driven self-healing architectures and Digital Twin frameworks for resilient, scalable web systems.",
+      "doi": null,
+      "url": null,
+      "conference": null,
+      "status": "CONFIRMED_FROM_RESUME",
+      "visibility": "PUBLISHED",
+      "missingFields": [
+        "doi",
+        "url",
+        "conference",
+        "co-author names"
+      ],
+      "sortOrder": 1
+    }
+  ],
+  "certificates": [
+    {
+      "id": "cert-fitness",
+      "title": "Certified Fitness Trainer",
+      "issuer": "Indian Institute of Skill Development Training",
+      "issueDate": null,
+      "credentialId": null,
+      "media": null,
+      "description": "Reflects discipline, goal orientation, and continuous learning.",
+      "status": "CONFIRMED_FROM_RESUME",
+      "visibility": "PUBLISHED",
+      "missingFields": [
+        "issueDate",
+        "credentialId",
+        "certificate image"
+      ],
+      "sortOrder": 1
+    }
+  ],
+  "achievements": [],
+  "experience": [],
+  "keyStrengths": [
+    "Rapid aptitude for learning and applying new technologies to real-world engineering challenges",
+    "Proven ability to deliver research-grade software in collaborative, agile team environments",
+    "Strong written and verbal communication skills; open to feedback and adaptive across team settings",
+    "Effective planning, prioritization, and ownership of end-to-end development tasks"
+  ],
+  "ownerQuestionsOpen": [
+    "Publish college email or provide a personal one?",
+    "LinkedIn and GitHub URLs",
+    "IEEE DOI/link, conference name, co-author names",
+    "Certificate issue date, ID and image",
+    "Any project repo/demo links",
+    "Fuller public fitness-trainer profile: yes/no"
+  ]
+}

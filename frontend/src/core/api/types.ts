@@ -2,9 +2,9 @@ export interface PublicProfile {
   fullName: string;
   headline: string;
   bio: string;
-  location: string;
-  email: string;
-  githubUrl: string;
+  location?: string;
+  email?: string;
+  githubUrl?: string;
   linkedinUrl?: string;
   resumeUrl?: string;
   avatarImageUrl?: string;
@@ -12,8 +12,8 @@ export interface PublicProfile {
 
 export interface PublicSkillItem {
   name: string;
-  proficiency: string;
-  yearsOfExperience: number;
+  proficiency?: string;
+  yearsOfExperience?: number;
   icon?: string;
   isFeatured: boolean;
 }
@@ -56,7 +56,7 @@ export interface PublicEducation {
   institution: string;
   degree: string;
   fieldOfStudy: string;
-  startYear: number;
+  startYear?: number;
   endYear?: number;
   gradeOrGpa?: string;
   description?: string;
@@ -66,11 +66,25 @@ export interface PublicEducation {
 export interface PublicCertificate {
   name: string;
   issuingOrganization: string;
-  issueDate: string;
+  issueDate?: string;
   expirationDate?: string;
   credentialId?: string;
   credentialUrl?: string;
+  description?: string;
   sortOrder: number;
+}
+
+export interface PublicPublication {
+  id: string;
+  title: string;
+  publisher: string;
+  year: string;
+  state?: string;
+  role?: string;
+  abstractSummary?: string;
+  doi?: string;
+  url?: string;
+  conference?: string;
 }
 
 export interface PublicPortfolioSummary {
@@ -80,6 +94,7 @@ export interface PublicPortfolioSummary {
   experience: PublicExperience[];
   education: PublicEducation[];
   certificates: PublicCertificate[];
+  publications?: PublicPublication[];
 }
 
 export interface ModuleRoute {
@@ -99,5 +114,5 @@ export interface PublicModule {
   sortOrder: number;
   avatarThemeId?: string;
   routes: ModuleRoute[];
-  featureFlags: Record<string, unknown>;
+  featureFlags?: Record<string, boolean>;
 }

@@ -32,12 +32,12 @@ class PublicPortfolioControllerIntegrationTest {
                 .andExpect(header().exists(HttpHeaders.ETAG))
                 .andExpect(header().string(HttpHeaders.CACHE_CONTROL, containsString("public")))
                 .andExpect(jsonPath("$.profile.fullName", equalTo("Girish Gowda H R")))
-                .andExpect(jsonPath("$.profile.email", equalTo("girishgowda0428@gmail.com")))
-                .andExpect(jsonPath("$.skillCategories", hasSize(greaterThanOrEqualTo(4))))
-                .andExpect(jsonPath("$.featuredProjects", hasSize(greaterThanOrEqualTo(2))))
-                .andExpect(jsonPath("$.experience", hasSize(greaterThanOrEqualTo(1))))
-                .andExpect(jsonPath("$.education", hasSize(greaterThanOrEqualTo(1))))
-                .andExpect(jsonPath("$.certificates", hasSize(greaterThanOrEqualTo(1))))
+                .andExpect(jsonPath("$.skillCategories", hasSize(7)))
+                .andExpect(jsonPath("$.featuredProjects", hasSize(2)))
+                .andExpect(jsonPath("$.education", hasSize(4)))
+                .andExpect(jsonPath("$.certificates", hasSize(1)))
+                .andExpect(jsonPath("$.publications", hasSize(1)))
+                .andExpect(jsonPath("$.experience", hasSize(0)))
                 .andReturn();
 
         String etag = result.getResponse().getHeader(HttpHeaders.ETAG);
@@ -56,8 +56,8 @@ class PublicPortfolioControllerIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.fullName", equalTo("Girish Gowda H R")))
-                .andExpect(jsonPath("$.email", equalTo("girishgowda0428@gmail.com")))
-                .andExpect(jsonPath("$.githubUrl", containsString("girishgowdahr")));
+                .andExpect(jsonPath("$.headline", equalTo("Software Engineer | Java, SQL & Full-Stack Development")))
+                .andExpect(jsonPath("$.location", equalTo("Bengaluru, Karnataka")));
     }
 
     @Test
@@ -66,17 +66,17 @@ class PublicPortfolioControllerIntegrationTest {
         mockMvc.perform(get("/api/v1/public/portfolio/projects")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[*].slug", hasItems("girish-identity-platform", "free-fire-avatar-engine")));
+                .andExpect(jsonPath("$[*].slug", hasItems("digital-twin", "population")));
     }
 
     @Test
     @DisplayName("GET /api/v1/public/portfolio/projects/{slug} returns 200 for existing project and 404 for unknown")
     void shouldReturnProjectBySlugOr404() throws Exception {
-        mockMvc.perform(get("/api/v1/public/portfolio/projects/free-fire-avatar-engine")
+        mockMvc.perform(get("/api/v1/public/portfolio/projects/digital-twin")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.slug", equalTo("free-fire-avatar-engine")))
-                .andExpect(jsonPath("$.technologies", hasItem("Three.js")));
+                .andExpect(jsonPath("$.slug", equalTo("digital-twin")))
+                .andExpect(jsonPath("$.technologies", hasItem("Java")));
 
         mockMvc.perform(get("/api/v1/public/portfolio/projects/non-existent-project")
                         .accept(MediaType.APPLICATION_JSON))
@@ -90,6 +90,8 @@ class PublicPortfolioControllerIntegrationTest {
         mockMvc.perform(get("/api/v1/public/portfolio/resume"))
                 .andExpect(status().isOk())
                 .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, containsString("attachment")))
-                .andExpect(content().string(containsString("Girish Gowda H R")));
+                .andExpect(content().string(containsString("Girish Gowda H R")))
+                .andExpect(content().string(containsString("RV College of Engineering")))
+                .andExpect(content().string(not(containsStringIgnoringCase("synthetic"))));
     }
 }

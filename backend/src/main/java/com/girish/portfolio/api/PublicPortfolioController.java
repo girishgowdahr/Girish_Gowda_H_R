@@ -102,6 +102,15 @@ public class PublicPortfolioController {
         return buildCachedResponse(certificates, ifNoneMatch);
     }
 
+    @GetMapping("/publications")
+    @Operation(summary = "List research publications", description = "Verified academic publications, journals, and conference papers")
+    public ResponseEntity<List<PublicPublicationDto>> getPublications(
+            @RequestHeader(value = "If-None-Match", required = false) String ifNoneMatch
+    ) {
+        List<PublicPublicationDto> publications = portfolioService.getPublicPublications();
+        return buildCachedResponse(publications, ifNoneMatch);
+    }
+
     @GetMapping("/resume")
     @Operation(summary = "Download official resume", description = "Returns downloadable resume curriculum vitae document")
     public ResponseEntity<byte[]> downloadResume() {
@@ -109,22 +118,39 @@ public class PublicPortfolioController {
         String resumeMarkdown = """
                 # %s
                 **%s**
-                Email: %s | Location: %s | GitHub: %s | LinkedIn: %s
+                Location: %s
                 
                 ## Summary
                 %s
                 
-                ## Technical Specializations
-                - Languages: Java 21 LTS, TypeScript, Python, SQL
-                - Frameworks: Spring Boot 3, React 19, Three.js, PostgreSQL
-                - Systems: Distributed Monoliths, WebGL Shaders, Zero-Knowledge Cryptography
+                ## Education
+                - **Master of Computer Applications (MCA)** — RV College of Engineering, Bengaluru (2025 – 2027, In Progress)
+                - **Bachelor of Computer Applications (BCA)** — Vidyavahini First Grade College, Tumkur (2021 – 2024, CGPA: 8.91/10.0)
+                - **PUC (Science)** — St. Philomena's PU College, Mysore (Completed 2021, 86.5%%)
+                - **SSLC** — St. Anne's High School, Dodda Alahalli (Completed 2019, 86.24%%)
+                
+                ## Technical Skills
+                - **Programming Languages:** Java (OOP, Collections, Exception Handling, File Handling), Python, C, SQL
+                - **Web & Software Development:** HTML5, CSS3, Bootstrap, Servlet Development (Java EE), Reusable component design
+                - **Databases & Data Management:** SQL (DDL, DML, DQL, DCL, TCL), Sub-queries, Normalization, Data Analytics
+                - **Software Development Lifecycle:** Requirements analysis, Design, Development, Testing, Deployment, Support
+                - **Practices & Tools:** Agile teamwork, Version control fundamentals, Data Structures, Computer Architecture
+                
+                ## Projects
+                - **Digital Twin-Enabled Self-Healing Web Application** (Team Project, 2023 – 2024)
+                  Designed and implemented self-healing web application using Digital Twin technology to monitor systems and auto-recover from failures.
+                - **Population Analysis of Karnataka Districts** (Academic Project, 2022)
+                  Built C-language application to ingest, process, and display census-style population data for Karnataka districts.
+                
+                ## Publications
+                - **Digital Twin-Enabled Self-Healing Web Application** — IEEE (2026), Approved & Published (Co-author)
+                
+                ## Certifications
+                - **Certified Fitness Trainer** — Indian Institute of Skill Development Training
                 """.formatted(
                 profile.fullName(),
                 profile.headline(),
-                profile.email(),
-                profile.location(),
-                profile.githubUrl(),
-                profile.linkedinUrl(),
+                profile.location() != null ? profile.location() : "Bengaluru, Karnataka",
                 profile.bio()
         );
 

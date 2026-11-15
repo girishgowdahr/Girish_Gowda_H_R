@@ -24,8 +24,11 @@ public class Education {
     @Column(name = "field_of_study", nullable = false, length = 128)
     private String fieldOfStudy;
 
-    @Column(name = "start_year", nullable = false)
-    private int startYear;
+    @Column(length = 128)
+    private String city;
+
+    @Column(name = "start_year")
+    private Integer startYear;
 
     @Column(name = "end_year")
     private Integer endYear;
@@ -35,6 +38,9 @@ public class Education {
 
     @Column(columnDefinition = "TEXT")
     private String description;
+
+    @Column(length = 32)
+    private String status;
 
     @Column(name = "sort_order", nullable = false)
     private int sortOrder;
@@ -51,17 +57,19 @@ public class Education {
     public Education() {
     }
 
-    public Education(UUID id, String institution, String degree, String fieldOfStudy,
-                     int startYear, Integer endYear, String gradeOrGpa, String description,
-                     int sortOrder, boolean isPublished, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+    public Education(UUID id, String institution, String degree, String fieldOfStudy, String city,
+                     Integer startYear, Integer endYear, String gradeOrGpa, String description,
+                     String status, int sortOrder, boolean isPublished, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
         this.id = id;
         this.institution = institution;
         this.degree = degree;
         this.fieldOfStudy = fieldOfStudy;
+        this.city = city;
         this.startYear = startYear;
         this.endYear = endYear;
         this.gradeOrGpa = gradeOrGpa;
         this.description = description;
+        this.status = status;
         this.sortOrder = sortOrder;
         this.isPublished = isPublished;
         this.createdAt = createdAt;
@@ -100,11 +108,19 @@ public class Education {
         this.fieldOfStudy = fieldOfStudy;
     }
 
-    public int getStartYear() {
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public Integer getStartYear() {
         return startYear;
     }
 
-    public void setStartYear(int startYear) {
+    public void setStartYear(Integer startYear) {
         this.startYear = startYear;
     }
 
@@ -130,6 +146,14 @@ public class Education {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public int getSortOrder() {

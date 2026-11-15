@@ -1,6 +1,5 @@
 import React from 'react';
-import { ExternalLink, Mail, Shield } from 'lucide-react';
-import { GithubIcon, LinkedinIcon } from './SocialIcons';
+import { Shield } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 
 export const Footer: React.FC = () => {
@@ -17,36 +16,6 @@ export const Footer: React.FC = () => {
         </div>
 
         <div style={linksColStyles}>
-          <a
-            href="https://github.com/girishgowdahr"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={linkStyles}
-            aria-label="Girish Gowda H R GitHub Profile (opens in new tab)"
-          >
-            <GithubIcon size={15} />
-            <span>GitHub</span>
-            <ExternalLink size={12} />
-          </a>
-          <a
-            href="https://linkedin.com/in/girishgowdahr"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={linkStyles}
-            aria-label="Girish Gowda H R LinkedIn Profile (opens in new tab)"
-          >
-            <LinkedinIcon size={15} />
-            <span>LinkedIn</span>
-            <ExternalLink size={12} />
-          </a>
-          <a
-            href="mailto:girishgowda0428@gmail.com"
-            style={linkStyles}
-            aria-label="Send email to Girish Gowda H R"
-          >
-            <Mail size={15} />
-            <span>Email</span>
-          </a>
           <NavLink
             to="/privacy"
             style={linkStyles}

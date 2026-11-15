@@ -26,6 +26,9 @@ public class Project {
     @Column(nullable = false, length = 255)
     private String tagline;
 
+    @Column(length = 128)
+    private String kind;
+
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
@@ -36,6 +39,10 @@ public class Project {
     @Column(nullable = false, columnDefinition = "JSONB")
     private String technologies;
 
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "JSONB")
+    private String bullets;
+
     @Column(name = "github_url", length = 255)
     private String githubUrl;
 
@@ -44,6 +51,9 @@ public class Project {
 
     @Column(name = "demo_url", length = 255)
     private String demoUrl;
+
+    @Column(length = 32)
+    private String status;
 
     @Column(nullable = false)
     private boolean featured;
@@ -63,20 +73,23 @@ public class Project {
     public Project() {
     }
 
-    public Project(UUID id, String slug, String title, String tagline, String description,
-                   String category, String technologies, String githubUrl, String liveUrl,
-                   String demoUrl, boolean featured, int sortOrder, boolean isPublished,
+    public Project(UUID id, String slug, String title, String tagline, String kind, String description,
+                   String category, String technologies, String bullets, String githubUrl, String liveUrl,
+                   String demoUrl, String status, boolean featured, int sortOrder, boolean isPublished,
                    OffsetDateTime createdAt, OffsetDateTime updatedAt) {
         this.id = id;
         this.slug = slug;
         this.title = title;
         this.tagline = tagline;
+        this.kind = kind;
         this.description = description;
         this.category = category;
         this.technologies = technologies;
+        this.bullets = bullets;
         this.githubUrl = githubUrl;
         this.liveUrl = liveUrl;
         this.demoUrl = demoUrl;
+        this.status = status;
         this.featured = featured;
         this.sortOrder = sortOrder;
         this.isPublished = isPublished;
@@ -116,6 +129,14 @@ public class Project {
         this.tagline = tagline;
     }
 
+    public String getKind() {
+        return kind;
+    }
+
+    public void setKind(String kind) {
+        this.kind = kind;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -140,6 +161,14 @@ public class Project {
         this.technologies = technologies;
     }
 
+    public String getBullets() {
+        return bullets;
+    }
+
+    public void setBullets(String bullets) {
+        this.bullets = bullets;
+    }
+
     public String getGithubUrl() {
         return githubUrl;
     }
@@ -162,6 +191,14 @@ public class Project {
 
     public void setDemoUrl(String demoUrl) {
         this.demoUrl = demoUrl;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public boolean isFeatured() {

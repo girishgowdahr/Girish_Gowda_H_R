@@ -117,6 +117,17 @@ export async function getCertificates(): Promise<PublicCertificate[]> {
   }
 }
 
+export async function getPublications(): Promise<import('./types').PublicPublication[]> {
+  try {
+    const summary = await getPortfolioSummary();
+    return summary.publications || [];
+  } catch {
+    const res = await fetch('/public-content.json');
+    const data = await res.json();
+    return data.publications || [];
+  }
+}
+
 export async function getPublicModules(): Promise<PublicModule[]> {
   try {
     const controller = new AbortController();

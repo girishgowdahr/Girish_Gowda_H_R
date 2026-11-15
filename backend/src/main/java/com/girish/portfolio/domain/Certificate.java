@@ -22,7 +22,7 @@ public class Certificate {
     @Column(name = "issuing_organization", nullable = false, length = 180)
     private String issuingOrganization;
 
-    @Column(name = "issue_date", nullable = false)
+    @Column(name = "issue_date")
     private LocalDate issueDate;
 
     @Column(name = "expiration_date")
@@ -33,6 +33,12 @@ public class Certificate {
 
     @Column(name = "credential_url", length = 255)
     private String credentialUrl;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
+    @Column(length = 32)
+    private String status;
 
     @Column(name = "sort_order", nullable = false)
     private int sortOrder;
@@ -51,7 +57,8 @@ public class Certificate {
 
     public Certificate(UUID id, String name, String issuingOrganization, LocalDate issueDate,
                        LocalDate expirationDate, String credentialId, String credentialUrl,
-                       int sortOrder, boolean isPublished, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+                       String description, String status, int sortOrder, boolean isPublished,
+                       OffsetDateTime createdAt, OffsetDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.issuingOrganization = issuingOrganization;
@@ -59,6 +66,8 @@ public class Certificate {
         this.expirationDate = expirationDate;
         this.credentialId = credentialId;
         this.credentialUrl = credentialUrl;
+        this.description = description;
+        this.status = status;
         this.sortOrder = sortOrder;
         this.isPublished = isPublished;
         this.createdAt = createdAt;
@@ -119,6 +128,22 @@ public class Certificate {
 
     public void setCredentialUrl(String credentialUrl) {
         this.credentialUrl = credentialUrl;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public int getSortOrder() {
