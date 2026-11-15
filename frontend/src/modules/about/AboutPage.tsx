@@ -61,6 +61,24 @@ export const AboutPage: React.FC = () => {
       </header>
 
       <div style={gridStyles}>
+        {/* Full-Body Professional Standing Portrait */}
+        <aside style={portraitCardStyles} aria-label="Official Executive Portrait">
+          <div style={portraitWrapperStyles}>
+            <img
+              src={`${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/assets/avatar/avatar_professional.png`}
+              alt="Girish Gowda H R - Executive Professional Portrait"
+              style={portraitImageStyles}
+            />
+          </div>
+          <div style={portraitMetaStyles}>
+            <div style={portraitTagStyles}>
+              <Award size={14} color="#f59e0b" />
+              <span>EXECUTIVE VANGUARD</span>
+            </div>
+            <p style={portraitCaptionStyles}>Girish Gowda H R · Full-Body Standing Identity</p>
+          </div>
+        </aside>
+
         <section style={cardStyles} aria-labelledby="bio-heading">
           <h2 id="bio-heading" style={sectionTitleStyles}>
             <Terminal size={18} color="var(--accent-cyan)" />
@@ -451,4 +469,63 @@ const certLinkStyles: React.CSSProperties = {
   alignItems: 'center',
   gap: '0.35rem',
   marginTop: '0.25rem',
+};
+
+const portraitCardStyles: React.CSSProperties = {
+  backgroundColor: 'var(--bg-surface)',
+  border: '1px solid rgba(245, 158, 11, 0.3)',
+  borderRadius: '8px',
+  padding: '1.5rem',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '1rem',
+  background: 'linear-gradient(180deg, rgba(245, 158, 11, 0.05) 0%, rgba(13, 17, 26, 0.85) 100%)',
+  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), 0 0 24px rgba(245, 158, 11, 0.12)',
+};
+
+const portraitWrapperStyles: React.CSSProperties = {
+  width: '100%',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  padding: '0.25rem 0',
+};
+
+const portraitImageStyles: React.CSSProperties = {
+  maxHeight: '460px',
+  width: 'auto',
+  maxWidth: '100%',
+  objectFit: 'contain',
+  borderRadius: '6px',
+  filter: 'drop-shadow(0 14px 28px rgba(0, 0, 0, 0.8))',
+};
+
+const portraitMetaStyles: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: '0.35rem',
+  textAlign: 'center',
+};
+
+const portraitTagStyles: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '0.4rem',
+  fontSize: '0.75rem',
+  fontWeight: 800,
+  letterSpacing: '0.08em',
+  color: '#f59e0b',
+  backgroundColor: 'rgba(245, 158, 11, 0.1)',
+  padding: '0.3rem 0.75rem',
+  borderRadius: '4px',
+  border: '1px solid rgba(245, 158, 11, 0.3)',
+};
+
+const portraitCaptionStyles: React.CSSProperties = {
+  fontSize: '0.8rem',
+  color: 'var(--text-secondary)',
+  margin: 0,
 };

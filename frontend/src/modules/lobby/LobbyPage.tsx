@@ -73,18 +73,30 @@ export const LobbyPage: React.FC = () => {
           <div style={fallbackCardStyles}>
             <div style={fallbackAvatarWrapperStyles}>
               <img
-                src={`${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/assets/avatar/coding-avatar.jpg`}
+                src={
+                  outfit === 'gym' || outfit === 'fitness-titan'
+                    ? `${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/assets/avatar/avatar_fitness.png`
+                    : outfit === 'formal-suit' || outfit === 'crimson-vanguard'
+                    ? `${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/assets/avatar/avatar_professional.png`
+                    : `${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/assets/avatar/avatar_coding.png`
+                }
                 alt="Girish Gowda H R - Human Tactical Hero Avatar"
                 style={fallbackAvatarImgStyles}
               />
             </div>
             <div style={fallbackDetailsStyles}>
               <h2 style={avatarNameStyles}>GIRISH GOWDA H R</h2>
-              <p style={avatarRoleStyles}>Human Tactical Hero // Software Engineer</p>
+              <p style={avatarRoleStyles}>
+                {outfit === 'gym' || outfit === 'fitness-titan'
+                  ? 'Fitness Titan // Athletic Core & Iron Discipline'
+                  : outfit === 'formal-suit' || outfit === 'crimson-vanguard'
+                  ? 'Executive Vanguard // Corporate Command & Strategic Lead'
+                  : 'Coding Operative // Cyberpunk Dev Lab & Systems Architect'}
+              </p>
               <div style={avatarPillsStyles}>
                 <span style={pillStyles}>Free Fire Platform Aesthetic</span>
                 <span style={pillStyles}>Character Bible Identity</span>
-                <span style={pillStyles}>High-Resolution 2D Mode</span>
+                <span style={pillStyles}>Full-Body High-Res Portrait</span>
               </div>
             </div>
           </div>
@@ -94,8 +106,16 @@ export const LobbyPage: React.FC = () => {
       {/* Four Platform Pillars */}
       <section style={pillarsGridStyles} aria-label="Platform Architecture Pillars">
         <article style={cardStyles}>
-          <div style={cardIconStyles}>
-            <Code size={24} color="var(--accent-cyan)" />
+          <div style={cardHeaderRowStyles}>
+            <div style={cardIconStyles}>
+              <Code size={24} color="var(--accent-cyan)" />
+            </div>
+            <img
+              src={`${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/assets/avatar/avatar_professional.png`}
+              alt="Executive Vanguard Persona"
+              style={miniAvatarPreviewStyles('rgba(245, 158, 11, 0.45)')}
+              title="Executive Vanguard Persona"
+            />
           </div>
           <h3 style={cardTitleStyles}>1. Public Portfolio</h3>
           <p style={cardTextStyles}>
@@ -107,12 +127,20 @@ export const LobbyPage: React.FC = () => {
         </article>
 
         <article style={cardStyles}>
-          <div style={cardIconStyles}>
-            <Dumbbell size={24} color="var(--accent-emerald)" />
+          <div style={cardHeaderRowStyles}>
+            <div style={cardIconStyles}>
+              <Dumbbell size={24} color="var(--accent-emerald)" />
+            </div>
+            <img
+              src={`${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/assets/avatar/avatar_fitness.png`}
+              alt="Fitness Titan Persona"
+              style={miniAvatarPreviewStyles('rgba(16, 185, 129, 0.45)')}
+              title="Fitness Titan Persona"
+            />
           </div>
           <h3 style={cardTitleStyles}>2. Private Dashboard</h3>
           <p style={cardTextStyles}>
-            Quantified self tracking for workouts, study sessions, journal reflections, and personal milestones. Protected by strict session authentication.
+            Quantified self tracking for workouts, athletic discipline, study sessions, journal reflections, and personal milestones. Protected by strict session authentication.
           </p>
           <span style={lockedBadgeStyles}>
             <Lock size={12} /> Owner Authenticated
@@ -133,8 +161,16 @@ export const LobbyPage: React.FC = () => {
         </article>
 
         <article style={cardStyles}>
-          <div style={cardIconStyles}>
-            <Box size={24} color="var(--accent-amber)" />
+          <div style={cardHeaderRowStyles}>
+            <div style={cardIconStyles}>
+              <Box size={24} color="var(--accent-amber)" />
+            </div>
+            <img
+              src={`${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/assets/avatar/avatar_coding.png`}
+              alt="Coding Operative Persona"
+              style={miniAvatarPreviewStyles('rgba(0, 240, 255, 0.45)')}
+              title="Coding Operative Persona"
+            />
           </div>
           <h3 style={cardTitleStyles}>4. 3D Avatar Identity</h3>
           <p style={cardTextStyles}>
@@ -422,3 +458,19 @@ const activeBadgeStyles: React.CSSProperties = {
   borderRadius: 'var(--radius-sm)',
   alignSelf: 'flex-start',
 };
+
+const cardHeaderRowStyles: React.CSSProperties = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: '0.25rem',
+};
+
+const miniAvatarPreviewStyles = (accentGlow: string): React.CSSProperties => ({
+  height: '52px',
+  width: '26px',
+  objectFit: 'cover',
+  borderRadius: '4px',
+  border: `1px solid ${accentGlow}`,
+  boxShadow: `0 4px 12px rgba(0, 0, 0, 0.5), 0 0 10px ${accentGlow}`,
+});

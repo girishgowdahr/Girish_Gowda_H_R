@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Layers, FolderGit2, ExternalLink, Star, Filter } from 'lucide-react';
+import { Layers, FolderGit2, ExternalLink, Star, Filter, Terminal } from 'lucide-react';
 import { GithubIcon } from '../../design-system/components/SocialIcons';
 import { getProjects } from '../../core/api/portfolioApi';
 import { PublicProject } from '../../core/api/types';
@@ -53,6 +53,33 @@ export const ProjectsPage: React.FC = () => {
           Architectural designs, high-throughput microservices, 3D WebGL lobbies, and client-side encryption.
         </p>
       </header>
+
+      {/* Coding Operative Hero Spotlight */}
+      <section style={operativeHeroStyles} aria-label="Lead Developer Operative Spotlight">
+        <div style={operativeHeroContentStyles}>
+          <div style={taglineBadgeStyles}>
+            <Terminal size={14} color="var(--accent-cyan)" />
+            <span>CODING OPERATIVE // LEAD DEVELOPER</span>
+          </div>
+          <h2 style={operativeHeroTitleStyles}>Systems Engineering &amp; Architecture</h2>
+          <p style={operativeHeroDescStyles}>
+            Hands-on full-stack development featuring high-performance Java Spring Boot services, responsive React &amp; TypeScript interfaces, resilient database schemas, and interactive 3D WebGL scenes.
+          </p>
+          <div style={operativeTechPillsStyles}>
+            <span style={pillStyles}>Java 21 / Spring Boot</span>
+            <span style={pillStyles}>React 18 / TypeScript</span>
+            <span style={pillStyles}>PostgreSQL &amp; Redis</span>
+            <span style={pillStyles}>Three.js 3D Engine</span>
+          </div>
+        </div>
+        <div style={operativeAvatarWrapperStyles}>
+          <img
+            src={`${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/assets/avatar/avatar_coding.png`}
+            alt="Girish Gowda H R - Coding Operative Standing Portrait"
+            style={operativeAvatarImgStyles}
+          />
+        </div>
+      </section>
 
       {/* Filter Chips */}
       <div style={filterContainerStyles} role="toolbar" aria-label="Project category filter">
@@ -347,4 +374,73 @@ const loadingStyles: React.CSSProperties = {
   padding: '4rem 1rem',
   textAlign: 'center',
   color: 'var(--text-muted)',
+};
+
+const operativeHeroStyles: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  flexWrap: 'wrap',
+  gap: '2rem',
+  padding: '2rem',
+  backgroundColor: 'var(--bg-surface)',
+  borderRadius: 'var(--radius-lg)',
+  border: '1px solid rgba(0, 240, 255, 0.25)',
+  background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.05) 0%, rgba(13, 17, 26, 0.95) 100%)',
+  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), 0 0 24px rgba(0, 240, 255, 0.1)',
+};
+
+const operativeHeroContentStyles: React.CSSProperties = {
+  flex: '1 1 360px',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '0.85rem',
+};
+
+const operativeHeroTitleStyles: React.CSSProperties = {
+  fontSize: '1.6rem',
+  fontWeight: 800,
+  letterSpacing: '-0.01em',
+  color: 'var(--text-primary)',
+};
+
+const operativeHeroDescStyles: React.CSSProperties = {
+  fontSize: '0.95rem',
+  color: 'var(--text-secondary)',
+  lineHeight: 1.6,
+  maxWidth: '600px',
+};
+
+const operativeTechPillsStyles: React.CSSProperties = {
+  display: 'flex',
+  gap: '0.5rem',
+  flexWrap: 'wrap',
+  marginTop: '0.25rem',
+};
+
+const pillStyles: React.CSSProperties = {
+  fontSize: '0.75rem',
+  fontWeight: 600,
+  color: 'var(--accent-cyan)',
+  backgroundColor: 'rgba(0, 240, 255, 0.08)',
+  border: '1px solid rgba(0, 240, 255, 0.2)',
+  padding: '0.25rem 0.65rem',
+  borderRadius: '4px',
+};
+
+const operativeAvatarWrapperStyles: React.CSSProperties = {
+  flex: '0 0 auto',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  maxHeight: '380px',
+};
+
+const operativeAvatarImgStyles: React.CSSProperties = {
+  maxHeight: '360px',
+  width: 'auto',
+  maxWidth: '100%',
+  objectFit: 'contain',
+  borderRadius: '8px',
+  filter: 'drop-shadow(0 12px 24px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 16px rgba(0, 240, 255, 0.25))',
 };
