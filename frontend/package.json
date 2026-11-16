@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "generate:avatar": "node scripts/generate-avatar-glb.js"
   },
   "dependencies": {
     "@types/three": "^0.187.0",
