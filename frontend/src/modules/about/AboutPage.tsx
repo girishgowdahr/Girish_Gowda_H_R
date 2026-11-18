@@ -93,10 +93,13 @@ export const AboutPage: React.FC = () => {
 
           <div style={actionRowStyles}>
             <a
-              href="/api/v1/public/portfolio/resume"
-              download="Girish_Gowda_H_R_Resume.md"
+              href={`${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/resume/Girish_Gowda_H_R_Resume.pdf`}
+              download="Girish_Gowda_H_R_Resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
               style={primaryButtonStyles}
-              aria-label="Download Girish Gowda H R resume document"
+              aria-label="Download Girish Gowda H R resume PDF"
+              title="Download or open Girish Gowda H R resume PDF"
             >
               <Download size={16} />
               <span>Download Resume</span>

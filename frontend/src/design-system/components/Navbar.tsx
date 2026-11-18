@@ -51,19 +51,27 @@ export const Navbar: React.FC = () => {
 
         <div style={rightActionsStyles}>
           <a
-            href="/api/v1/public/portfolio/resume"
-            download="Girish_Gowda_H_R_Resume.md"
+            href={`${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/resume/Girish_Gowda_H_R_Resume.pdf`}
+            download="Girish_Gowda_H_R_Resume.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
             style={resumeButtonStyles}
-            aria-label="Download Girish Gowda H R resume document"
+            aria-label="Download Girish Gowda H R resume PDF"
+            title="Download or open Girish Gowda H R resume PDF"
           >
             <Download size={14} />
             <span>Resume</span>
           </a>
 
-          <span style={systemBadgeStyles}>
+          <NavLink
+            to="/dashboard"
+            style={({ isActive }) => systemBadgeStyles(isActive)}
+            title="Access Private Dashboard & Personal Bio"
+            aria-label="Access Private Dashboard Enclave"
+          >
             <Shield size={14} color="var(--accent-cyan)" />
             <span>ENCLAVE</span>
-          </span>
+          </NavLink>
         </div>
       </div>
     </header>
@@ -168,7 +176,7 @@ const rightActionsStyles: React.CSSProperties = {
   gap: '0.75rem',
 };
 
-const systemBadgeStyles: React.CSSProperties = {
+const systemBadgeStyles = (isActive: boolean): React.CSSProperties => ({
   display: 'flex',
   alignItems: 'center',
   gap: '0.35rem',
@@ -177,7 +185,10 @@ const systemBadgeStyles: React.CSSProperties = {
   letterSpacing: '0.05em',
   padding: '0.35rem 0.65rem',
   borderRadius: 'var(--radius-sm)',
-  background: 'var(--bg-card)',
-  border: '1px solid var(--border-subtle)',
-  color: 'var(--text-muted)',
-};
+  background: isActive ? 'rgba(0, 240, 255, 0.15)' : 'var(--bg-card)',
+  border: isActive ? '1px solid rgba(0, 240, 255, 0.4)' : '1px solid var(--border-subtle)',
+  color: isActive ? 'var(--accent-cyan)' : 'var(--text-muted)',
+  textDecoration: 'none',
+  cursor: 'pointer',
+  transition: 'all var(--transition-fast)',
+});

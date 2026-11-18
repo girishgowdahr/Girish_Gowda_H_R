@@ -1,16 +1,16 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { Eye, Shield, Sparkles, Zap, Camera, Box } from 'lucide-react';
+import { Shield, Sparkles, Camera, Box } from 'lucide-react';
 
 export type OutfitId = 'dev-hoodie' | 'gym' | 'formal-suit' | 'cyber-merc' | 'fitness-titan' | 'crimson-vanguard';
 export type PoseId = 'ready' | 'victory' | 'guard';
 
 interface LobbyAvatarSceneProps {
   outfit: OutfitId;
-  pose: PoseId;
+  pose?: PoseId;
   onOutfitChange: (outfit: OutfitId) => void;
-  onPoseChange: (pose: PoseId) => void;
+  onPoseChange?: (pose: PoseId) => void;
 }
 
 function checkWebGLSupport(): boolean {
@@ -25,9 +25,7 @@ function checkWebGLSupport(): boolean {
 
 export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
   outfit,
-  pose,
   onOutfitChange,
-  onPoseChange,
 }) => {
   const mountRef = useRef<HTMLDivElement>(null);
   const stageCardRef = useRef<HTMLDivElement>(null);
@@ -103,12 +101,29 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top) / rect.height - 0.5;
     setTilt({
-      x: x * 14, // Max tilt degrees
-      y: -y * 10,
+      x: x * 12,
+      y: -y * 8,
     });
   };
 
   const handleMouseLeave = () => {
+    setTilt({ x: 0, y: 0 });
+  };
+
+  // Handle Touch Parallax for Mobile Devices
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!stageCardRef.current || e.touches.length === 0) return;
+    const touch = e.touches[0];
+    const rect = stageCardRef.current.getBoundingClientRect();
+    const x = (touch.clientX - rect.left) / rect.width - 0.5;
+    const y = (touch.clientY - rect.top) / rect.height - 0.5;
+    setTilt({
+      x: Math.max(-10, Math.min(10, x * 12)),
+      y: Math.max(-8, Math.min(8, -y * 8)),
+    });
+  };
+
+  const handleTouchEnd = () => {
     setTilt({ x: 0, y: 0 });
   };
 
@@ -319,6 +334,8 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
       ref={stageCardRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
       style={stageWrapperStyles(activeConfig.accentGlow)}
     >
       {/* Background 3D Holographic Pedestal & Energy Canvas */}
@@ -354,14 +371,7 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
             <img
               src={activeConfig.image}
               alt={`Girish Gowda H R - ${activeConfig.name}`}
-              style={{
-                ...avatarImageStyles,
-                transform: pose === 'victory'
-                  ? 'scale(1.02) translateY(-4px)'
-                  : pose === 'guard'
-                  ? 'scale(0.99) translateY(2px)'
-                  : 'scale(1.0)',
-              }}
+              style={avatarImageStyles}
             />
           </div>
         ) : (
@@ -417,12 +427,6 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
           </div>
         </div>
 
-        {/* Center Drag / Parallax Hint */}
-        <div style={dragHintStyles}>
-          <Eye size={14} color={activeConfig.accentHex} />
-          <span>MOVE CURSOR TO INSPECT 3D DEPTH · HEAD-TO-SHOES VIEW</span>
-        </div>
-
         {/* Bottom Customization Wardrobe HUD */}
         <div style={hudBottomRowStyles}>
           {/* Outfits Selector */}
@@ -460,37 +464,6 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
               </button>
             </div>
             <span style={outfitTaglineStyles}>{activeConfig.tag}</span>
-          </div>
-
-          {/* Emotes / Poses Selector */}
-          <div style={controlGroupStyles}>
-            <span style={controlLabelStyles}>
-              <Zap size={14} color="var(--accent-amber)" />
-              <span>EMOTE / STANCE</span>
-            </span>
-            <div style={buttonsRowStyles}>
-              <button
-                type="button"
-                onClick={() => onPoseChange('ready')}
-                style={poseButtonStyles(pose === 'ready')}
-              >
-                HERO STANCE
-              </button>
-              <button
-                type="button"
-                onClick={() => onPoseChange('victory')}
-                style={poseButtonStyles(pose === 'victory')}
-              >
-                VICTORY SALUTE
-              </button>
-              <button
-                type="button"
-                onClick={() => onPoseChange('guard')}
-                style={poseButtonStyles(pose === 'guard')}
-              >
-                BATTLE READY
-              </button>
-            </div>
           </div>
         </div>
       </div>
@@ -722,28 +695,11 @@ const presetInfoStyles = (accent: string): React.CSSProperties => ({
   boxShadow: `0 0 15px ${accent}44`,
 });
 
-const dragHintStyles: React.CSSProperties = {
-  alignSelf: 'center',
-  display: 'flex',
-  alignItems: 'center',
-  gap: '0.45rem',
-  fontSize: '0.74rem',
-  fontWeight: 700,
-  letterSpacing: '0.08em',
-  color: 'var(--text-secondary)',
-  backgroundColor: 'rgba(6, 7, 10, 0.75)',
-  backdropFilter: 'blur(8px)',
-  padding: '0.35rem 0.95rem',
-  borderRadius: 'var(--radius-full)',
-  border: '1px solid var(--border-subtle)',
-};
-
 const hudBottomRowStyles: React.CSSProperties = {
   display: 'flex',
-  justifyContent: 'space-between',
+  justifyContent: 'center',
   alignItems: 'flex-end',
-  flexWrap: 'wrap',
-  gap: '1.25rem',
+  width: '100%',
   pointerEvents: 'auto',
 };
 
@@ -753,11 +709,12 @@ const controlGroupStyles: React.CSSProperties = {
   gap: '0.45rem',
   backgroundColor: 'rgba(10, 13, 20, 0.92)',
   backdropFilter: 'blur(16px)',
-  padding: '0.85rem 1.1rem',
+  padding: '0.85rem 1.25rem',
   borderRadius: 'var(--radius-lg)',
   border: '1px solid var(--border-subtle)',
   boxShadow: '0 8px 30px rgba(0, 0, 0, 0.6)',
-  maxWidth: '540px',
+  maxWidth: '560px',
+  width: '100%',
 };
 
 const controlLabelStyles: React.CSSProperties = {
@@ -806,20 +763,4 @@ const swatchStyles = (color: string): React.CSSProperties => ({
   borderRadius: '50%',
   backgroundColor: color,
   boxShadow: `0 0 6px ${color}`,
-});
-
-const poseButtonStyles = (active: boolean): React.CSSProperties => ({
-  display: 'inline-flex',
-  alignItems: 'center',
-  fontSize: '0.75rem',
-  fontWeight: 700,
-  letterSpacing: '0.04em',
-  padding: '0.45rem 0.85rem',
-  borderRadius: 'var(--radius-sm)',
-  backgroundColor: active ? 'rgba(245, 158, 11, 0.2)' : 'rgba(255, 255, 255, 0.04)',
-  color: active ? 'var(--accent-amber)' : 'var(--text-secondary)',
-  border: active ? '1px solid var(--accent-amber)' : '1px solid var(--border-subtle)',
-  boxShadow: active ? '0 0 12px rgba(245, 158, 11, 0.35)' : 'none',
-  transition: 'all 200ms ease',
-  cursor: 'pointer',
 });

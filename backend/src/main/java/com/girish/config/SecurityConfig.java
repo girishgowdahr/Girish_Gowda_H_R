@@ -1,5 +1,6 @@
 package com.girish.config;
 
+import com.girish.security.infra.SessionAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -8,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -18,9 +20,12 @@ import org.springframework.web.cors.CorsConfigurationSource;
 public class SecurityConfig {
 
     private final CorsConfigurationSource corsConfigurationSource;
+    private final SessionAuthenticationFilter sessionAuthenticationFilter;
 
-    public SecurityConfig(CorsConfigurationSource corsConfigurationSource) {
+    public SecurityConfig(CorsConfigurationSource corsConfigurationSource,
+                          SessionAuthenticationFilter sessionAuthenticationFilter) {
         this.corsConfigurationSource = corsConfigurationSource;
+        this.sessionAuthenticationFilter = sessionAuthenticationFilter;
     }
 
     @Bean
@@ -28,6 +33,9 @@ public class SecurityConfig {
         http
                 // CORS configuration
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
+
+                // Disable CSRF for stateless REST API
+                .csrf(AbstractHttpConfigurer::disable)
 
                 // Disable basic/form login prompts for REST API
                 .httpBasic(AbstractHttpConfigurer::disable)
@@ -37,6 +45,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+
+                // Add Session Cookie Authentication Filter
+                .addFilterBefore(sessionAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 
                 // Application hardening & security headers baseline (Task 1.8)
                 .headers(headers -> headers
@@ -68,6 +79,12 @@ public class SecurityConfig {
 
                         // Public read-model APIs (Phase 2)
                         .requestMatchers("/api/v1/public/**").permitAll()
+
+                        // Authentication endpoints
+                        .requestMatchers("/api/v1/auth/**").permitAll()
+
+                        // Protected Private Dashboard & Personal Bio APIs
+                        .requestMatchers("/api/v1/private/**").authenticated()
 
                         // Any other request strictly requires authentication
                         .anyRequest().authenticated()

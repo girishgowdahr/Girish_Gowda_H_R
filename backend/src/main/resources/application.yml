@@ -38,10 +38,12 @@ spring:
     schemas:
       - core
       - portfolio
+      - personal
     default-schema: core
     locations:
       - classpath:db/migration/core
       - classpath:db/migration/portfolio
+      - classpath:db/migration/personal
     baseline-on-migrate: true
 
 management:

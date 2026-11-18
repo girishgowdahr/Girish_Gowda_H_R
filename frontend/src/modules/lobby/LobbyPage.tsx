@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Box, Code, Dumbbell, Lock, Sparkles, Terminal } from 'lucide-react';
-import { LobbyAvatarScene, OutfitId, PoseId } from '../../scene3d/avatar/LobbyAvatarScene';
+import { LobbyAvatarScene, OutfitId } from '../../scene3d/avatar/LobbyAvatarScene';
 
 export const LobbyPage: React.FC = () => {
   const [outfit, setOutfit] = useState<OutfitId>('dev-hoodie');
-  const [pose, setPose] = useState<PoseId>('ready');
   const [viewMode, setViewMode] = useState<'3d' | '2d'>('3d');
 
   return (
@@ -65,9 +64,7 @@ export const LobbyPage: React.FC = () => {
         {viewMode === '3d' ? (
           <LobbyAvatarScene
             outfit={outfit}
-            pose={pose}
             onOutfitChange={setOutfit}
-            onPoseChange={setPose}
           />
         ) : (
           <div style={fallbackCardStyles}>
@@ -101,6 +98,10 @@ export const LobbyPage: React.FC = () => {
             </div>
           </div>
         )}
+
+        <div style={stageCaptionStyles}>
+          <span>Interactive Avatar: Move cursor or touch to inspect 3D depth parallax &bull; Full-body portrait view</span>
+        </div>
       </section>
 
       {/* Four Platform Pillars */}
@@ -142,9 +143,14 @@ export const LobbyPage: React.FC = () => {
           <p style={cardTextStyles}>
             Quantified self tracking for workouts, athletic discipline, study sessions, journal reflections, and personal milestones. Protected by strict session authentication.
           </p>
-          <span style={lockedBadgeStyles}>
-            <Lock size={12} /> Owner Authenticated
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', marginTop: 'auto', flexWrap: 'wrap' }}>
+            <Link to="/dashboard" style={cardLinkStyles}>
+              Access Dashboard &rarr;
+            </Link>
+            <span style={lockedBadgeStyles}>
+              <Lock size={12} /> Master Password Protected
+            </span>
+          </div>
         </article>
 
         <article style={cardStyles}>
@@ -474,3 +480,13 @@ const miniAvatarPreviewStyles = (accentGlow: string): React.CSSProperties => ({
   border: `1px solid ${accentGlow}`,
   boxShadow: `0 4px 12px rgba(0, 0, 0, 0.5), 0 0 10px ${accentGlow}`,
 });
+
+const stageCaptionStyles: React.CSSProperties = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  fontSize: '0.75rem',
+  color: 'var(--text-muted)',
+  letterSpacing: '0.04em',
+  paddingTop: '0.25rem',
+};
