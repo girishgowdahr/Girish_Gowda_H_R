@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/generate-avatar-glb.js",
     "build": "tsc && vite build",
+    "generate:avatar": "node scripts/generate-avatar-glb.js",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",

@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { Shield, Sparkles, Camera, Box } from 'lucide-react';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { Shield, Sparkles, Camera, Box, RotateCcw } from 'lucide-react';
+import { loadAvatarModel, AvatarLoadResult } from './CharacterModel';
 
 export type OutfitId = 'dev-hoodie' | 'gym' | 'formal-suit' | 'cyber-merc' | 'fitness-titan' | 'crimson-vanguard';
 export type PoseId = 'ready' | 'victory' | 'guard';
@@ -29,11 +30,22 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
 }) => {
   const mountRef = useRef<HTMLDivElement>(null);
   const stageCardRef = useRef<HTMLDivElement>(null);
+  const controlsRef = useRef<OrbitControls | null>(null);
+  const modelGroupRef = useRef<THREE.Group | null>(null);
   const [renderMode, setRenderMode] = useState<'cinematic' | 'webgl3d'>('cinematic');
+  const renderModeRef = useRef(renderMode);
+  renderModeRef.current = renderMode;
   const [imageTransitioning, setImageTransitioning] = useState(false);
 
   // 3D Parallax Tilt state
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+  const handleResetView = () => {
+    if (controlsRef.current) {
+      controlsRef.current.reset();
+    }
+    setTilt({ x: 0, y: 0 });
+  };
 
   // Resolve base path for public assets (supports both local and GitHub Pages)
   const baseUrl = useMemo(() => {
@@ -96,6 +108,7 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
 
   // Handle Interactive 3D Mouse Parallax
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (renderMode === 'webgl3d') return;
     if (!stageCardRef.current) return;
     const rect = stageCardRef.current.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width - 0.5;
@@ -112,6 +125,7 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
 
   // Handle Touch Parallax for Mobile Devices
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (renderMode === 'webgl3d') return;
     if (!stageCardRef.current || e.touches.length === 0) return;
     const touch = e.touches[0];
     const rect = stageCardRef.current.getBoundingClientRect();
@@ -152,8 +166,22 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
     scene.fog = new THREE.FogExp2(0x07080d, 0.06);
 
     const camera = new THREE.PerspectiveCamera(34, width / height, 0.1, 100);
-    camera.position.set(0, 1.15, 3.4);
-    camera.lookAt(0, 0.9, 0);
+    camera.position.set(0, 1.15, 3.2);
+    camera.lookAt(0, 0.95, 0);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.enablePan = false;
+    controls.rotateSpeed = 0.8;
+    controls.minDistance = 1.8;
+    controls.maxDistance = 4.8;
+    controls.minPolarAngle = Math.PI * 0.28;
+    controls.maxPolarAngle = Math.PI * 0.51;
+    controls.target.set(0, 0.95, 0);
+    controls.enabled = renderModeRef.current === 'webgl3d';
+    controls.saveState();
+    controlsRef.current = controls;
 
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -251,37 +279,22 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
     const particleSystem = new THREE.Points(particleGeo, particleMat);
     scene.add(particleSystem);
 
-    // Optional 3D Model Loading (GLTF / GLB Support - Requirement 9)
-    let gltfModel: THREE.Group | null = null;
-    const modelPath = `${baseUrl}/assets/avatar/avatar.glb`;
-    const loader = new GLTFLoader();
-    loader.load(
-      modelPath,
-      (gltf) => {
-        gltfModel = gltf.scene;
-        gltfModel.scale.set(1.0, 1.0, 1.0);
-        gltfModel.position.set(0, 0, 0);
-        gltfModel.traverse((child) => {
-          if ((child as THREE.Mesh).isMesh) {
-            child.castShadow = true;
-            child.receiveShadow = true;
-          }
-        });
-        scene.add(gltfModel);
-      },
-      undefined,
-      () => {
-        // Fallback: If no GLB is uploaded, the cinematic render stage delivers photorealistic visuals
-      }
-    );
+    // -------------------------------------------------------------------------
+    // Load Central 3D Human Avatar Character (PBR 3D GLTF / Procedural Model)
+    // -------------------------------------------------------------------------
+    let avatarResult: AvatarLoadResult | null = null;
+    loadAvatarModel(baseUrl, activeConfig.lightColorNum).then((result) => {
+      avatarResult = result;
+      modelGroupRef.current = result.group;
+      result.group.visible = renderModeRef.current === 'webgl3d';
+      scene.add(result.group);
+    });
 
     // Animation Loop
     let animationFrameId: number;
-    let clock = new THREE.Clock();
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
-      clock.getElapsedTime();
 
       // Pedestal ring rotation
       ringMesh.rotation.z += 0.007;
@@ -297,9 +310,9 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
       }
       posAttr.needsUpdate = true;
 
-      // Rotate GLTF model if loaded
-      if (gltfModel) {
-        gltfModel.rotation.y += 0.004;
+      // Update 3D rotation controls with inertia damping
+      if (controlsRef.current && controlsRef.current.enabled) {
+        controlsRef.current.update();
       }
 
       renderer.render(scene, camera);
@@ -321,6 +334,10 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('resize', handleResize);
+      controls.dispose();
+      if (avatarResult) {
+        avatarResult.cleanUp();
+      }
       renderer.dispose();
       baseGeo.dispose();
       rimGeo.dispose();
@@ -328,6 +345,16 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
       particleGeo.dispose();
     };
   }, [activeConfig, baseUrl]);
+
+  // Synchronize 3D model visibility and OrbitControls state when toggling view mode
+  useEffect(() => {
+    if (controlsRef.current) {
+      controlsRef.current.enabled = renderMode === 'webgl3d';
+    }
+    if (modelGroupRef.current) {
+      modelGroupRef.current.visible = renderMode === 'webgl3d';
+    }
+  }, [renderMode]);
 
   return (
     <div
@@ -341,7 +368,7 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
       {/* Background 3D Holographic Pedestal & Energy Canvas */}
       <div
         ref={mountRef}
-        style={canvasBackgroundStyles}
+        style={canvasBackgroundStyles(renderMode === 'webgl3d')}
         aria-hidden="true"
       />
 
@@ -375,12 +402,10 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
             />
           </div>
         ) : (
-          <div style={webglPlaceholderStyles}>
-            <Box size={48} color={activeConfig.accentHex} />
-            <h3 style={webglModeTitleStyles}>3D WEBGL ENGINE ACTIVE</h3>
-            <p style={webglModeTextStyles}>
-              Three.js PBR renderer ready. You can inspect 360° rotation and drop rigged .glb assets into public/assets/avatar/avatar.glb.
-            </p>
+          <div style={interactiveIndicatorStyles}>
+            <span style={indicatorTextStyles(activeConfig.accentHex)}>
+              3D CHARACTER ACTIVE • DRAG TO ROTATE 360°
+            </span>
           </div>
         )}
       </div>
@@ -419,6 +444,18 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
                 <span>3D WEBGL</span>
               </button>
             </div>
+
+            {renderMode === 'webgl3d' && (
+              <button
+                type="button"
+                onClick={handleResetView}
+                style={resetBtnStyles(activeConfig.accentHex)}
+                title="Reset to original front-facing view"
+              >
+                <RotateCcw size={13} />
+                <span>RESET</span>
+              </button>
+            )}
 
             <div style={presetInfoStyles(activeConfig.accentHex)}>
               <Sparkles size={14} color={activeConfig.accentHex} />
@@ -492,14 +529,16 @@ const stageWrapperStyles = (glowColor: string): React.CSSProperties => ({
   alignItems: 'center',
 });
 
-const canvasBackgroundStyles: React.CSSProperties = {
+const canvasBackgroundStyles = (interactive: boolean): React.CSSProperties => ({
   position: 'absolute',
   inset: 0,
   zIndex: 1,
-  pointerEvents: 'none',
+  pointerEvents: interactive ? 'auto' : 'none',
+  touchAction: interactive ? 'none' : 'auto',
+  cursor: interactive ? 'grab' : 'default',
   width: '100%',
   height: '100%',
-};
+});
 
 const cyberVignetteStyles = (dimColor: string): React.CSSProperties => ({
   position: 'absolute',
@@ -557,33 +596,45 @@ const avatarImageStyles: React.CSSProperties = {
   filter: 'contrast(1.03) brightness(1.02)',
 };
 
-const webglPlaceholderStyles: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
+const interactiveIndicatorStyles: React.CSSProperties = {
+  position: 'absolute',
+  bottom: '4.8rem',
+  left: '50%',
+  transform: 'translateX(-50%)',
+  pointerEvents: 'none',
+  zIndex: 5,
+};
+
+const indicatorTextStyles = (accent: string): React.CSSProperties => ({
+  fontSize: '0.72rem',
+  fontWeight: 700,
+  letterSpacing: '0.1em',
+  color: accent,
+  backgroundColor: 'rgba(10, 13, 20, 0.75)',
+  backdropFilter: 'blur(8px)',
+  padding: '0.35rem 0.85rem',
+  borderRadius: 'var(--radius-full)',
+  border: `1px solid ${accent}44`,
+  boxShadow: `0 0 12px ${accent}25`,
+  userSelect: 'none',
+});
+
+const resetBtnStyles = (accent: string): React.CSSProperties => ({
+  display: 'inline-flex',
   alignItems: 'center',
-  justifyContent: 'center',
-  gap: '1rem',
-  textAlign: 'center',
-  padding: '2rem',
-  maxWidth: '440px',
-  backgroundColor: 'rgba(13, 17, 26, 0.85)',
-  backdropFilter: 'blur(16px)',
-  borderRadius: 'var(--radius-lg)',
-  border: '1px solid var(--border-subtle)',
-};
-
-const webglModeTitleStyles: React.CSSProperties = {
-  fontSize: '1.25rem',
-  fontWeight: 800,
-  letterSpacing: '0.06em',
-  color: 'var(--text-primary)',
-};
-
-const webglModeTextStyles: React.CSSProperties = {
-  fontSize: '0.85rem',
-  color: 'var(--text-secondary)',
-  lineHeight: 1.5,
-};
+  gap: '0.35rem',
+  fontSize: '0.72rem',
+  fontWeight: 700,
+  letterSpacing: '0.05em',
+  padding: '0.3rem 0.65rem',
+  borderRadius: 'var(--radius-full)',
+  backgroundColor: 'rgba(10, 13, 20, 0.88)',
+  color: accent,
+  border: `1px solid ${accent}55`,
+  cursor: 'pointer',
+  transition: 'all 150ms ease',
+  boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
+});
 
 const hudOverlayStyles: React.CSSProperties = {
   position: 'absolute',
