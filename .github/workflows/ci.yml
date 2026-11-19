@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Monorepo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Node.js 22 LTS
         uses: actions/setup-node@v4
@@ -72,7 +72,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Monorepo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Java 21 LTS (Temurin)
         uses: actions/setup-java@v4
@@ -102,7 +102,7 @@ jobs:
         language: ['java-kotlin', 'javascript-typescript']
     steps:
       - name: Checkout Monorepo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
