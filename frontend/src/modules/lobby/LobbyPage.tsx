@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Box, Code, Dumbbell, Lock, Sparkles, Terminal } from 'lucide-react';
+import { ArrowRight, Box, Code, Dumbbell, Lock, Sparkles } from 'lucide-react';
 import { LobbyAvatarScene, OutfitId } from '../../scene3d/avatar/LobbyAvatarScene';
 
 export const LobbyPage: React.FC = () => {
   const [outfit, setOutfit] = useState<OutfitId>('dev-hoodie');
-  const [viewMode, setViewMode] = useState<'3d' | '2d'>('3d');
 
   return (
     <div style={lobbyContainerStyles}>
@@ -36,72 +35,12 @@ export const LobbyPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 3D Battle Royale Lobby Avatar Stage */}
+      {/* 3D Interactive Avatar Stage */}
       <section style={stageSectionStyles} aria-label="Interactive 3D Avatar Game Lobby">
-        <div style={stageHeaderBarStyles}>
-          <div style={stageHeaderLeftStyles}>
-            <Terminal size={18} color="var(--accent-cyan)" />
-            <span style={stageHeaderTextStyles}>BATTLE ROYALE AVATAR LOBBY // INTERACTIVE 3D STAGE</span>
-          </div>
-          <div style={viewToggleGroupStyles}>
-            <button
-              type="button"
-              onClick={() => setViewMode('3d')}
-              style={toggleButtonStyles(viewMode === '3d')}
-            >
-              3D Interactive Stage
-            </button>
-            <button
-              type="button"
-              onClick={() => setViewMode('2d')}
-              style={toggleButtonStyles(viewMode === '2d')}
-            >
-              2D Accessible Fallback
-            </button>
-          </div>
-        </div>
-
-        {viewMode === '3d' ? (
-          <LobbyAvatarScene
-            outfit={outfit}
-            onOutfitChange={setOutfit}
-          />
-        ) : (
-          <div style={fallbackCardStyles}>
-            <div style={fallbackAvatarWrapperStyles}>
-              <img
-                src={
-                  outfit === 'gym' || outfit === 'fitness-titan'
-                    ? `${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/assets/avatar/avatar_fitness.png`
-                    : outfit === 'formal-suit' || outfit === 'crimson-vanguard'
-                    ? `${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/assets/avatar/avatar_professional.png`
-                    : `${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/assets/avatar/avatar_coding.png`
-                }
-                alt="Girish Gowda H R - Human Tactical Hero Avatar"
-                style={fallbackAvatarImgStyles}
-              />
-            </div>
-            <div style={fallbackDetailsStyles}>
-              <h2 style={avatarNameStyles}>GIRISH GOWDA H R</h2>
-              <p style={avatarRoleStyles}>
-                {outfit === 'gym' || outfit === 'fitness-titan'
-                  ? 'Fitness Titan // Athletic Core & Iron Discipline'
-                  : outfit === 'formal-suit' || outfit === 'crimson-vanguard'
-                  ? 'Executive Vanguard // Corporate Command & Strategic Lead'
-                  : 'Coding Operative // Cyberpunk Dev Lab & Systems Architect'}
-              </p>
-              <div style={avatarPillsStyles}>
-                <span style={pillStyles}>Free Fire Platform Aesthetic</span>
-                <span style={pillStyles}>Character Bible Identity</span>
-                <span style={pillStyles}>Full-Body High-Res Portrait</span>
-              </div>
-            </div>
-          </div>
-        )}
-
-        <div style={stageCaptionStyles}>
-          <span>Interactive Avatar: Move cursor or touch to inspect 3D depth parallax &bull; Full-body portrait view</span>
-        </div>
+        <LobbyAvatarScene
+          outfit={outfit}
+          onOutfitChange={setOutfit}
+        />
       </section>
 
       {/* Four Platform Pillars */}
@@ -283,110 +222,7 @@ const secondaryButtonStyles: React.CSSProperties = {
 const stageSectionStyles: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
-  gap: '0.75rem',
-};
-
-const stageHeaderBarStyles: React.CSSProperties = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  flexWrap: 'wrap',
-  gap: '1rem',
-  padding: '0.5rem 0.75rem',
-  backgroundColor: 'rgba(18, 22, 34, 0.6)',
-  borderRadius: 'var(--radius-md)',
-  border: '1px solid var(--border-subtle)',
-};
-
-const stageHeaderLeftStyles: React.CSSProperties = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: '0.5rem',
-};
-
-const stageHeaderTextStyles: React.CSSProperties = {
-  fontSize: '0.8rem',
-  fontWeight: 700,
-  letterSpacing: '0.06em',
-  color: 'var(--text-secondary)',
-};
-
-const viewToggleGroupStyles: React.CSSProperties = {
-  display: 'flex',
-  gap: '0.35rem',
-};
-
-const toggleButtonStyles = (active: boolean): React.CSSProperties => ({
-  fontSize: '0.75rem',
-  fontWeight: 700,
-  padding: '0.3rem 0.65rem',
-  borderRadius: 'var(--radius-sm)',
-  backgroundColor: active ? 'rgba(0, 240, 255, 0.15)' : 'transparent',
-  color: active ? 'var(--accent-cyan)' : 'var(--text-muted)',
-  border: active ? '1px solid rgba(0, 240, 255, 0.4)' : '1px solid transparent',
-  cursor: 'pointer',
-});
-
-const fallbackCardStyles: React.CSSProperties = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: '1.5rem',
-  flexWrap: 'wrap',
-  justifyContent: 'center',
-  padding: '3rem 2rem',
-  backgroundColor: 'var(--bg-surface)',
-  borderRadius: 'var(--radius-lg)',
-  border: '1px solid rgba(0, 240, 255, 0.2)',
-  minHeight: '400px',
-};
-
-const fallbackAvatarWrapperStyles: React.CSSProperties = {
-  maxHeight: '360px',
-  height: '100%',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-};
-
-const fallbackAvatarImgStyles: React.CSSProperties = {
-  maxHeight: '340px',
-  width: 'auto',
-  borderRadius: 'var(--radius-md)',
-  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 240, 255, 0.25)',
-  border: '1px solid rgba(0, 240, 255, 0.3)',
-};
-
-const fallbackDetailsStyles: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '0.35rem',
-};
-
-const avatarNameStyles: React.CSSProperties = {
-  fontSize: '1.25rem',
-  fontWeight: 800,
-  letterSpacing: '0.05em',
-};
-
-const avatarRoleStyles: React.CSSProperties = {
-  fontSize: '0.9rem',
-  color: 'var(--text-secondary)',
-};
-
-const avatarPillsStyles: React.CSSProperties = {
-  display: 'flex',
-  gap: '0.5rem',
-  marginTop: '0.5rem',
-  flexWrap: 'wrap',
-};
-
-const pillStyles: React.CSSProperties = {
-  fontSize: '0.75rem',
-  padding: '0.2rem 0.5rem',
-  backgroundColor: 'var(--bg-card)',
-  borderRadius: 'var(--radius-sm)',
-  border: '1px solid var(--border-subtle)',
-  color: 'var(--text-muted)',
+  width: '100%',
 };
 
 const pillarsGridStyles: React.CSSProperties = {
@@ -480,13 +316,3 @@ const miniAvatarPreviewStyles = (accentGlow: string): React.CSSProperties => ({
   border: `1px solid ${accentGlow}`,
   boxShadow: `0 4px 12px rgba(0, 0, 0, 0.5), 0 0 10px ${accentGlow}`,
 });
-
-const stageCaptionStyles: React.CSSProperties = {
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  fontSize: '0.75rem',
-  color: 'var(--text-muted)',
-  letterSpacing: '0.04em',
-  paddingTop: '0.25rem',
-};

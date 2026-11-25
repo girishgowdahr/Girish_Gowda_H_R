@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { Shield, Sparkles, Camera, Box, RotateCcw } from 'lucide-react';
+import { Shield, Sparkles, RotateCcw } from 'lucide-react';
 import { loadAvatarModel, AvatarLoadResult } from './CharacterModel';
 
 export type OutfitId = 'dev-hoodie' | 'gym' | 'formal-suit' | 'cyber-merc' | 'fitness-titan' | 'crimson-vanguard';
@@ -29,22 +29,14 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
   onOutfitChange,
 }) => {
   const mountRef = useRef<HTMLDivElement>(null);
-  const stageCardRef = useRef<HTMLDivElement>(null);
   const controlsRef = useRef<OrbitControls | null>(null);
   const modelGroupRef = useRef<THREE.Group | null>(null);
-  const [renderMode, setRenderMode] = useState<'cinematic' | 'webgl3d'>('cinematic');
-  const renderModeRef = useRef(renderMode);
-  renderModeRef.current = renderMode;
-  const [imageTransitioning, setImageTransitioning] = useState(false);
-
-  // 3D Parallax Tilt state
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const hasWebGL = useMemo(() => checkWebGLSupport(), []);
 
   const handleResetView = () => {
     if (controlsRef.current) {
       controlsRef.current.reset();
     }
-    setTilt({ x: 0, y: 0 });
   };
 
   // Resolve base path for public assets (supports both local and GitHub Pages)
@@ -97,50 +89,6 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
 
   const activeConfig = outfitConfigs[normalizedOutfit];
 
-  // Trigger smooth crossfade effect on outfit change
-  useEffect(() => {
-    setImageTransitioning(true);
-    const timer = setTimeout(() => {
-      setImageTransitioning(false);
-    }, 450);
-    return () => clearTimeout(timer);
-  }, [normalizedOutfit]);
-
-  // Handle Interactive 3D Mouse Parallax
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (renderMode === 'webgl3d') return;
-    if (!stageCardRef.current) return;
-    const rect = stageCardRef.current.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    setTilt({
-      x: x * 12,
-      y: -y * 8,
-    });
-  };
-
-  const handleMouseLeave = () => {
-    setTilt({ x: 0, y: 0 });
-  };
-
-  // Handle Touch Parallax for Mobile Devices
-  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (renderMode === 'webgl3d') return;
-    if (!stageCardRef.current || e.touches.length === 0) return;
-    const touch = e.touches[0];
-    const rect = stageCardRef.current.getBoundingClientRect();
-    const x = (touch.clientX - rect.left) / rect.width - 0.5;
-    const y = (touch.clientY - rect.top) / rect.height - 0.5;
-    setTilt({
-      x: Math.max(-10, Math.min(10, x * 12)),
-      y: Math.max(-8, Math.min(8, -y * 8)),
-    });
-  };
-
-  const handleTouchEnd = () => {
-    setTilt({ x: 0, y: 0 });
-  };
-
   // ---------------------------------------------------------------------------
   // Three.js Background Stage / 3D Canvas
   // ---------------------------------------------------------------------------
@@ -166,20 +114,22 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
     scene.fog = new THREE.FogExp2(0x07080d, 0.06);
 
     const camera = new THREE.PerspectiveCamera(34, width / height, 0.1, 100);
-    camera.position.set(0, 1.15, 3.2);
-    camera.lookAt(0, 0.95, 0);
+    camera.position.set(0, 1.15, 3.55);
+    camera.lookAt(0, 0.88, 0);
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     controls.enablePan = false;
     controls.rotateSpeed = 0.8;
+    controls.enableZoom = true;
+    controls.zoomSpeed = 0.9;
     controls.minDistance = 1.8;
-    controls.maxDistance = 4.8;
+    controls.maxDistance = 5.2;
     controls.minPolarAngle = Math.PI * 0.28;
     controls.maxPolarAngle = Math.PI * 0.51;
-    controls.target.set(0, 0.95, 0);
-    controls.enabled = renderModeRef.current === 'webgl3d';
+    controls.target.set(0, 0.88, 0);
+    controls.enabled = true;
     controls.saveState();
     controlsRef.current = controls;
 
@@ -286,7 +236,7 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
     loadAvatarModel(baseUrl, activeConfig.lightColorNum).then((result) => {
       avatarResult = result;
       modelGroupRef.current = result.group;
-      result.group.visible = renderModeRef.current === 'webgl3d';
+      result.group.visible = true;
       scene.add(result.group);
     });
 
@@ -311,7 +261,7 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
       posAttr.needsUpdate = true;
 
       // Update 3D rotation controls with inertia damping
-      if (controlsRef.current && controlsRef.current.enabled) {
+      if (controlsRef.current) {
         controlsRef.current.update();
       }
 
@@ -346,69 +296,31 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
     };
   }, [activeConfig, baseUrl]);
 
-  // Synchronize 3D model visibility and OrbitControls state when toggling view mode
-  useEffect(() => {
-    if (controlsRef.current) {
-      controlsRef.current.enabled = renderMode === 'webgl3d';
-    }
-    if (modelGroupRef.current) {
-      modelGroupRef.current.visible = renderMode === 'webgl3d';
-    }
-  }, [renderMode]);
-
   return (
-    <div
-      ref={stageCardRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-      style={stageWrapperStyles(activeConfig.accentGlow)}
-    >
-      {/* Background 3D Holographic Pedestal & Energy Canvas */}
+    <div style={stageWrapperStyles(activeConfig.accentGlow)}>
+      {/* Background 3D Holographic Pedestal & 3D Interactive Canvas */}
       <div
         ref={mountRef}
-        style={canvasBackgroundStyles(renderMode === 'webgl3d')}
+        style={canvasBackgroundStyles}
         aria-hidden="true"
       />
 
       {/* Atmospheric Background Cyber Gradient & Vignette */}
       <div style={cyberVignetteStyles(activeConfig.accentDim)} />
 
-      {/* Main Character Presentation Viewport (Full Body Head-to-Shoes) */}
-      <div style={characterViewportStyles}>
-        {renderMode === 'cinematic' ? (
-          <div
-            style={{
-              ...characterContainerStyles,
-              transform: `perspective(1000px) rotateY(${tilt.x}deg) rotateX(${tilt.y}deg)`,
-              transition: imageTransitioning
-                ? 'opacity 350ms ease, transform 350ms ease, filter 350ms ease'
-                : 'transform 120ms ease-out',
-              opacity: imageTransitioning ? 0.35 : 1.0,
-              filter: imageTransitioning
-                ? `blur(4px) drop-shadow(0 0 35px ${activeConfig.accentHex})`
-                : `drop-shadow(0 15px 35px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 25px ${activeConfig.accentDim})`,
-            }}
-          >
-            {/* Soft Elliptical Ground Ambient Occlusion Shadow */}
+      {/* Accessible 2D Fallback Viewport for Environments without WebGL */}
+      {!hasWebGL && (
+        <div style={characterViewportStyles}>
+          <div style={characterContainerStyles}>
             <div style={groundContactShadowStyles} />
-
-            {/* High-Resolution Full-Body Avatar Asset */}
             <img
               src={activeConfig.image}
               alt={`Girish Gowda H R - ${activeConfig.name}`}
               style={avatarImageStyles}
             />
           </div>
-        ) : (
-          <div style={interactiveIndicatorStyles}>
-            <span style={indicatorTextStyles(activeConfig.accentHex)}>
-              3D CHARACTER ACTIVE • DRAG TO ROTATE 360°
-            </span>
-          </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Free Fire Style Tactical HUD Overlay */}
       <div style={hudOverlayStyles}>
@@ -423,39 +335,15 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
           </div>
 
           <div style={topActionsRowStyles}>
-            {/* View Mode Toggle (Cinematic High-Res vs 3D WebGL) */}
-            <div style={viewToggleStyles}>
-              <button
-                type="button"
-                onClick={() => setRenderMode('cinematic')}
-                style={modeToggleBtnStyles(renderMode === 'cinematic', activeConfig.accentHex)}
-                title="Cinematic Photorealistic Render"
-              >
-                <Camera size={14} />
-                <span>CINEMATIC</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setRenderMode('webgl3d')}
-                style={modeToggleBtnStyles(renderMode === 'webgl3d', activeConfig.accentHex)}
-                title="Three.js 3D WebGL Mesh"
-              >
-                <Box size={14} />
-                <span>3D WEBGL</span>
-              </button>
-            </div>
-
-            {renderMode === 'webgl3d' && (
-              <button
-                type="button"
-                onClick={handleResetView}
-                style={resetBtnStyles(activeConfig.accentHex)}
-                title="Reset to original front-facing view"
-              >
-                <RotateCcw size={13} />
-                <span>RESET</span>
-              </button>
-            )}
+            <button
+              type="button"
+              onClick={handleResetView}
+              style={resetBtnStyles(activeConfig.accentHex)}
+              title="Reset 3D view to front-facing perspective"
+            >
+              <RotateCcw size={13} />
+              <span>RESET 3D VIEW</span>
+            </button>
 
             <div style={presetInfoStyles(activeConfig.accentHex)}>
               <Sparkles size={14} color={activeConfig.accentHex} />
@@ -529,16 +417,16 @@ const stageWrapperStyles = (glowColor: string): React.CSSProperties => ({
   alignItems: 'center',
 });
 
-const canvasBackgroundStyles = (interactive: boolean): React.CSSProperties => ({
+const canvasBackgroundStyles: React.CSSProperties = {
   position: 'absolute',
   inset: 0,
   zIndex: 1,
-  pointerEvents: interactive ? 'auto' : 'none',
-  touchAction: interactive ? 'none' : 'auto',
-  cursor: interactive ? 'grab' : 'default',
+  pointerEvents: 'auto',
+  touchAction: 'none',
+  cursor: 'grab',
   width: '100%',
   height: '100%',
-});
+};
 
 const cyberVignetteStyles = (dimColor: string): React.CSSProperties => ({
   position: 'absolute',
@@ -595,29 +483,6 @@ const avatarImageStyles: React.CSSProperties = {
   transition: 'transform 300ms ease',
   filter: 'contrast(1.03) brightness(1.02)',
 };
-
-const interactiveIndicatorStyles: React.CSSProperties = {
-  position: 'absolute',
-  bottom: '4.8rem',
-  left: '50%',
-  transform: 'translateX(-50%)',
-  pointerEvents: 'none',
-  zIndex: 5,
-};
-
-const indicatorTextStyles = (accent: string): React.CSSProperties => ({
-  fontSize: '0.72rem',
-  fontWeight: 700,
-  letterSpacing: '0.1em',
-  color: accent,
-  backgroundColor: 'rgba(10, 13, 20, 0.75)',
-  backdropFilter: 'blur(8px)',
-  padding: '0.35rem 0.85rem',
-  borderRadius: 'var(--radius-full)',
-  border: `1px solid ${accent}44`,
-  boxShadow: `0 0 12px ${accent}25`,
-  userSelect: 'none',
-});
 
 const resetBtnStyles = (accent: string): React.CSSProperties => ({
   display: 'inline-flex',
@@ -704,32 +569,6 @@ const topActionsRowStyles: React.CSSProperties = {
   flexWrap: 'wrap',
 };
 
-const viewToggleStyles: React.CSSProperties = {
-  display: 'flex',
-  backgroundColor: 'rgba(10, 13, 20, 0.88)',
-  backdropFilter: 'blur(10px)',
-  borderRadius: 'var(--radius-full)',
-  border: '1px solid var(--border-subtle)',
-  padding: '0.2rem',
-  gap: '0.25rem',
-};
-
-const modeToggleBtnStyles = (active: boolean, accent: string): React.CSSProperties => ({
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '0.35rem',
-  fontSize: '0.72rem',
-  fontWeight: 700,
-  letterSpacing: '0.05em',
-  padding: '0.3rem 0.65rem',
-  borderRadius: 'var(--radius-full)',
-  backgroundColor: active ? `${accent}25` : 'transparent',
-  color: active ? accent : 'var(--text-muted)',
-  border: active ? `1px solid ${accent}` : '1px solid transparent',
-  transition: 'all 150ms ease',
-  cursor: 'pointer',
-});
-
 const presetInfoStyles = (accent: string): React.CSSProperties => ({
   display: 'flex',
   alignItems: 'center',
@@ -760,7 +599,7 @@ const controlGroupStyles: React.CSSProperties = {
   gap: '0.45rem',
   backgroundColor: 'rgba(10, 13, 20, 0.92)',
   backdropFilter: 'blur(16px)',
-  padding: '0.85rem 1.25rem',
+  padding: '0.65rem 1.15rem',
   borderRadius: 'var(--radius-lg)',
   border: '1px solid var(--border-subtle)',
   boxShadow: '0 8px 30px rgba(0, 0, 0, 0.6)',
