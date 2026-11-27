@@ -61,12 +61,12 @@ export const AboutPage: React.FC = () => {
       </header>
 
       <div style={gridStyles}>
-        {/* Full-Body Professional Standing Portrait */}
-        <aside style={portraitCardStyles} aria-label="Official Executive Portrait">
+        {/* Professional Portrait */}
+        <aside style={portraitCardStyles} aria-label="Official Professional Portrait">
           <div style={portraitWrapperStyles}>
             <img
-              src={`${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/assets/avatar/avatar_professional.png`}
-              alt="Girish Gowda H R - Executive Professional Portrait"
+              src={`${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/assets/girish_portrait.jpg`}
+              alt="Girish Gowda H R - Professional Portrait"
               style={portraitImageStyles}
             />
           </div>

@@ -1,7 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
+  CheckCircle2,
   Code2,
   Database,
   Download,
@@ -15,17 +16,13 @@ import {
 } from 'lucide-react';
 
 export const LobbyPage: React.FC = () => {
-  const [photoMode, setPhotoMode] = useState<'professional' | 'coding'>('professional');
-
   const baseUrl = useMemo(() => {
     return (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
   }, []);
 
   const photoUrl = useMemo(() => {
-    return photoMode === 'professional'
-      ? `${baseUrl}/assets/avatar/avatar_professional.png`
-      : `${baseUrl}/assets/avatar/avatar_coding.png`;
-  }, [photoMode, baseUrl]);
+    return `${baseUrl}/assets/girish_portrait.jpg`;
+  }, [baseUrl]);
 
   return (
     <div style={pageContainerStyles}>
@@ -107,14 +104,14 @@ export const LobbyPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Hero Visual: Framed Executive Portrait */}
+        {/* Hero Visual: Authentic Professional Portrait */}
         <div style={heroPortraitColStyles}>
           <div style={portraitCardWrapperStyles}>
             <div style={portraitGlowBackdropStyles} />
             <div style={portraitContainerStyles}>
               <img
                 src={photoUrl}
-                alt="Girish Gowda H R - Software Engineer"
+                alt="Girish Gowda H R - Aspiring Software Engineer"
                 style={portraitImageStyles}
                 loading="eager"
               />
@@ -122,28 +119,12 @@ export const LobbyPage: React.FC = () => {
                 <div style={portraitCaptionTextColStyles}>
                   <span style={portraitNameTagStyles}>Girish Gowda H R</span>
                   <span style={portraitRoleTagStyles}>
-                    {photoMode === 'professional' ? 'Executive Profile' : 'Technical Operative'}
+                    Aspiring Software Engineer · RVCE MCA '27
                   </span>
                 </div>
-                <div style={photoToggleGroupStyles}>
-                  <button
-                    type="button"
-                    onClick={() => setPhotoMode('professional')}
-                    style={photoToggleBtnStyles(photoMode === 'professional')}
-                    title="View Formal Professional Headshot"
-                    aria-label="View Formal Professional Headshot"
-                  >
-                    Suit
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPhotoMode('coding')}
-                    style={photoToggleBtnStyles(photoMode === 'coding')}
-                    title="View Developer Lab Headshot"
-                    aria-label="View Developer Lab Headshot"
-                  >
-                    Tech
-                  </button>
+                <div style={verifiedBadgeStyles}>
+                  <CheckCircle2 size={13} color="var(--accent-lavender)" />
+                  <span>Verified Profile</span>
                 </div>
               </div>
             </div>
@@ -653,12 +634,11 @@ const portraitContainerStyles: React.CSSProperties = {
 
 const portraitImageStyles: React.CSSProperties = {
   width: '100%',
-  height: '420px',
-  objectFit: 'contain',
-  objectPosition: 'center center',
+  height: '440px',
+  objectFit: 'cover',
+  objectPosition: 'center 15%',
   display: 'block',
   backgroundColor: '#0B1120',
-  padding: '0.75rem',
 };
 
 const portraitCaptionOverlayStyles: React.CSSProperties = {
@@ -688,26 +668,18 @@ const portraitRoleTagStyles: React.CSSProperties = {
   color: 'var(--accent-lavender)',
 };
 
-const photoToggleGroupStyles: React.CSSProperties = {
+const verifiedBadgeStyles: React.CSSProperties = {
   display: 'inline-flex',
+  alignItems: 'center',
   gap: '0.35rem',
-  backgroundColor: 'var(--bg-card)',
-  padding: '0.25rem',
-  borderRadius: 'var(--radius-sm)',
-  border: '1px solid var(--border-subtle)',
-};
-
-const photoToggleBtnStyles = (isActive: boolean): React.CSSProperties => ({
   fontSize: '0.72rem',
   fontWeight: 600,
-  padding: '0.25rem 0.55rem',
-  borderRadius: 'var(--radius-xs)',
-  border: 'none',
-  background: isActive ? 'var(--accent-lavender)' : 'transparent',
-  color: isActive ? '#020617' : 'var(--text-muted)',
-  cursor: 'pointer',
-  transition: 'all var(--transition-fast)',
-});
+  color: 'var(--accent-lavender)',
+  backgroundColor: 'var(--accent-lavender-dim)',
+  padding: '0.25rem 0.6rem',
+  borderRadius: 'var(--radius-full)',
+  border: '1px solid rgba(165, 180, 252, 0.25)',
+};
 
 /* Metrics Section */
 const metricsSectionStyles: React.CSSProperties = {

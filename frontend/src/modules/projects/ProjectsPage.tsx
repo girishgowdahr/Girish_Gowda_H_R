@@ -74,8 +74,8 @@ export const ProjectsPage: React.FC = () => {
         </div>
         <div style={operativeAvatarWrapperStyles}>
           <img
-            src={`${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/assets/avatar/avatar_coding.png`}
-            alt="Girish Gowda H R - Software Engineering Portrait"
+            src={`${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/assets/girish_portrait.jpg`}
+            alt="Girish Gowda H R - Software Engineer"
             style={operativeAvatarImgStyles}
           />
         </div>
@@ -445,10 +445,11 @@ const operativeAvatarWrapperStyles: React.CSSProperties = {
 };
 
 const operativeAvatarImgStyles: React.CSSProperties = {
-  maxHeight: '360px',
+  maxHeight: '260px',
   width: 'auto',
   maxWidth: '100%',
-  objectFit: 'contain',
-  borderRadius: '8px',
-  filter: 'drop-shadow(0 12px 24px rgba(0, 0, 0, 0.8))',
+  objectFit: 'cover',
+  borderRadius: '12px',
+  border: '1px solid var(--border-subtle)',
+  boxShadow: 'var(--shadow-card)',
 };
