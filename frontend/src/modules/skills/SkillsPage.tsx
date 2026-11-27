@@ -44,12 +44,12 @@ export const SkillsPage: React.FC = () => {
     <div style={containerStyles}>
       <header style={headerStyles}>
         <div style={taglineBadgeStyles}>
-          <Cpu size={14} color="var(--accent-cyan)" />
-          <span>TECHNICAL LOADOUT</span>
+          <Cpu size={14} color="var(--accent-primary)" />
+          <span>TECHNICAL SPECIALIZATIONS</span>
         </div>
-        <h1 style={titleStyles}>Skills & Competencies</h1>
+        <h1 style={titleStyles}>Skills &amp; Competencies</h1>
         <p style={subtitleStyles}>
-          Full-stack capabilities, cloud runtimes, distributed persistence, and 3D graphics tooling.
+          Full-stack capabilities, cloud runtimes, distributed persistence, and systems engineering.
         </p>
       </header>
 
@@ -105,7 +105,7 @@ export const SkillsPage: React.FC = () => {
 
                   <div style={skillMetaRowStyles}>
                     <span style={metaTextStyles}>
-                      <CheckCircle2 size={12} color="var(--accent-cyan)" />
+                      <CheckCircle2 size={12} color="var(--accent-primary)" />
                       {skill.yearsOfExperience} yrs experience
                     </span>
                     {skill.isFeatured && (
@@ -142,18 +142,25 @@ const taglineBadgeStyles: React.CSSProperties = {
   gap: '0.4rem',
   fontSize: '0.75rem',
   fontWeight: 700,
-  letterSpacing: '0.06em',
-  color: 'var(--accent-cyan)',
+  letterSpacing: '0.08em',
+  color: 'var(--accent-primary)',
+  backgroundColor: 'rgba(165, 180, 252, 0.08)',
+  padding: '0.3rem 0.7rem',
+  borderRadius: '9999px',
+  border: '1px solid rgba(165, 180, 252, 0.25)',
+  alignSelf: 'flex-start',
 };
 
 const titleStyles: React.CSSProperties = {
-  fontSize: '2.25rem',
+  fontSize: '2.5rem',
   fontWeight: 800,
+  letterSpacing: '-0.02em',
+  color: 'var(--text-primary)',
 };
 
 const subtitleStyles: React.CSSProperties = {
   fontSize: '1.05rem',
-  color: 'var(--text-secondary)',
+  color: 'var(--text-muted)',
 };
 
 const filterBarStyles: React.CSSProperties = {
@@ -165,7 +172,7 @@ const filterBarStyles: React.CSSProperties = {
 
 const filterButtonStyles: React.CSSProperties = {
   padding: '0.5rem 1rem',
-  borderRadius: 'var(--radius-full)',
+  borderRadius: '9999px',
   backgroundColor: 'rgba(255, 255, 255, 0.04)',
   border: '1px solid var(--border-subtle)',
   color: 'var(--text-secondary)',
@@ -176,9 +183,9 @@ const filterButtonStyles: React.CSSProperties = {
 };
 
 const activeFilterButtonStyles: React.CSSProperties = {
-  backgroundColor: 'var(--accent-cyan)',
-  color: '#0a0f1d',
-  borderColor: 'var(--accent-cyan)',
+  backgroundColor: 'var(--accent-primary)',
+  color: '#020617',
+  borderColor: 'var(--accent-primary)',
 };
 
 const categoriesGridStyles: React.CSSProperties = {
@@ -190,8 +197,8 @@ const categoriesGridStyles: React.CSSProperties = {
 const categoryCardStyles: React.CSSProperties = {
   backgroundColor: 'var(--bg-card)',
   border: '1px solid var(--border-subtle)',
-  borderRadius: 'var(--radius-lg)',
-  padding: '1.5rem',
+  borderRadius: '12px',
+  padding: '1.75rem',
   display: 'flex',
   flexDirection: 'column',
   gap: '1.25rem',
@@ -216,7 +223,7 @@ const itemCountBadgeStyles: React.CSSProperties = {
   color: 'var(--text-muted)',
   backgroundColor: 'rgba(255, 255, 255, 0.05)',
   padding: '0.2rem 0.6rem',
-  borderRadius: 'var(--radius-sm)',
+  borderRadius: '4px',
 };
 
 const skillGridStyles: React.CSSProperties = {
@@ -226,9 +233,9 @@ const skillGridStyles: React.CSSProperties = {
 };
 
 const skillItemCardStyles: React.CSSProperties = {
-  backgroundColor: 'rgba(255, 255, 255, 0.02)',
+  backgroundColor: 'var(--bg-card-subtle)',
   border: '1px solid var(--border-subtle)',
-  borderRadius: 'var(--radius-md)',
+  borderRadius: '8px',
   padding: '1rem',
   display: 'flex',
   flexDirection: 'column',
@@ -257,15 +264,16 @@ const skillNameStyles: React.CSSProperties = {
 const proficiencyBadgeStyles: React.CSSProperties = {
   fontSize: '0.7rem',
   padding: '0.15rem 0.45rem',
-  borderRadius: 'var(--radius-sm)',
+  borderRadius: '4px',
   backgroundColor: 'rgba(255, 255, 255, 0.06)',
   color: 'var(--text-secondary)',
   fontWeight: 600,
 };
 
 const advancedBadgeStyles: React.CSSProperties = {
-  backgroundColor: 'rgba(0, 255, 204, 0.12)',
-  color: 'var(--accent-cyan)',
+  backgroundColor: 'rgba(165, 180, 252, 0.12)',
+  color: 'var(--accent-primary)',
+  border: '1px solid rgba(165, 180, 252, 0.25)',
 };
 
 const skillMetaRowStyles: React.CSSProperties = {

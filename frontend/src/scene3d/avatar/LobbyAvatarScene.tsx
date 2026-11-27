@@ -36,6 +36,7 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
   const handleResetView = () => {
     if (controlsRef.current) {
       controlsRef.current.reset();
+      controlsRef.current.autoRotate = true;
     }
   };
 
@@ -121,17 +122,39 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     controls.enablePan = false;
-    controls.rotateSpeed = 0.8;
+    controls.rotateSpeed = 0.85;
     controls.enableZoom = true;
     controls.zoomSpeed = 0.9;
-    controls.minDistance = 1.8;
-    controls.maxDistance = 5.2;
-    controls.minPolarAngle = Math.PI * 0.28;
-    controls.maxPolarAngle = Math.PI * 0.51;
+    controls.minDistance = 1.6;
+    controls.maxDistance = 5.0;
+    controls.minPolarAngle = Math.PI * 0.25;
+    controls.maxPolarAngle = Math.PI * 0.52;
     controls.target.set(0, 0.88, 0);
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 0.8;
     controls.enabled = true;
     controls.saveState();
     controlsRef.current = controls;
+
+    let autoRotateResumeTimer: number | null = null;
+    const onControlsStart = () => {
+      controls.autoRotate = false;
+      if (autoRotateResumeTimer) {
+        window.clearTimeout(autoRotateResumeTimer);
+        autoRotateResumeTimer = null;
+      }
+    };
+    const onControlsEnd = () => {
+      if (autoRotateResumeTimer) {
+        window.clearTimeout(autoRotateResumeTimer);
+      }
+      autoRotateResumeTimer = window.setTimeout(() => {
+        controls.autoRotate = true;
+      }, 1500);
+    };
+
+    controls.addEventListener('start', onControlsStart);
+    controls.addEventListener('end', onControlsEnd);
 
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -233,7 +256,7 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
     // Load Central 3D Human Avatar Character (PBR 3D GLTF / Procedural Model)
     // -------------------------------------------------------------------------
     let avatarResult: AvatarLoadResult | null = null;
-    loadAvatarModel(baseUrl, activeConfig.lightColorNum).then((result) => {
+    loadAvatarModel(baseUrl, activeConfig.lightColorNum, normalizedOutfit).then((result) => {
       avatarResult = result;
       modelGroupRef.current = result.group;
       result.group.visible = true;
@@ -284,6 +307,11 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('resize', handleResize);
+      if (autoRotateResumeTimer) {
+        window.clearTimeout(autoRotateResumeTimer);
+      }
+      controls.removeEventListener('start', onControlsStart);
+      controls.removeEventListener('end', onControlsEnd);
       controls.dispose();
       if (avatarResult) {
         avatarResult.cleanUp();
@@ -403,9 +431,9 @@ export const LobbyAvatarScene: React.FC<LobbyAvatarSceneProps> = ({
 const stageWrapperStyles = (glowColor: string): React.CSSProperties => ({
   position: 'relative',
   width: '100%',
-  minHeight: '720px',
-  height: '75vh',
-  maxHeight: '860px',
+  minHeight: '580px',
+  height: 'calc(100vh - 120px)',
+  maxHeight: '780px',
   borderRadius: 'var(--radius-xl)',
   overflow: 'hidden',
   backgroundColor: '#06070a',

@@ -53,10 +53,10 @@ export const AboutPage: React.FC = () => {
     <div style={containerStyles}>
       <header style={headerStyles}>
         <div style={taglineBadgeStyles}>
-          <User size={14} color="var(--accent-cyan)" />
-          <span>OPERATOR BIOGRAPHY</span>
+          <User size={14} color="var(--accent-primary)" />
+          <span>ACADEMIC &amp; ENGINEERING PROFILE</span>
         </div>
-        <h1 style={titleStyles}>About Me</h1>
+        <h1 style={titleStyles}>About Me · Girish Gowda H R</h1>
         <p style={subtitleStyles}>{headline}</p>
       </header>
 
@@ -72,16 +72,16 @@ export const AboutPage: React.FC = () => {
           </div>
           <div style={portraitMetaStyles}>
             <div style={portraitTagStyles}>
-              <Award size={14} color="#f59e0b" />
-              <span>EXECUTIVE VANGUARD</span>
+              <Award size={14} color="var(--accent-primary)" />
+              <span>ASPIRING SOFTWARE ENGINEER</span>
             </div>
-            <p style={portraitCaptionStyles}>Girish Gowda H R · Full-Body Standing Identity</p>
+            <p style={portraitCaptionStyles}>RVCE MCA Scholar · Class of 2027</p>
           </div>
         </aside>
 
         <section style={cardStyles} aria-labelledby="bio-heading">
           <h2 id="bio-heading" style={sectionTitleStyles}>
-            <Terminal size={18} color="var(--accent-cyan)" />
+            <Terminal size={18} color="var(--accent-primary)" />
             <span>Profile Overview</span>
           </h2>
 
@@ -120,8 +120,8 @@ export const AboutPage: React.FC = () => {
 
         <aside style={cardStyles} aria-labelledby="info-heading">
           <h2 id="info-heading" style={sectionTitleStyles}>
-            <ShieldCheck size={18} color="var(--accent-cyan)" />
-            <span>Identity & Channels</span>
+            <ShieldCheck size={18} color="var(--accent-primary)" />
+            <span>Identity &amp; Channels</span>
           </h2>
           <ul style={infoListStyles}>
             <li style={infoItemStyles}>
@@ -132,7 +132,7 @@ export const AboutPage: React.FC = () => {
               <li style={infoItemStyles}>
                 <span style={infoLabelStyles}>Location</span>
                 <span style={infoValueStyles}>
-                  <MapPin size={14} color="var(--accent-cyan)" />
+                  <MapPin size={14} color="var(--accent-primary)" />
                   {location}
                 </span>
               </li>
@@ -180,7 +180,7 @@ export const AboutPage: React.FC = () => {
       {publications.length > 0 && (
         <section style={cardStyles} aria-labelledby="pubs-heading">
           <h2 id="pubs-heading" style={sectionTitleStyles}>
-            <BookOpen size={18} color="var(--accent-cyan)" />
+            <BookOpen size={18} color="var(--accent-primary)" />
             <span>Research &amp; Publications</span>
           </h2>
           <div style={certGridStyles}>
@@ -218,7 +218,7 @@ export const AboutPage: React.FC = () => {
       {certificates.length > 0 && (
         <section style={cardStyles} aria-labelledby="certs-heading">
           <h2 id="certs-heading" style={sectionTitleStyles}>
-            <Award size={18} color="var(--accent-cyan)" />
+            <Award size={18} color="var(--accent-primary)" />
             <span>Verified Certifications</span>
           </h2>
           <div style={certGridStyles}>
@@ -284,11 +284,11 @@ const taglineBadgeStyles: React.CSSProperties = {
   fontSize: '0.75rem',
   fontWeight: 700,
   letterSpacing: '0.1em',
-  color: 'var(--accent-cyan)',
-  backgroundColor: 'rgba(0, 240, 255, 0.08)',
+  color: 'var(--accent-primary)',
+  backgroundColor: 'rgba(165, 180, 252, 0.08)',
   padding: '0.35rem 0.75rem',
-  borderRadius: '4px',
-  border: '1px solid rgba(0, 240, 255, 0.25)',
+  borderRadius: '9999px',
+  border: '1px solid rgba(165, 180, 252, 0.25)',
   alignSelf: 'flex-start',
 };
 
@@ -313,9 +313,9 @@ const gridStyles: React.CSSProperties = {
 };
 
 const cardStyles: React.CSSProperties = {
-  backgroundColor: 'var(--bg-surface)',
+  backgroundColor: 'var(--bg-card)',
   border: '1px solid var(--border-subtle)',
-  borderRadius: '8px',
+  borderRadius: '12px',
   padding: '1.75rem',
   display: 'flex',
   flexDirection: 'column',
@@ -351,11 +351,11 @@ const primaryButtonStyles: React.CSSProperties = {
   alignItems: 'center',
   gap: '0.5rem',
   padding: '0.65rem 1.25rem',
-  backgroundColor: 'var(--accent-cyan)',
-  color: '#030712',
+  backgroundColor: 'var(--accent-primary)',
+  color: '#020617',
   fontWeight: 700,
   fontSize: '0.9rem',
-  borderRadius: '6px',
+  borderRadius: '8px',
   textDecoration: 'none',
   transition: 'transform 0.15s ease, box-shadow 0.15s ease',
 };
@@ -370,7 +370,7 @@ const secondaryButtonStyles: React.CSSProperties = {
   color: 'var(--text-primary)',
   fontWeight: 600,
   fontSize: '0.9rem',
-  borderRadius: '6px',
+  borderRadius: '8px',
   textDecoration: 'none',
 };
 
@@ -407,7 +407,7 @@ const infoValueStyles: React.CSSProperties = {
 };
 
 const contactLinkStyles: React.CSSProperties = {
-  color: 'var(--accent-cyan)',
+  color: 'var(--accent-primary)',
   textDecoration: 'none',
   display: 'inline-flex',
   alignItems: 'center',
@@ -421,9 +421,9 @@ const certGridStyles: React.CSSProperties = {
 };
 
 const certCardStyles: React.CSSProperties = {
-  backgroundColor: 'rgba(255, 255, 255, 0.02)',
+  backgroundColor: 'var(--bg-card-subtle)',
   border: '1px solid var(--border-subtle)',
-  borderRadius: '6px',
+  borderRadius: '8px',
   padding: '1.25rem',
   display: 'flex',
   flexDirection: 'column',
@@ -445,11 +445,11 @@ const certTitleStyles: React.CSSProperties = {
 
 const certDateBadgeStyles: React.CSSProperties = {
   fontSize: '0.75rem',
-  color: 'var(--accent-cyan)',
-  backgroundColor: 'rgba(0, 240, 255, 0.08)',
+  color: 'var(--accent-primary)',
+  backgroundColor: 'rgba(165, 180, 252, 0.08)',
   padding: '0.2rem 0.5rem',
   borderRadius: '4px',
-  border: '1px solid rgba(0, 240, 255, 0.2)',
+  border: '1px solid rgba(165, 180, 252, 0.2)',
   whiteSpace: 'nowrap',
 };
 
@@ -466,7 +466,7 @@ const certIdStyles: React.CSSProperties = {
 
 const certLinkStyles: React.CSSProperties = {
   fontSize: '0.85rem',
-  color: 'var(--accent-cyan)',
+  color: 'var(--accent-primary)',
   textDecoration: 'none',
   display: 'inline-flex',
   alignItems: 'center',
@@ -475,17 +475,17 @@ const certLinkStyles: React.CSSProperties = {
 };
 
 const portraitCardStyles: React.CSSProperties = {
-  backgroundColor: 'var(--bg-surface)',
-  border: '1px solid rgba(245, 158, 11, 0.3)',
-  borderRadius: '8px',
+  backgroundColor: 'var(--bg-card)',
+  border: '1px solid var(--border-subtle)',
+  borderRadius: '12px',
   padding: '1.5rem',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
   gap: '1rem',
-  background: 'linear-gradient(180deg, rgba(245, 158, 11, 0.05) 0%, rgba(13, 17, 26, 0.85) 100%)',
-  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), 0 0 24px rgba(245, 158, 11, 0.12)',
+  background: 'linear-gradient(180deg, rgba(165, 180, 252, 0.03) 0%, rgba(17, 24, 39, 0.95) 100%)',
+  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), 0 0 24px rgba(165, 180, 252, 0.06)',
 };
 
 const portraitWrapperStyles: React.CSSProperties = {
@@ -501,7 +501,7 @@ const portraitImageStyles: React.CSSProperties = {
   width: 'auto',
   maxWidth: '100%',
   objectFit: 'contain',
-  borderRadius: '6px',
+  borderRadius: '8px',
   filter: 'drop-shadow(0 14px 28px rgba(0, 0, 0, 0.8))',
 };
 
@@ -518,13 +518,13 @@ const portraitTagStyles: React.CSSProperties = {
   alignItems: 'center',
   gap: '0.4rem',
   fontSize: '0.75rem',
-  fontWeight: 800,
+  fontWeight: 700,
   letterSpacing: '0.08em',
-  color: '#f59e0b',
-  backgroundColor: 'rgba(245, 158, 11, 0.1)',
+  color: 'var(--accent-primary)',
+  backgroundColor: 'rgba(165, 180, 252, 0.1)',
   padding: '0.3rem 0.75rem',
-  borderRadius: '4px',
-  border: '1px solid rgba(245, 158, 11, 0.3)',
+  borderRadius: '9999px',
+  border: '1px solid rgba(165, 180, 252, 0.25)',
 };
 
 const portraitCaptionStyles: React.CSSProperties = {

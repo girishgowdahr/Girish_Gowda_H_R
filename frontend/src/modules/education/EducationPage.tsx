@@ -39,10 +39,10 @@ export const EducationPage: React.FC = () => {
     <div style={containerStyles}>
       <header style={headerStyles}>
         <div style={taglineBadgeStyles}>
-          <GraduationCap size={14} color="var(--accent-cyan)" />
-          <span>ACADEMIC FOUNDATIONS</span>
+          <GraduationCap size={14} color="var(--accent-primary)" />
+          <span>ACADEMIC FOUNDATION</span>
         </div>
-        <h1 style={titleStyles}>Education & Credentials</h1>
+        <h1 style={titleStyles}>Education &amp; Credentials</h1>
         <p style={subtitleStyles}>
           Formal computer science foundations, algorithms, systems design, and academic achievements.
         </p>
@@ -73,7 +73,7 @@ export const EducationPage: React.FC = () => {
                 </span>
                 {edu.gradeOrGpa && (
                   <span style={gradeBadgeStyles}>
-                    <Award size={13} color="var(--accent-cyan)" />
+                    <Award size={13} color="var(--accent-primary)" />
                     {edu.gradeOrGpa}
                   </span>
                 )}
@@ -82,7 +82,7 @@ export const EducationPage: React.FC = () => {
 
             {edu.description && (
               <div style={descriptionBoxStyles}>
-                <BookOpen size={16} color="var(--accent-cyan)" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                <BookOpen size={16} color="var(--accent-primary)" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
                 <p style={descriptionTextStyles}>{edu.description}</p>
               </div>
             )}
@@ -111,18 +111,25 @@ const taglineBadgeStyles: React.CSSProperties = {
   gap: '0.4rem',
   fontSize: '0.75rem',
   fontWeight: 700,
-  letterSpacing: '0.06em',
-  color: 'var(--accent-cyan)',
+  letterSpacing: '0.08em',
+  color: 'var(--accent-primary)',
+  backgroundColor: 'rgba(165, 180, 252, 0.08)',
+  padding: '0.3rem 0.7rem',
+  borderRadius: '9999px',
+  border: '1px solid rgba(165, 180, 252, 0.25)',
+  alignSelf: 'flex-start',
 };
 
 const titleStyles: React.CSSProperties = {
-  fontSize: '2.25rem',
+  fontSize: '2.5rem',
   fontWeight: 800,
+  letterSpacing: '-0.02em',
+  color: 'var(--text-primary)',
 };
 
 const subtitleStyles: React.CSSProperties = {
   fontSize: '1.05rem',
-  color: 'var(--text-secondary)',
+  color: 'var(--text-muted)',
 };
 
 const cardsContainerStyles: React.CSSProperties = {
@@ -134,7 +141,7 @@ const cardsContainerStyles: React.CSSProperties = {
 const cardStyles: React.CSSProperties = {
   backgroundColor: 'var(--bg-card)',
   border: '1px solid var(--border-subtle)',
-  borderRadius: 'var(--radius-lg)',
+  borderRadius: '12px',
   padding: '1.75rem',
   display: 'flex',
   flexDirection: 'column',
@@ -157,7 +164,7 @@ const degreeTitleStyles: React.CSSProperties = {
 
 const institutionStyles: React.CSSProperties = {
   fontSize: '1.05rem',
-  color: 'var(--accent-cyan)',
+  color: 'var(--accent-primary)',
   fontWeight: 600,
   marginTop: '0.25rem',
 };
@@ -183,7 +190,7 @@ const yearBadgeStyles: React.CSSProperties = {
   color: 'var(--text-secondary)',
   backgroundColor: 'rgba(255, 255, 255, 0.05)',
   padding: '0.3rem 0.65rem',
-  borderRadius: 'var(--radius-sm)',
+  borderRadius: '4px',
   fontWeight: 600,
 };
 
@@ -192,10 +199,11 @@ const gradeBadgeStyles: React.CSSProperties = {
   alignItems: 'center',
   gap: '0.35rem',
   fontSize: '0.8rem',
-  color: 'var(--accent-cyan)',
-  backgroundColor: 'rgba(0, 255, 204, 0.1)',
+  color: 'var(--accent-primary)',
+  backgroundColor: 'rgba(165, 180, 252, 0.1)',
   padding: '0.25rem 0.6rem',
-  borderRadius: 'var(--radius-sm)',
+  borderRadius: '4px',
+  border: '1px solid rgba(165, 180, 252, 0.2)',
   fontWeight: 600,
 };
 
@@ -203,10 +211,10 @@ const descriptionBoxStyles: React.CSSProperties = {
   display: 'flex',
   alignItems: 'flex-start',
   gap: '0.75rem',
-  backgroundColor: 'rgba(255, 255, 255, 0.02)',
+  backgroundColor: 'var(--bg-card-subtle)',
   padding: '1rem',
-  borderRadius: 'var(--radius-md)',
-  border: '1px solid rgba(255, 255, 255, 0.04)',
+  borderRadius: '8px',
+  border: '1px solid var(--border-subtle)',
 };
 
 const descriptionTextStyles: React.CSSProperties = {

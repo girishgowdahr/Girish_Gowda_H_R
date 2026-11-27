@@ -1,55 +1,74 @@
 :root {
-  /* Canvas & Surface Colors (Dark Lobby Theme) */
-  --bg-canvas: #090a0f;
-  --bg-surface: #10141f;
-  --bg-card: #161b28;
-  --bg-card-hover: #1d2436;
-  --bg-overlay: rgba(9, 10, 15, 0.85);
-
-  /* Primary Brand & Accents */
-  --accent-cyan: #00f0ff;
-  --accent-cyan-dim: rgba(0, 240, 255, 0.15);
-  --accent-cyan-glow: rgba(0, 240, 255, 0.4);
-  --accent-blue: #0070f3;
-  --accent-purple: #7928ca;
-  --accent-emerald: #10b981;
-  --accent-amber: #f59e0b;
-  --accent-rose: #f43f5e;
+  /* =========================================================================
+     MIDNIGHT NAVY COLOR PALETTE (Confirmed Master Prompt)
+     ========================================================================= */
+  --bg-main: #020617;              /* Main background */
+  --bg-canvas: #020617;            /* Base canvas */
+  --bg-secondary: #0F172A;         /* Secondary section background */
+  --bg-surface: #0F172A;           /* Surface background */
+  --bg-card: #111827;              /* Card background */
+  --bg-card-hover: #1e293b;        /* Card hover elevation */
+  --bg-overlay: rgba(2, 6, 23, 0.85);
 
   /* Typography Colors */
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --text-inverse: #090a0f;
+  --text-primary: #F1F5F9;         /* High-contrast off-white heading */
+  --text-secondary: #94A3B8;       /* Subtle slate body & description */
+  --text-muted: #64748B;           /* Caption & meta labels */
+  --text-inverse: #020617;         /* Contrast text on lavender/light backgrounds */
 
-  /* Borders & Dividers */
-  --border-subtle: #1e2638;
-  --border-active: #00f0ff;
-  --border-glow: 0 0 12px rgba(0, 240, 255, 0.35);
+  /* Structural Borders */
+  --border-subtle: #1E293B;        /* Primary clean borders */
+  --border-hover: #334155;         /* Interactive card hover borders */
+  --border-active: #A5B4FC;        /* Focused/active lavender borders */
 
-  /* Spacing */
+  /* Accents */
+  --accent-lavender: #A5B4FC;      /* Primary accent: Lavender */
+  --accent-lavender-dim: rgba(165, 180, 252, 0.12);
+  --accent-lavender-glow: rgba(165, 180, 252, 0.28);
+  --accent-primary: #A5B4FC;
+
+  /* Optional Secondary Accents (used sparingly) */
+  --accent-blue: #38BDF8;          /* Engineering blue accent */
+  --accent-blue-dim: rgba(56, 189, 248, 0.12);
+  --accent-orange: #F97316;        /* Warm accent */
+  --accent-orange-dim: rgba(249, 115, 22, 0.12);
+  --accent-emerald: #10B981;       /* Status indicator (live/available) */
+
+  /* Backward Compatibility Mappings */
+  --accent-cyan: #A5B4FC;
+  --accent-cyan-dim: rgba(165, 180, 252, 0.12);
+  --accent-cyan-glow: rgba(165, 180, 252, 0.28);
+  --accent-purple: #A5B4FC;
+  --accent-amber: #F97316;
+
+  /* Spacing Scale */
+  --space-2xs: 0.125rem;
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;
   --space-md: 1rem;
   --space-lg: 1.5rem;
   --space-xl: 2rem;
   --space-2xl: 3rem;
+  --space-3xl: 4.5rem;
 
   /* Radii */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
   --radius-full: 9999px;
 
   /* Transitions */
-  --transition-fast: 150ms ease;
-  --transition-normal: 250ms ease;
-  --transition-slow: 400ms ease;
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
 
   /* Shadows */
-  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.4);
-  --shadow-glow: 0 0 25px rgba(0, 240, 255, 0.15);
+  --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.35);
+  --shadow-card: 0 10px 30px -10px rgba(2, 6, 23, 0.85);
+  --shadow-hover: 0 16px 40px -12px rgba(2, 6, 23, 0.95);
+  --shadow-glow: 0 0 25px rgba(165, 180, 252, 0.15);
 }
 
 /* Reduced Motion Override */

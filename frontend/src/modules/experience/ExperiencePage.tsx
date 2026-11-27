@@ -39,7 +39,7 @@ export const ExperiencePage: React.FC = () => {
     <div style={containerStyles}>
       <header style={headerStyles}>
         <div style={taglineBadgeStyles}>
-          <Briefcase size={14} color="var(--accent-cyan)" />
+          <Briefcase size={14} color="var(--accent-primary)" />
           <span>CAREER TIMELINE</span>
         </div>
         <h1 style={titleStyles}>Professional Experience</h1>
@@ -96,7 +96,7 @@ export const ExperiencePage: React.FC = () => {
 
                 {exp.location && (
                   <div style={locationRowStyles}>
-                    <MapPin size={13} color="var(--accent-cyan)" />
+                    <MapPin size={13} color="var(--accent-primary)" />
                     <span>{exp.location}</span>
                     {exp.employmentType && <span>• {exp.employmentType}</span>}
                   </div>
@@ -110,7 +110,7 @@ export const ExperiencePage: React.FC = () => {
                     <ul style={highlightsListStyles}>
                       {exp.highlights.map((h, hIdx) => (
                         <li key={hIdx} style={highlightItemStyles}>
-                          <CheckCircle2 size={14} color="var(--accent-cyan)" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                          <CheckCircle2 size={14} color="var(--accent-primary)" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
                           <span>{h}</span>
                         </li>
                       ))}
@@ -154,18 +154,25 @@ const taglineBadgeStyles: React.CSSProperties = {
   gap: '0.4rem',
   fontSize: '0.75rem',
   fontWeight: 700,
-  letterSpacing: '0.06em',
-  color: 'var(--accent-cyan)',
+  letterSpacing: '0.08em',
+  color: 'var(--accent-primary)',
+  backgroundColor: 'rgba(165, 180, 252, 0.08)',
+  padding: '0.3rem 0.7rem',
+  borderRadius: '9999px',
+  border: '1px solid rgba(165, 180, 252, 0.25)',
+  alignSelf: 'flex-start',
 };
 
 const titleStyles: React.CSSProperties = {
-  fontSize: '2.25rem',
+  fontSize: '2.5rem',
   fontWeight: 800,
+  letterSpacing: '-0.02em',
+  color: 'var(--text-primary)',
 };
 
 const subtitleStyles: React.CSSProperties = {
   fontSize: '1.05rem',
-  color: 'var(--text-secondary)',
+  color: 'var(--text-muted)',
 };
 
 const timelineContainerStyles: React.CSSProperties = {
@@ -192,8 +199,8 @@ const timelineDotStyles: React.CSSProperties = {
   width: '14px',
   height: '14px',
   borderRadius: '50%',
-  backgroundColor: 'var(--accent-cyan)',
-  boxShadow: '0 0 10px rgba(0, 255, 204, 0.5)',
+  backgroundColor: 'var(--accent-primary)',
+  boxShadow: '0 0 10px rgba(165, 180, 252, 0.4)',
   marginTop: '1.5rem',
   zIndex: 1,
 };
@@ -208,7 +215,7 @@ const timelineLineStyles: React.CSSProperties = {
 const timelineCardStyles: React.CSSProperties = {
   backgroundColor: 'var(--bg-card)',
   border: '1px solid var(--border-subtle)',
-  borderRadius: 'var(--radius-lg)',
+  borderRadius: '12px',
   padding: '1.75rem',
   flexGrow: 1,
   display: 'flex',
@@ -232,7 +239,7 @@ const roleTitleStyles: React.CSSProperties = {
 
 const companyNameStyles: React.CSSProperties = {
   fontSize: '1rem',
-  color: 'var(--accent-cyan)',
+  color: 'var(--accent-primary)',
   fontWeight: 600,
   marginTop: '0.2rem',
 };
@@ -247,10 +254,10 @@ const badgeColumnStyles: React.CSSProperties = {
 const currentBadgeStyles: React.CSSProperties = {
   fontSize: '0.7rem',
   fontWeight: 700,
-  color: '#0a0f1d',
-  backgroundColor: 'var(--accent-cyan)',
+  color: '#020617',
+  backgroundColor: 'var(--accent-primary)',
   padding: '0.2rem 0.55rem',
-  borderRadius: 'var(--radius-sm)',
+  borderRadius: '4px',
   textTransform: 'uppercase',
   letterSpacing: '0.04em',
 };
@@ -261,7 +268,7 @@ const pastBadgeStyles: React.CSSProperties = {
   color: 'var(--text-muted)',
   backgroundColor: 'rgba(255, 255, 255, 0.05)',
   padding: '0.2rem 0.5rem',
-  borderRadius: 'var(--radius-sm)',
+  borderRadius: '4px',
 };
 
 const dateRangeStyles: React.CSSProperties = {
@@ -290,10 +297,10 @@ const highlightsSectionStyles: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
   gap: '0.5rem',
-  backgroundColor: 'rgba(255, 255, 255, 0.015)',
+  backgroundColor: 'var(--bg-card-subtle)',
   padding: '1rem',
-  borderRadius: 'var(--radius-md)',
-  border: '1px solid rgba(255, 255, 255, 0.04)',
+  borderRadius: '8px',
+  border: '1px solid var(--border-subtle)',
 };
 
 const highlightsHeadingStyles: React.CSSProperties = {
@@ -333,7 +340,7 @@ const techBadgeStyles: React.CSSProperties = {
   border: '1px solid var(--border-subtle)',
   color: 'var(--text-secondary)',
   padding: '0.2rem 0.5rem',
-  borderRadius: 'var(--radius-sm)',
+  borderRadius: '4px',
 };
 
 const loadingStyles: React.CSSProperties = {

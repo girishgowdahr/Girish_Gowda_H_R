@@ -45,37 +45,37 @@ export const ProjectsPage: React.FC = () => {
     <div style={containerStyles}>
       <header style={headerStyles}>
         <div style={taglineBadgeStyles}>
-          <Layers size={14} color="var(--accent-cyan)" />
+          <Layers size={14} color="var(--accent-primary)" />
           <span>ENGINEERING PORTFOLIO</span>
         </div>
         <h1 style={titleStyles}>Featured Projects</h1>
         <p style={subtitleStyles}>
-          Architectural designs, high-throughput microservices, 3D WebGL lobbies, and client-side encryption.
+          Architectural designs, high-throughput microservices, distributed systems, and client-side encryption.
         </p>
       </header>
 
-      {/* Coding Operative Hero Spotlight */}
-      <section style={operativeHeroStyles} aria-label="Lead Developer Operative Spotlight">
+      {/* Engineering Showcase Spotlight */}
+      <section style={operativeHeroStyles} aria-label="Systems Engineering & Architecture Spotlight">
         <div style={operativeHeroContentStyles}>
           <div style={taglineBadgeStyles}>
-            <Terminal size={14} color="var(--accent-cyan)" />
-            <span>CODING OPERATIVE // LEAD DEVELOPER</span>
+            <Terminal size={14} color="var(--accent-primary)" />
+            <span>SYSTEMS &amp; DISTRIBUTED ARCHITECTURES</span>
           </div>
-          <h2 style={operativeHeroTitleStyles}>Systems Engineering &amp; Architecture</h2>
+          <h2 style={operativeHeroTitleStyles}>Systems Engineering &amp; Resilient Architecture</h2>
           <p style={operativeHeroDescStyles}>
-            Hands-on full-stack development featuring high-performance Java Spring Boot services, responsive React &amp; TypeScript interfaces, resilient database schemas, and interactive 3D WebGL scenes.
+            Full-stack engineering featuring high-performance Java microservices, responsive React &amp; TypeScript interfaces, resilient relational schemas, and research in self-healing architectures.
           </p>
           <div style={operativeTechPillsStyles}>
-            <span style={pillStyles}>Java 21 / Spring Boot</span>
-            <span style={pillStyles}>React 18 / TypeScript</span>
+            <span style={pillStyles}>Java / Spring Boot</span>
+            <span style={pillStyles}>React / TypeScript</span>
             <span style={pillStyles}>PostgreSQL &amp; Redis</span>
-            <span style={pillStyles}>Three.js 3D Engine</span>
+            <span style={pillStyles}>Distributed Systems</span>
           </div>
         </div>
         <div style={operativeAvatarWrapperStyles}>
           <img
             src={`${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/assets/avatar/avatar_coding.png`}
-            alt="Girish Gowda H R - Coding Operative Standing Portrait"
+            alt="Girish Gowda H R - Software Engineering Portrait"
             style={operativeAvatarImgStyles}
           />
         </div>
@@ -192,18 +192,25 @@ const taglineBadgeStyles: React.CSSProperties = {
   gap: '0.4rem',
   fontSize: '0.75rem',
   fontWeight: 700,
-  letterSpacing: '0.06em',
-  color: 'var(--accent-cyan)',
+  letterSpacing: '0.08em',
+  color: 'var(--accent-primary)',
+  backgroundColor: 'rgba(165, 180, 252, 0.08)',
+  padding: '0.3rem 0.7rem',
+  borderRadius: '9999px',
+  border: '1px solid rgba(165, 180, 252, 0.25)',
+  alignSelf: 'flex-start',
 };
 
 const titleStyles: React.CSSProperties = {
-  fontSize: '2.25rem',
+  fontSize: '2.5rem',
   fontWeight: 800,
+  letterSpacing: '-0.02em',
+  color: 'var(--text-primary)',
 };
 
 const subtitleStyles: React.CSSProperties = {
   fontSize: '1.05rem',
-  color: 'var(--text-secondary)',
+  color: 'var(--text-muted)',
 };
 
 const filterContainerStyles: React.CSSProperties = {
@@ -230,7 +237,7 @@ const filterChipsStyles: React.CSSProperties = {
 
 const filterChipStyles: React.CSSProperties = {
   padding: '0.4rem 0.85rem',
-  borderRadius: 'var(--radius-full)',
+  borderRadius: '9999px',
   backgroundColor: 'rgba(255, 255, 255, 0.04)',
   border: '1px solid var(--border-subtle)',
   color: 'var(--text-secondary)',
@@ -241,9 +248,9 @@ const filterChipStyles: React.CSSProperties = {
 };
 
 const activeChipStyles: React.CSSProperties = {
-  backgroundColor: 'var(--accent-cyan)',
-  color: '#0a0f1d',
-  borderColor: 'var(--accent-cyan)',
+  backgroundColor: 'var(--accent-primary)',
+  color: '#020617',
+  borderColor: 'var(--accent-primary)',
 };
 
 const gridStyles: React.CSSProperties = {
@@ -255,7 +262,7 @@ const gridStyles: React.CSSProperties = {
 const cardStyles: React.CSSProperties = {
   backgroundColor: 'var(--bg-card)',
   border: '1px solid var(--border-subtle)',
-  borderRadius: 'var(--radius-lg)',
+  borderRadius: '12px',
   padding: '1.75rem',
   display: 'flex',
   flexDirection: 'column',
@@ -280,12 +287,13 @@ const headerTopStyles: React.CSSProperties = {
 const categoryBadgeStyles: React.CSSProperties = {
   fontSize: '0.7rem',
   fontWeight: 700,
-  color: 'var(--accent-cyan)',
-  backgroundColor: 'rgba(0, 255, 204, 0.08)',
+  color: 'var(--accent-primary)',
+  backgroundColor: 'rgba(165, 180, 252, 0.08)',
   padding: '0.2rem 0.5rem',
-  borderRadius: 'var(--radius-sm)',
+  borderRadius: '4px',
   textTransform: 'uppercase',
   letterSpacing: '0.05em',
+  border: '1px solid rgba(165, 180, 252, 0.2)',
 };
 
 const featuredBadgeStyles: React.CSSProperties = {
@@ -296,7 +304,7 @@ const featuredBadgeStyles: React.CSSProperties = {
   color: '#f59e0b',
   backgroundColor: 'rgba(245, 158, 11, 0.1)',
   padding: '0.2rem 0.5rem',
-  borderRadius: 'var(--radius-sm)',
+  borderRadius: '4px',
   fontWeight: 600,
 };
 
@@ -330,7 +338,7 @@ const techBadgeStyles: React.CSSProperties = {
   border: '1px solid var(--border-subtle)',
   color: 'var(--text-primary)',
   padding: '0.2rem 0.5rem',
-  borderRadius: 'var(--radius-sm)',
+  borderRadius: '4px',
   fontWeight: 500,
 };
 
@@ -351,7 +359,7 @@ const linkButtonStyles: React.CSSProperties = {
   backgroundColor: 'rgba(255, 255, 255, 0.03)',
   border: '1px solid var(--border-subtle)',
   padding: '0.45rem 0.8rem',
-  borderRadius: 'var(--radius-md)',
+  borderRadius: '8px',
   textDecoration: 'none',
   fontWeight: 600,
   transition: 'color 0.15s ease',
@@ -362,10 +370,10 @@ const primaryLinkButtonStyles: React.CSSProperties = {
   alignItems: 'center',
   gap: '0.4rem',
   fontSize: '0.85rem',
-  color: '#0a0f1d',
-  backgroundColor: 'var(--accent-cyan)',
+  color: '#020617',
+  backgroundColor: 'var(--accent-primary)',
   padding: '0.45rem 0.85rem',
-  borderRadius: 'var(--radius-md)',
+  borderRadius: '8px',
   textDecoration: 'none',
   fontWeight: 700,
 };
@@ -383,11 +391,11 @@ const operativeHeroStyles: React.CSSProperties = {
   flexWrap: 'wrap',
   gap: '2rem',
   padding: '2rem',
-  backgroundColor: 'var(--bg-surface)',
-  borderRadius: 'var(--radius-lg)',
-  border: '1px solid rgba(0, 240, 255, 0.25)',
-  background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.05) 0%, rgba(13, 17, 26, 0.95) 100%)',
-  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), 0 0 24px rgba(0, 240, 255, 0.1)',
+  backgroundColor: 'var(--bg-card)',
+  borderRadius: '12px',
+  border: '1px solid var(--border-subtle)',
+  background: 'linear-gradient(135deg, rgba(165, 180, 252, 0.04) 0%, rgba(17, 24, 39, 0.95) 100%)',
+  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), 0 0 24px rgba(165, 180, 252, 0.06)',
 };
 
 const operativeHeroContentStyles: React.CSSProperties = {
@@ -421,11 +429,11 @@ const operativeTechPillsStyles: React.CSSProperties = {
 const pillStyles: React.CSSProperties = {
   fontSize: '0.75rem',
   fontWeight: 600,
-  color: 'var(--accent-cyan)',
-  backgroundColor: 'rgba(0, 240, 255, 0.08)',
-  border: '1px solid rgba(0, 240, 255, 0.2)',
+  color: 'var(--accent-primary)',
+  backgroundColor: 'rgba(165, 180, 252, 0.08)',
+  border: '1px solid rgba(165, 180, 252, 0.25)',
   padding: '0.25rem 0.65rem',
-  borderRadius: '4px',
+  borderRadius: '6px',
 };
 
 const operativeAvatarWrapperStyles: React.CSSProperties = {
@@ -442,5 +450,5 @@ const operativeAvatarImgStyles: React.CSSProperties = {
   maxWidth: '100%',
   objectFit: 'contain',
   borderRadius: '8px',
-  filter: 'drop-shadow(0 12px 24px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 16px rgba(0, 240, 255, 0.25))',
+  filter: 'drop-shadow(0 12px 24px rgba(0, 0, 0, 0.8))',
 };

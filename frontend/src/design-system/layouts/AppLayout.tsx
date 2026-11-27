@@ -21,9 +21,9 @@ const mainStyles: React.CSSProperties = {
   flex: 1,
   display: 'flex',
   flexDirection: 'column',
-  maxWidth: '1200px',
+  maxWidth: '1240px',
   width: '100%',
   margin: '0 auto',
-  padding: '2rem 1.5rem',
+  padding: '2.5rem 1.5rem 4rem',
   outline: 'none',
 };
